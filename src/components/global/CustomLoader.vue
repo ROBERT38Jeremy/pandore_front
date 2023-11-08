@@ -1,0 +1,60 @@
+<script setup>
+import { toRef } from "vue";
+
+const props = defineProps({
+    loading: {
+        type: Boolean,
+        required: true,
+        default: true
+    }
+});
+const loading = toRef(props, "loading");
+</script>
+
+<template>
+  <div class="loader-contain">
+    <div v-if="loading" class="loader">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div v-else>
+      <slot />
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.loader-contain {
+    position: relative;
+}
+
+@keyframes loader {
+  to {
+      opacity: 0.1;
+      transform: translate3d(0, -1rem, 0);
+  }
+}
+.loader {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.loader > div {
+  width: 1rem;
+  height: 1rem;
+  margin: 3rem 0.2rem;
+  background: black;
+  border-radius: 50%;
+  animation: loader 0.6s infinite alternate;
+}
+.loader > div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.loader > div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+</style>
