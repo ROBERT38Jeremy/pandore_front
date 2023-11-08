@@ -6,8 +6,10 @@ import { useDBConnectStore } from '../../stores/DBConnect.js'
 import CustomInput from '../../components/form/customInput.vue';
 import CustomSubmit from '../../components/form/customSubmit.vue';
 import CustomLoader from '../../components/global/CustomLoader.vue'
+import { storeToRefs } from 'pinia';
 
 const { connect } = useDBConnectStore()
+const { DBConnection } = storeToRefs(useDBConnectStore());
 const loading = ref(false);
 const message = ref(null);
 const form = ref({
@@ -18,13 +20,10 @@ const form = ref({
 });
 
 function submit() {
-    console.log(form.value)
-    return;
     const connection = ref({});
-    console.log(form)
 
     loading.value = true;
-    connection.value = useAxios({ url: '/', method: 'POST', body: form.value });
+    connection.value = useAxios({ url: '/try/connect', method: 'POST', body: form.value });
 
     watch(connection.value, () => {
         if (connection.value.isLoading === false) {
@@ -39,6 +38,11 @@ function submit() {
                 url: connection.value.error?.config?.baseURL,
                 method: connection.value.error?.config?.method,
             }
+        } else if (connection.value?.resp?.data?.success !== true) {
+            message.value = {
+                type: 'ERROR',
+                msg: 'Connection failed'
+            }
         } else {
             connect(form.value.user, form.value.pwd, form.value.host, form.value.port)
             message.value = {
@@ -51,6 +55,9 @@ function submit() {
 </script>
 
 <template>
+    {{ message }}
+    <br>
+    {{ DBConnection }}
     <form class="left-panel" v-on:submit.prevent="submit">
         <CustomLoader :loading="loading">
             <h1>Connection</h1>
