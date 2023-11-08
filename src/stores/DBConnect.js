@@ -13,7 +13,6 @@ export const useDBConnectStore = defineStore('DBConnect', () => {
             host: DBHOST,
             port: DBPORT
         };
-        console.log(DBConnection.value)
     }
 
     return { DBConnection, isConnected, connect }
