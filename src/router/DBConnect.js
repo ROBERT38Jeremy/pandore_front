@@ -8,6 +8,6 @@ export const checkDBConnection = (to, from) => {
 
     console.log(isConnected().value);
 
-    return sConnected().value
+    return isConnected().value
 
 }
