@@ -7,7 +7,9 @@ import CustomInput from '../../components/form/customInput.vue';
 import CustomSubmit from '../../components/form/customSubmit.vue';
 import CustomLoader from '../../components/global/CustomLoader.vue'
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const { connect } = useDBConnectStore()
 const { DBConnection } = storeToRefs(useDBConnectStore());
 const loading = ref(false);
@@ -21,9 +23,10 @@ const form = ref({
 
 function submit() {
     const connection = ref({});
+    const formData = {...form.value}
 
     loading.value = true;
-    connection.value = useAxios({ url: '/try/connect', method: 'POST', body: form.value });
+    connection.value = useAxios({ url: '/try/connect', method: 'POST', body: formData });
 
     watch(connection.value, () => {
         if (connection.value.isLoading === false) {
@@ -44,11 +47,13 @@ function submit() {
                 msg: 'Connection failed'
             }
         } else {
-            connect(form.value.user, form.value.pwd, form.value.host, form.value.port)
+            connect(formData.user, formData.pwd, formData.host, formData.port)
             message.value = {
                 type: 'SUCCESS',
                 msg: 'Connexion établie',
             }
+
+            router.push('/home')
         }
     })
 }
