@@ -6,8 +6,6 @@ export const checkDBConnection = (to, from) => {
     const { isConnected } = useDBConnectStore()
     const { DBConnect } = storeToRefs(useDBConnectStore())
 
-    console.log(isConnected.value);
 
-    return isConnected.value
-
+    return isConnected
 }
