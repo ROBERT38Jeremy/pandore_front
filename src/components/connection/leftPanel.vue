@@ -52,8 +52,11 @@ function submit() {
                 type: 'SUCCESS',
                 msg: 'Connexion établie',
             }
-
-            router.push('/home')
+            // if (formData.db) {
+            //     router.push(`/database/${formData.db}`)
+            // } else {
+            //     router.push('/home')
+            // }
         }
     })
 }
@@ -61,8 +64,6 @@ function submit() {
 
 <template>
     {{ message }}
-    <br>
-    {{ DBConnection }}
     <form class="left-panel" v-on:submit.prevent="submit">
         <CustomLoader :loading="loading">
             <h1>Connection</h1>

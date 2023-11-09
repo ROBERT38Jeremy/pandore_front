@@ -2,8 +2,7 @@
 </script>
 
 <template>
-    <!-- <RouterLink to="/">Home</RouterLink> -->
-    Accueil
+    MENU
 </template>
 
 <style scoped>
