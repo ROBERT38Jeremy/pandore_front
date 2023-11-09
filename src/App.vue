@@ -40,11 +40,18 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 
 .main-header,
 .main-tab-selection {
-    height: 3em;
+    height: 1em;
+}
+.main-header {
+    padding: 0.2em 0.7em;
 }
 
 .main-menu {
     width: 20em;
+}
+
+.main-view {
+    padding: 0.2em;
 }
 
 .main-menu,
@@ -53,7 +60,6 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
     vertical-align: top;
     background-color: white;
     border-radius: 5px;
-    padding: 0.2em;
 }
 
 .main-view {
