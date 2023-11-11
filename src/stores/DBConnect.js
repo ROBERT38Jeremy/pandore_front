@@ -6,7 +6,6 @@ export const useDBConnectStore = defineStore('DBConnect', () => {
     const isConnected = ref(false);
 
     function connect(DBUSER, DBPASSWORD, DBHOST = '127.0.0.1', DBPORT = 3306) {
-        console.log(DBUSER, DBPASSWORD, DBHOST, DBPORT)
         DBConnection.value = {
             user: DBUSER,
             pwd: DBPASSWORD,

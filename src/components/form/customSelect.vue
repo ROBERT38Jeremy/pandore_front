@@ -28,7 +28,7 @@ defineEmits(["update:modelValue"]);
                 :value="props.modelValue"
                 @input="$emit('update:modelValue', $event.target.value)"
             >
-                <option v-for="(item, index) in datas" :value="index.replaceAll(' ', '-')">{{ index }}</option>
+                <option v-for="item in datas" :value="item">{{ item }}</option>
             </select>
             <span v-if="props.label">{{ props.label }}</span>
         </div>

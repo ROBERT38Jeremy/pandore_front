@@ -52,6 +52,7 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 
 .main-view {
     padding: 0.2em;
+    position: relative;
 }
 
 .main-menu,

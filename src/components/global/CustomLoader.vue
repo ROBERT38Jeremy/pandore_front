@@ -27,6 +27,7 @@ const loading = toRef(props, "loading");
 <style scoped>
 .loader-contain {
     position: relative;
+    height: 100%;
 }
 
 @keyframes loader {

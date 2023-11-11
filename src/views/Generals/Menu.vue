@@ -1,10 +1,12 @@
 <script setup>
-import { ref } from 'vue';
+import { onBeforeMount, ref, watchEffect } from 'vue';
 import customSelect from '../../components/form/customSelect.vue';
 import { useRouter } from 'vue-router'
+import { useAxios } from '../../hooks/useAxios';
 
 const router = useRouter()
 const database = ref(null);
+const databaseList = ref({});
 const testDataDB = {
     lamusee: [],
     lamusee_new: [],
@@ -12,8 +14,21 @@ const testDataDB = {
 }
 
 const selectDB = () => {
-    router.push('/database/'+database.value)
+    router.push('/database/'+database.value+'/data')
 }
+
+const getDatabaseList = () => {
+    const result = ref({});
+    result.value = useAxios({ url: `/database/list`, method: 'GET' });
+
+    watchEffect(() => {
+        if (result.value.isLoading === false && result.value.resp.data.success) {
+            databaseList.value = result.value.resp.data.success;
+        }
+    })
+}
+
+onBeforeMount(getDatabaseList)
 </script>
 
 <template>
@@ -22,7 +37,7 @@ const selectDB = () => {
         <span>Databases managment</span>
 
         <customSelect
-            :datas="testDataDB"
+            :datas="Object.values(databaseList)"
             label="Select Database"
             v-model="database"
             @change="selectDB"

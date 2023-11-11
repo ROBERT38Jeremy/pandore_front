@@ -52,11 +52,9 @@ function submit() {
                 type: 'SUCCESS',
                 msg: 'Connexion établie',
             }
-            // if (formData.db) {
-            //     router.push(`/database/${formData.db}`)
-            // } else {
-            //     router.push('/home')
-            // }
+            if (formData.db) {
+                router.push(`/database/${formData.db}/data`)
+            }
         }
     })
 }
