@@ -5,10 +5,10 @@ import { storeToRefs } from 'pinia';
 
 const { database, table } = storeToRefs(useDBConnectStore())
 const selectedTab = ref('Structure');
-const tabs = [
-    'Structure',
-    'Données'
-];
+const tabs = {
+    Structure: 'structure',
+    Données: 'datas'
+};
 
 const selectTab = (tabName) => {
     selectedTab.value = tabName
@@ -16,8 +16,11 @@ const selectTab = (tabName) => {
 </script>
 
 <template>
-    <div class="tab-container" v-if="table">
-        <div v-for="tab in tabs" :class="(selectedTab === tab ? 'selected' : '')" @click="selectTab(tab)">{{ tab }}</div>
+    <div class="tab-container">
+        <div v-for="(action, tab) in tabs" :class="(table && selectedTab === tab ? 'selected' : '')+' '+(table ? 'pointer' : '')">
+            <RouterLink v-if="table" @click="selectTab(tab)" :to="'/database/'+database+'/'+table+'/'+tabs[tab]">{{ tab }}</RouterLink>
+            <div v-else>{{ tab }}</div>
+        </div>
         <!-- <span>+</span> -->
     </div>
 </template>
@@ -28,24 +31,28 @@ const selectTab = (tabName) => {
     gap: 0.5em;
 }
 
-.tab-container div,
-.tab-container span {
+.tab-container>div,
+.tab-container>span {
     background-color: white;
+}
+
+.tab-container>div.pointer,
+.tab-container span {
     cursor: pointer;
 }
 
-.tab-container div {
+.tab-container>div {
     padding: 0.2em 0.7em;
     border-radius: 0.5em;
     opacity: 0.5;
     transition: all 0.2s ease-in-out;
 }
 
-.tab-container div.selected {
+.tab-container>div.selected {
     opacity: 1;
 }
 
-.tab-container span {
+.tab-container>span {
     padding: 0.2em;
     border-radius: 50%;
     width: 1.5em;

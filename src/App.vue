@@ -24,7 +24,9 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
             </tr>
             <tr>
                 <td class="main-view">
-                    <RouterView />
+                    <div class="main-view-container">
+                        <RouterView />
+                    </div>
                 </td>
             </tr>
         </table>
@@ -64,5 +66,11 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 
 .main-view {
     overflow: auto;
+}
+
+.main-view-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 </style>

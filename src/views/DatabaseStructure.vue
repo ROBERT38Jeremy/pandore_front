@@ -1,9 +1,13 @@
 <script setup>
 import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
-import { useAxios } from '../../hooks/useAxios.js';
-import { formatBytes } from '../../hooks/formatBytes.js';
-import CustomLoader from '../../components/global/CustomLoader.vue'
+import { useAxios } from '../hooks/useAxios.js';
+import { formatBytes } from '../hooks/formatBytes.js';
+import CustomLoader from '../components/global/CustomLoader.vue'
+import { useDBConnectStore } from '../stores/DBConnect'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
+const { setTable } = useDBConnectStore()
 const props = defineProps({
     databaseName: {
         type: String,
@@ -27,6 +31,11 @@ const chooseDatabase = () => {
     })
 }
 
+const selectTable = (tableName) => {
+    setTable(tableName)
+    router.push('/database/'+database.value+'/'+tableName+'/structure')
+}
+
 watch(database, chooseDatabase);
 onMounted(chooseDatabase)
 </script>
@@ -46,7 +55,7 @@ onMounted(chooseDatabase)
             </tr>
             <tr v-for="(datas, index) in databaseTables">
                 <td>{{ index + 1 }}</td>
-                <td><RouterLink :to="'/database/'+database+'/'+datas.TABLE_NAME+'/datas'">{{ datas.TABLE_NAME }}</RouterLink></td>
+                <td @click="selectTable(datas.TABLE_NAME)"><a>{{ datas.TABLE_NAME }}</a></td>
                 <td>{{ datas.ENGINE }}</td>
                 <td>{{ datas.TABLE_COLLATION }}</td>
                 <td>{{ datas.TABLE_ROWS }}</td>
@@ -78,5 +87,9 @@ td, th {
 tr td:first-child {
     text-align: center;
     background-color: rgb(236, 239, 244);
+}
+
+a {
+    cursor: pointer;
 }
 </style>

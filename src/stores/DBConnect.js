@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useDBConnectStore = defineStore('DBConnect', () => {
@@ -9,6 +9,15 @@ export const useDBConnectStore = defineStore('DBConnect', () => {
 
     function setDatabase(databaseName) {
         database.value = databaseName;
+        unsetTable();
+    }
+
+    function setTable(tableName) {
+        table.value = tableName;
+    }
+
+    function unsetTable() {
+        table.value = null;
     }
 
     function connect(DBUSER, DBPASSWORD, DBHOST = '127.0.0.1', DBPORT = 3306) {
@@ -21,5 +30,14 @@ export const useDBConnectStore = defineStore('DBConnect', () => {
         isConnected.value = true;
     }
 
-    return { DBConnection, isConnected, connect, setDatabase, database, table }
+    return {
+        DBConnection,
+        isConnected,
+        connect,
+        database,
+        setDatabase,
+        table,
+        setTable,
+        unsetTable,
+    }
 })
