@@ -17,11 +17,11 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
                     <HeaderView />
                 </td>
             </tr>
-            <!-- <tr>
+            <tr>
                 <td class="main-tab-selection">
                     <MainTabSelectionView />
                 </td>
-            </tr> -->
+            </tr>
             <tr>
                 <td class="main-view">
                     <RouterView />
@@ -51,7 +51,6 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 }
 
 .main-view {
-    padding: 0.2em;
     position: relative;
 }
 

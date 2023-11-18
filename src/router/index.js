@@ -12,7 +12,7 @@ const router = createRouter({
             component: HomeView
         },
         {
-            path: '/database/:databaseName/data',
+            path: '/database/:databaseName/structure',
             name: 'databaseViewer',
             component: databaseViewer,
             beforeEnter: [checkDBConnection],

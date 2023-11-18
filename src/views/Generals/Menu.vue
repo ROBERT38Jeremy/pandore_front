@@ -3,7 +3,10 @@ import { onBeforeMount, ref, watchEffect } from 'vue';
 import customSelect from '../../components/form/customSelect.vue';
 import { useRouter } from 'vue-router'
 import { useAxios } from '../../hooks/useAxios';
+import { useDBConnectStore } from '../../stores/DBConnect'
+import { storeToRefs } from 'pinia';
 
+const { setDatabase } = useDBConnectStore()
 const router = useRouter()
 const database = ref(null);
 const databaseList = ref({});
@@ -14,7 +17,8 @@ const testDataDB = {
 }
 
 const selectDB = () => {
-    router.push('/database/'+database.value+'/data')
+    setDatabase(database.value)
+    router.push('/database/'+database.value+'/structure')
 }
 
 const getDatabaseList = () => {
