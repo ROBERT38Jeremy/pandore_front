@@ -72,6 +72,7 @@ onMounted(showTableStructure)
             </tr>
         </table>
         <div v-else-if="message" class="message">{{ message }}</div>
+        <br>
     </CustomLoader>
 </template>
 
@@ -103,6 +104,10 @@ td, th {
 tr td:first-child {
     text-align: center;
     background-color: rgb(236, 239, 244);
+}
+
+tr td {
+    white-space: nowrap;
 }
 
 .message {

@@ -38,9 +38,16 @@ input {
     border-radius: 1em;
 }
 
+div {
+    border: 1px solid red;
+    width: calc(13em + 5px);
+    height: 1.5em;
+}
+
 div:not(.active) input {
     outline: none;
     border: 1px solid var(--color-border);
+    width: 15em;
 }
 
 div.active input {
