@@ -39,7 +39,6 @@ input {
 }
 
 div {
-    border: 1px solid red;
     width: calc(13em + 5px);
     height: 1.5em;
 }
