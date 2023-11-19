@@ -25,32 +25,51 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <input ref="search" type="search" placeholder="Search (CTRL + K)" :class="active ? 'active' : ''">
+    <div :class="active ? 'active' : ''">
+        <input ref="search" type="search" placeholder="Search (CTRL + K)">
+    </div>
 </template>
 
 <style scoped>
 input {
-    transition: all 0.2s ease-in-out;
+    transition: all 0.1s ease-in-out;
     position: relative;
+    padding: 0 1em 0 1em;
+    border-radius: 1em;
 }
 
-input:not(.active) {
+div:not(.active) input {
     outline: none;
     border: 1px solid var(--color-border);
 }
 
-input.active {
+div.active input {
     outline: none;
     position: absolute;
     top: 10%;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 50000;
-    padding: 0.5em;
-    -webkit-box-shadow: 0px 0px 0px 200vh rgba(0, 0, 0, 0.3);
-    box-shadow: 0px 0px 0px 200vh rgba(0, 0, 0, 0.3);
+    padding: 0.5em 1em 0.5em 1em;
+    border-radius: 1em;
+    z-index: 50;
     border: 1px solid var(--color-border);
     width: 40em;
     font-size: large;
+    -webkit-box-shadow: 0px 0px 15px -6px #000000;
+    box-shadow: 0px 0px 15px -6px #000000;
+}
+
+div.active::after {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 40;
 }
 </style>
