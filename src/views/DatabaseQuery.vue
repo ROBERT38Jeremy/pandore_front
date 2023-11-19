@@ -6,11 +6,15 @@ const props = defineProps({
     databaseName: {
         type: String,
     },
+    query: {
+        type: String
+    }
 });
 const { unsetTable } = useDBConnectStore();
 const database = toRef(props, "databaseName");
+const query = toRef(props, "query");
 const nbLines = ref(10);
-const sqlRequest = ref('');
+const sqlRequest = ref(query.value);
 
 const preventTab = (e) => {
     if (e.key == 'Tab') {
@@ -54,7 +58,6 @@ watch(sqlRequest, () => {
             <td><textarea :rows="nbLines" placeholder="SELECT ..." v-model="sqlRequest" @keydown="preventTab"></textarea></td>
         </tr>
     </table>
-    
     <div class="sql-result"></div>
 </template>
 

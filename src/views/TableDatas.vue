@@ -3,6 +3,9 @@ import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
 import CustomLoader from '../components/global/CustomLoader.vue'
 import { useDBConnectStore } from '../stores/DBConnect'
+import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
+import "vue-code-highlight/themes/duotone-sea.css";
+import { useTabStore } from '../stores/Tabs'
 
 const props = defineProps({
     databaseName: {
@@ -13,8 +16,10 @@ const props = defineProps({
     }
 });
 const { unsetTable } = useDBConnectStore()
+const { selectTab } = useTabStore()
 const loading = ref(false);
 const rows = ref([]);
+const sqlQuery = ref(null);
 const database = toRef(props, "databaseName");
 const table = toRef(props, "tableName");
 const message = ref(null)
@@ -32,6 +37,7 @@ const showTableStructure = () => {
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
             rows.value = result.value.resp.data.success;
+            sqlQuery.value = result.value.resp.data.request;
             loading.value = false;
         } else if (result.value.isLoading === false) {
             message.value = 'Une erreur est survenue...'
@@ -54,11 +60,17 @@ onMounted(showTableStructure)
 
 <template>
     <h2>
-        <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
-        <RouterLink :to="'/database/'+database+'/'+table+'/datas'">{{ table }}</RouterLink> >
+        <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable, selectTab('Structure')">{{ database }}</RouterLink> >
+        <RouterLink :to="'/database/'+database+'/'+table+'/structure'" @click="selectTab('Structure')">{{ table }}</RouterLink> >
         Datas
     </h2>
     <CustomLoader :loading="loading">
+        <div v-if="sqlQuery" class="code">
+            <pre><code-highlight language="javascript">{{ sqlQuery }}</code-highlight></pre>
+            <div>
+                <RouterLink :to="'/database/'+database+'/sql?query='+sqlQuery" @click="selectTab('SQL')">Modify query</RouterLink>
+            </div>
+        </div>
         <span class="nb-result">{{ rows.length }} résultats</span>
         <table v-if="rows.length > 0">
             <tr>
@@ -79,6 +91,9 @@ onMounted(showTableStructure)
 <style scoped>
 h2 {
     padding-left: 2em;
+    width: fit-content;
+    position: sticky;
+    left: 0;
 }
 
 table {
@@ -126,11 +141,25 @@ tr td {
     font-family: sans-serif;
 }
 
-.nb-result {
-    padding: 1em;
-}
-
 tr.selected-row td {
     background-color: rgb(236, 239, 244)
 }
+
+.code {
+    min-width: 50em;
+    width: fit-content;
+    position: sticky;
+    left: 1em;
+}
+
+.code>div {
+    text-align: right;
+}
+
+.code~span {
+    width: fit-content;
+    position: sticky;
+    left: 1em;
+}
+
 </style>

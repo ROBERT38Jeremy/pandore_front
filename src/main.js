@@ -12,8 +12,8 @@ import '@formkit/themes/genesis'
 
 const app = createApp(App)
 
-app.use(plugin, defaultConfig(config))
 app.use(createPinia())
+app.use(plugin, defaultConfig(config))
 app.use(router)
 
 app.mount('#app')

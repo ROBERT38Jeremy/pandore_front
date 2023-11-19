@@ -1,67 +1,20 @@
 <script setup>
+import { storeToRefs } from 'pinia';
 import { onBeforeMount, ref, watch } from 'vue';
 import { useDBConnectStore } from '../../stores/DBConnect'
-import { storeToRefs } from 'pinia';
+import { useTabStore } from '../../stores/Tabs'
 
 const { database, table } = storeToRefs(useDBConnectStore())
-const selectedTab = ref('Structure');
-const tabs = ref([]);
-const getTabs = () => {
-    selectedTab.value = 'Structure'
-    const tabList = [
-        // DATABASE structure
-        {
-            title: 'Structure',
-            path: `/database/${database.value}/structure`,
-            conditions: {
-                display: table.value === null,
-                click: database.value !== null && table.value === null
-            }
-        },
-        // TABLE structure
-        {
-            title: 'Structure',
-            path: `/database/${database.value}/${table.value}/structure`,
-            conditions: {
-                display: table.value !== null,
-                click: table.value !== null
-            }
-        },
-        // TABLE datas
-        {
-            title: 'Datas',
-            path: `/database/${database.value}/${table.value}/datas`,
-            conditions: {
-                display: table.value !== null,
-                click: table.value !== null
-            }
-        },
-        // DATABASE SQL
-        {
-            title: 'SQL',
-            path: `/database/${database.value}/sql`,
-            conditions: {
-                display: true,
-                click: database.value !== null
-            }
-        },
-    ]
-    tabs.value = tabList.filter((tab) => {
-        return tab.conditions.display === true
-    })
-}
+const { selectTab, getTabs } = useTabStore()
+const { currentTab, tabs } = storeToRefs(useTabStore())
+
 watch([database, table], getTabs);
 onBeforeMount(getTabs);
-
-
-const selectTab = (tabName) => {
-    selectedTab.value = tabName
-}
 </script>
 
 <template>
     <div class="tab-container">
-        <div v-for="tab in tabs" :class="(tab.conditions.click && tab.title === selectedTab ? 'selected' : '')+' '+(tab.conditions.click ? 'pointer' : 'default')">
+        <div v-for="tab in tabs" :class="(tab.conditions.click && tab.title === currentTab ? 'selected' : '')+' '+(tab.conditions.click ? 'pointer' : 'default')">
             <RouterLink v-if="tab.conditions.click" @click="selectTab(tab.title)" :to="tab.path">{{ tab.title }}</RouterLink>
             <div v-else>{{ tab.title }}</div>
         </div>

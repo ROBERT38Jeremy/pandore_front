@@ -70,7 +70,7 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 
 .main-view-container {
     position: absolute;
-    width: 100%;
     height: 100%;
+    min-width: calc(100% - 5px);
 }
 </style>

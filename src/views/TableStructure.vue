@@ -3,8 +3,8 @@ import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
 import CustomLoader from '../components/global/CustomLoader.vue'
 import { useDBConnectStore } from '../stores/DBConnect'
+import { useTabStore } from '../stores/Tabs'
 
-const { unsetTable } = useDBConnectStore()
 const props = defineProps({
     databaseName: {
         type: String,
@@ -13,6 +13,8 @@ const props = defineProps({
         type: String
     }
 });
+const { unsetTable } = useDBConnectStore()
+const { selectTab } = useTabStore()
 const loading = ref(false);
 const tableStructure = ref([]);
 const database = toRef(props, "databaseName");
@@ -43,7 +45,7 @@ onMounted(showTableStructure)
 <template>
     <h2>
         <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
-        <RouterLink :to="'/database/'+database+'/'+table+'/structure'">{{ table }}</RouterLink> >
+        <RouterLink :to="'/database/'+database+'/'+table+'/datas'" @click="selectTab('Datas')">{{ table }}</RouterLink> >
         Structure
     </h2>
     <CustomLoader :loading="loading">

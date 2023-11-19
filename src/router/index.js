@@ -41,7 +41,10 @@ const router = createRouter({
             name: 'DatabaseQuery',
             component: DatabaseQuery,
             beforeEnter: [checkDBConnection],
-            props: true
+            props: (route) => ({
+                query: route.query.query,
+                databaseName: route.params.databaseName
+            }),
         },
         {
             path: '/options',
