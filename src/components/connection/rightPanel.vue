@@ -14,9 +14,12 @@ function closeRightPanel() {
             <line x1="10" y1="10" x2="23" y2="23" stroke="red" stroke-width="2" />
             <line x1="23" y1="10" x2="10" y2="23" stroke="red" stroke-width="2" />
         </svg>
-        <h1>NEMESIS</h1>
+        <h1>Pandore</h1>
         <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu lacus rutrum, facilisis ante et, imperdiet dui. Nunc facilisis consectetur lectus, ac commodo leo lacinia ut. Curabitur at leo elementum elit varius posuere non id lacus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+            Pandore is a free application for databases managment.<br>
+            It's free and user-friendly !
+            <br><br>
+            But remember, development is not over...
         </p>
     </div>
 </template>

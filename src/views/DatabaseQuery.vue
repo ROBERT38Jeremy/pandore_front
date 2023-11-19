@@ -7,7 +7,7 @@ const props = defineProps({
         type: String,
     },
 });
-const { unsetTable } = useDBConnectStore()
+const { unsetTable } = useDBConnectStore();
 const database = toRef(props, "databaseName");
 const nbLines = ref(10);
 const sqlRequest = ref('');

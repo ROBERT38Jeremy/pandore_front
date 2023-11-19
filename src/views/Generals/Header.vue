@@ -11,7 +11,7 @@ const unsetAll = () => {
 <template>
     <div>
         <RouterLink to="/" @click="unsetAll">Home</RouterLink>
-        <RouterLink to="/dashboard" @click="unsetAll">Dashboard</RouterLink>
+        <!-- <RouterLink to="/dashboard" @click="unsetAll">Dashboard</RouterLink> -->
         <RouterLink to="/options" @click="unsetAll">Options</RouterLink>
     </div>
 </template>

@@ -68,22 +68,22 @@ function submit() {
 
             <CustomInput
                 type="text"
-                label="Serveur"
+                label="Host"
                 v-model="form.serveur"
             />
             <CustomInput
                 type="text"
-                label="Utilisateur"
+                label="User"
                 v-model="form.user"
             />
             <CustomInput
                 type="text"
-                label="Mot de passe"
+                label="Password"
                 v-model="form.pwd"
             />
             <CustomInput
                 type="text"
-                label="Base de données"
+                label="Database"
                 v-model="form.db"
             />
             <br>

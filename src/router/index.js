@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { checkDBConnection } from './DBConnect'
 import HomeView from '../views/Home.vue'
 import DatabaseStructure from '../views/DatabaseStructure.vue'
 import TableStructure from '../views/TableStructure.vue'
 import TableDatas from '../views/TableDatas.vue'
 import DatabaseQuery from '../views/DatabaseQuery.vue'
-import { checkDBConnection } from './DBConnect'
+import Options from '../views/Options.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,13 @@ const router = createRouter({
             path: '/database/:databaseName/sql',
             name: 'DatabaseQuery',
             component: DatabaseQuery,
+            beforeEnter: [checkDBConnection],
+            props: true
+        },
+        {
+            path: '/options',
+            name: 'Options',
+            component: Options,
             beforeEnter: [checkDBConnection],
             props: true
         }

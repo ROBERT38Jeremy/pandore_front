@@ -6,7 +6,7 @@ import LeftPanel from '../components/connection/leftPanel.vue';
 <template>
     <div class="connection-form">
         <LeftPanel />
-        <!-- <RightPanel /> -->
+        <RightPanel />
     </div>
 </template>
 
