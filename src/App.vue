@@ -59,6 +59,23 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
     overflow: auto;
 }
 
+.main-view::-webkit-scrollbar-track {
+    background-color: var(--color-background-light);
+    border: 1px solid var(--color-border);
+    -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.1);
+}
+
+.main-view::-webkit-scrollbar-thumb {
+    background-color: var(--vt-c-blue);
+    border-radius: 1em;
+    
+}
+
+.main-view::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+}
+
 .main-menu,
 .main-header,
 .main-view {

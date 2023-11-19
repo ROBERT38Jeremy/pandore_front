@@ -1,5 +1,6 @@
 <script setup>
 import { ref, toRef, watch } from 'vue';
+import CustomLoader from '../components/global/CustomLoader.vue'
 import { useDBConnectStore } from '../stores/DBConnect'
 
 const props = defineProps({
@@ -15,6 +16,7 @@ const database = toRef(props, "databaseName");
 const query = toRef(props, "query");
 const nbLines = ref(10);
 const sqlRequest = ref(query.value);
+const queryLoading = ref(false);
 
 const preventTab = (e) => {
     if (e.key == 'Tab') {
@@ -58,7 +60,9 @@ watch(sqlRequest, () => {
             <td><textarea :rows="nbLines" placeholder="SELECT ..." v-model="sqlRequest" @keydown="preventTab"></textarea></td>
         </tr>
     </table>
-    <div class="sql-result"></div>
+    <CustomLoader class="sql-result" :loading="queryLoading">
+
+    </CustomLoader>
 </template>
 
 <style scoped>

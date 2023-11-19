@@ -152,6 +152,13 @@ tr.selected-row td {
     left: 1em;
 }
 
+.code pre {
+    margin: 0;
+    position: relative;
+    border-radius: 0.5em;
+    overflow: hidden;
+}
+
 .code>div {
     text-align: right;
 }
