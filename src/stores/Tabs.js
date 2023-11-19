@@ -50,6 +50,42 @@ export const useTabStore = defineStore('Tab', () => {
                     click: database.value !== null
                 }
             },
+            // TABLE export
+            {
+                title: 'Export',
+                path: `/database/${database.value}/${table.value}/export`,
+                conditions: {
+                    display: table.value !== null,
+                    click: false && table.value !== null
+                }
+            },
+            // TABLE triggers
+            {
+                title: 'Import',
+                path: `/database/${database.value}/${table.value}/import`,
+                conditions: {
+                    display: table.value !== null,
+                    click: false && table.value !== null
+                }
+            },
+            // TABLE operations
+            {
+                title: 'Operations',
+                path: `/database/${database.value}/${table.value}/operation`,
+                conditions: {
+                    display: table.value !== null,
+                    click: false && table.value !== null
+                }
+            },
+            // TABLE triggers
+            {
+                title: 'Triggers',
+                path: `/database/${database.value}/${table.value}/triggers`,
+                conditions: {
+                    display: table.value !== null,
+                    click: false && table.value !== null
+                }
+            },
         ]
         tabs.value = tabList.filter((tab) => {
             return tab.conditions.display === true
