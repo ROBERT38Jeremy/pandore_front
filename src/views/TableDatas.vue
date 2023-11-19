@@ -32,7 +32,7 @@ const showTableStructure = () => {
     const result = ref({});
 
     loading.value = true;
-    result.value = useAxios({ url: `/database/${database.value}/${table.value}/datas`, method: 'GET', body: requestParams.value });
+    result.value = useAxios({ url: `/database/${database.value}/${table.value}/datas`, method: 'GET', body: {...requestParams.value} });
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
