@@ -100,8 +100,6 @@ onMounted(showTableStructure)
                             {{ champs }}
                         </RouterLink>
                     </span>
-                    <span v-else-if="cle !== 'id' && typeof champs === 'string' && champs.match(/^[+-]?(\d*\.)?\d+$/)" class="number">{{ champs }}</span>
-                    <span v-else-if="cle !== 'id' && typeof champs === 'number'" class="number">{{ champs }}</span>
                     <a
                         v-else-if="typeof champs === 'string' && champs.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
                         :href="champs"
