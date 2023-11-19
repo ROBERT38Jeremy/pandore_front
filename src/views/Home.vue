@@ -4,7 +4,7 @@
 <template>
     <!-- <RouterLink to="/">Home</RouterLink> -->
     <div>
-        Sélectionnez une base de données
+        Select a Database First.
     </div>
 </template>
 

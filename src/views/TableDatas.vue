@@ -13,6 +13,12 @@ const props = defineProps({
     },
     tableName: {
         type: String
+    },
+    primary: {
+        required: false
+    },
+    itemId: {
+        required: false
     }
 });
 const { unsetTable } = useDBConnectStore()
@@ -20,24 +26,32 @@ const { selectTab } = useTabStore()
 const loading = ref(false);
 const rows = ref([]);
 const sqlQuery = ref(null);
+const constraints = ref(null);
 const database = toRef(props, "databaseName");
 const table = toRef(props, "tableName");
+const primary = toRef(props, "primary");
+const itemId = toRef(props, "itemId");
 const message = ref(null)
 const selectedRows = ref(-1);
 const requestParams = ref({
-    limit: 50
+    limit: 50,
+    where: {}
 })
 
 const showTableStructure = () => {
     const result = ref({});
 
     loading.value = true;
-    result.value = useAxios({ url: `/database/${database.value}/${table.value}/datas`, method: 'GET', body: {...requestParams.value} });
+    if (primary.value !== "" && itemId.value !== "") {
+        requestParams.value.where[primary.value] = itemId.value;
+    }
+    result.value = useAxios({ url: `/database/${database.value}/${table.value}/datas`, method: 'POST', body: {...requestParams.value} });
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
             rows.value = result.value.resp.data.success;
             sqlQuery.value = result.value.resp.data.request;
+            constraints.value = result.value.resp.data.constraints;
             loading.value = false;
         } else if (result.value.isLoading === false) {
             message.value = 'Une erreur est survenue...'
@@ -54,7 +68,7 @@ const selectRow = (rowIndex) => {
     }
 }
 
-watch(database, showTableStructure);
+watch([database, table, primary, itemId], showTableStructure);
 onMounted(showTableStructure)
 </script>
 
@@ -76,9 +90,25 @@ onMounted(showTableStructure)
             <tr>
                 <th v-for="(champs, cle) in rows[0]">{{cle}}</th>
             </tr>
-            <tr v-for="(row, index) in rows" :id="index" @click="selectRow(index)" :class="selectedRows === index ? 'selected-row' : ''">
+            <tr v-for="(row, index) in rows" :id="index" @click="selectRow(index)" :class="rows.length > 1 && selectedRows === index ? 'selected-row' : ''">
                 <td v-for="(champs, cle) in row">
-                    <span v-if="champs">{{ champs }}</span>
+                    <span v-if="champs && constraints.filter(c => c.FOR_COL_NAME === cle).length > 0">
+                        <RouterLink
+                            :to="'/database/'+database+'/'+(constraints.filter(c => c.FOR_COL_NAME === cle)[0].REFERENCED_TABLE_NAME)+'/datas/'+(constraints.filter(c => c.FOR_COL_NAME === cle)[0].REF_COL_NAME)+'/'+champs"
+                            @click="selectTab('Datas')"
+                        >
+                            {{ champs }}
+                        </RouterLink>
+                    </span>
+                    <span v-else-if="cle !== 'id' && typeof champs === 'string' && champs.match(/^[+-]?(\d*\.)?\d+$/)" class="number">{{ champs }}</span>
+                    <span v-else-if="cle !== 'id' && typeof champs === 'number'" class="number">{{ champs }}</span>
+                    <a
+                        v-else-if="typeof champs === 'string' && champs.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
+                        :href="champs"
+                    >
+                        {{ champs }}
+                    </a>
+                    <span v-else-if="champs">{{ champs }}</span>
                     <span v-else class="null-value">NULL</span>
                 </td>
             </tr>
@@ -133,12 +163,14 @@ tr td {
 }
 
 .null-value {
-    border: 1px solid hsla(160, 100%, 37%, 1);
-    background-color: hsla(160, 100%, 37%, 0.1);
+    border: 1px solid var(--color-border-hover);
+    background-color: var(--color-border);
     padding: 0.2em;
     border-radius: 0.2em;
     font-size: small;
     font-family: sans-serif;
+    opacity: 0.5;
+    cursor: default;
 }
 
 tr.selected-row td {
@@ -169,4 +201,7 @@ tr.selected-row td {
     left: 1em;
 }
 
+.number {
+    color: orange;
+}
 </style>
