@@ -44,6 +44,7 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 .main-tab-selection {
     height: 1em;
 }
+
 .main-header {
     padding: 0.2em 0.7em;
 }
@@ -54,6 +55,8 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 
 .main-view {
     position: relative;
+    padding: 0;
+    overflow: auto;
 }
 
 .main-menu,
@@ -62,10 +65,7 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
     vertical-align: top;
     background-color: white;
     border-radius: 5px;
-}
-
-.main-view {
-    overflow: auto;
+    border: 1px solid var(--color-background);
 }
 
 .main-view-container {

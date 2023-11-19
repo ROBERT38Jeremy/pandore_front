@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/Home.vue'
 import DatabaseStructure from '../views/DatabaseStructure.vue'
 import TableStructure from '../views/TableStructure.vue'
+import TableDatas from '../views/TableDatas.vue'
+import DatabaseQuery from '../views/DatabaseQuery.vue'
 import { checkDBConnection } from './DBConnect'
 
 const router = createRouter({
@@ -23,6 +25,20 @@ const router = createRouter({
             path: '/database/:databaseName/:tableName/structure',
             name: 'TableStructure',
             component: TableStructure,
+            beforeEnter: [checkDBConnection],
+            props: true
+        },
+        {
+            path: '/database/:databaseName/:tableName/datas',
+            name: 'TableDatas',
+            component: TableDatas,
+            beforeEnter: [checkDBConnection],
+            props: true
+        },
+        {
+            path: '/database/:databaseName/sql',
+            name: 'DatabaseQuery',
+            component: DatabaseQuery,
             beforeEnter: [checkDBConnection],
             props: true
         }

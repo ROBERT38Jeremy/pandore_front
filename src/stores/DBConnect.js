@@ -12,6 +12,10 @@ export const useDBConnectStore = defineStore('DBConnect', () => {
         unsetTable();
     }
 
+    function unsetDatabase() {
+        database.value = null;
+    }
+
     function setTable(tableName) {
         table.value = tableName;
     }
@@ -36,6 +40,7 @@ export const useDBConnectStore = defineStore('DBConnect', () => {
         connect,
         database,
         setDatabase,
+        unsetDatabase,
         table,
         setTable,
         unsetTable,

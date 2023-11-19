@@ -7,7 +7,7 @@ import { useDBConnectStore } from '../stores/DBConnect'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const { setTable } = useDBConnectStore()
+const { setTable, unsetTable } = useDBConnectStore()
 const props = defineProps({
     databaseName: {
         type: String,
@@ -41,6 +41,10 @@ onMounted(chooseDatabase)
 </script>
 
 <template>
+    <h2>
+        <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
+        Structure
+    </h2>
     <CustomLoader :loading="loading">
         <table v-if="databaseTables">
             <tr>
@@ -68,9 +72,17 @@ onMounted(chooseDatabase)
 </template>
 
 <style scoped>
+h2 {
+    padding-left: 2em;
+}
+
 table {
-    width: 100%;
+    width: fit-content;
     border-spacing: 0;
+    border-left: 1px solid rgba(216, 218, 221, 0.4);
+    border-top: 1px solid rgba(216, 218, 221, 0.4);
+    margin-left: 1em;
+    margin-right: 1em;
 }
 
 th {
@@ -79,7 +91,7 @@ th {
 }
 
 td, th {
-    padding: 0.4em;
+    padding: 0.4em 0.7em;
     border-right: 1px solid rgba(216, 218, 221, 0.4);
     border-bottom: 1px solid rgba(216, 218, 221, 0.4);
 }

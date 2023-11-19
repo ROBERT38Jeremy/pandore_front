@@ -4,16 +4,12 @@ import customSelect from '../../components/form/customSelect.vue';
 import { useRouter } from 'vue-router'
 import { useAxios } from '../../hooks/useAxios';
 import { useDBConnectStore } from '../../stores/DBConnect'
+import { storeToRefs } from 'pinia';
 
 const { setDatabase, unsetTable } = useDBConnectStore()
+const { database } = storeToRefs(useDBConnectStore())
 const router = useRouter()
-const database = ref(null);
 const databaseList = ref({});
-const testDataDB = {
-    lamusee: [],
-    lamusee_new: [],
-    oneapp: [],
-}
 
 const selectDB = () => {
     setDatabase(database.value);
@@ -36,9 +32,8 @@ onBeforeMount(getDatabaseList)
 
 <template>
     <div class="menu-container">
-        <div class="title">TITRE</div>
+        <div class="title">Pandore</div>
         <span>Databases managment</span>
-
         <customSelect
             :datas="Object.values(databaseList)"
             label="Select Database"
