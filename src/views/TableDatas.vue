@@ -68,6 +68,14 @@ const selectRow = (rowIndex) => {
     }
 }
 
+const isContrained = (col) => {
+    return constraints.value.filter(c => c.FOR_COL_NAME === col).length > 0
+}
+
+const getContraintData = (col, COL_NAME) => {
+    return constraints.value.filter(c => c.FOR_COL_NAME === col)[0][COL_NAME]
+}
+
 watch([database, table, primary, itemId], showTableStructure);
 onMounted(showTableStructure)
 </script>
@@ -92,9 +100,9 @@ onMounted(showTableStructure)
             </tr>
             <tr v-for="(row, index) in rows" :id="index" @click="selectRow(index)" :class="rows.length > 1 && selectedRows === index ? 'selected-row' : ''">
                 <td v-for="(champs, cle) in row">
-                    <span v-if="champs && constraints.filter(c => c.FOR_COL_NAME === cle).length > 0">
+                    <span v-if="champs && isContrained(cle)">
                         <RouterLink
-                            :to="'/database/'+database+'/'+(constraints.filter(c => c.FOR_COL_NAME === cle)[0].REFERENCED_TABLE_NAME)+'/datas/'+(constraints.filter(c => c.FOR_COL_NAME === cle)[0].REF_COL_NAME)+'/'+champs"
+                            :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs"
                             @click="selectTab('Datas')"
                         >
                             {{ champs }}
