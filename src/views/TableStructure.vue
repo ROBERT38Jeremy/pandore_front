@@ -103,7 +103,14 @@ onMounted(showTableStructure)
             <tr v-for="datas in tableConstraints">
                 <td>{{ datas.CONSTRAINT_NAME }}</td>
                 <td>{{ datas.FOR_COL_NAME }}</td>
-                <td>{{ datas.REFERENCED_TABLE_NAME }}({{ datas.REF_COL_NAME }})</td>
+                <td>
+                    <RouterLink
+                        :to="'/database/'+datas.REFERENCED_TABLE_NAME+'/structure'"
+                        @click="unsetTable, selectTab('Structure')"
+                    >
+                        {{ datas.REFERENCED_TABLE_NAME }}
+                    </RouterLink>(<span class="foreign-target">{{ datas.REF_COL_NAME }}</span>)
+                </td>
                 <td>{{ datas.DELETE_RULE }}</td>
                 <td>{{ datas.UPDATE_RULE }}</td>
             </tr>
@@ -155,5 +162,10 @@ tr td:first-child {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.foreign-target {
+    opacity: 0.5;
+    border-bottom: 1px dotted var(--color-text);
 }
 </style>
