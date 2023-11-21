@@ -17,6 +17,8 @@ const { unsetTable } = useDBConnectStore()
 const { selectTab } = useTabStore()
 const loading = ref(false);
 const tableStructure = ref([]);
+const tableIndexes = ref([]);
+const tableConstraints = ref([]);
 const database = toRef(props, "databaseName");
 const table = toRef(props, "tableName");
 const message = ref(null)
@@ -30,9 +32,11 @@ const showTableStructure = () => {
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
             tableStructure.value = result.value.resp.data.success;
+            tableIndexes.value = result.value.resp.data.index;
+            tableConstraints.value = result.value.resp.data.foreign;
             loading.value = false;
         } else if (result.value.isLoading === false) {
-            message.value = 'Une erreur est survenue...'
+            message.value = result.value?.resp?.data?.error ?? 'Une erreur est survenue...'
             loading.value = false;
         }
     })
@@ -70,12 +74,55 @@ onMounted(showTableStructure)
             </tr>
         </table>
         <div v-else-if="message" class="message">{{ message }}</div>
+
+        <hr>
+        <h2>Index</h2>
+        <table v-if="Object.entries(tableIndexes).length > 0">
+            <tr>
+                <th></th>
+                <th>Type</th>
+                <th>Nom</th>
+            </tr>
+            <tr v-for="(datas, index) in tableIndexes">
+                <td>{{ index + 1 }}</td>
+                <td>{{ datas.CONSTRAINT_TYPE }}</td>
+                <td>{{ datas.COLUMN_NAME }}</td>
+            </tr>
+        </table>
+
+        <hr>
+        <h2>Foreign Keys</h2>
+        <table v-if="Object.entries(tableConstraints).length > 0">
+            <tr>
+                <th>Nom</th>
+                <th>Source</th>
+                <th>Target</th>
+                <th>ON DELETE</th>
+                <th>ON UPDATE</th>
+            </tr>
+            <tr v-for="datas in tableConstraints">
+                <td>{{ datas.CONSTRAINT_NAME }}</td>
+                <td>{{ datas.FOR_COL_NAME }}</td>
+                <td>{{ datas.REFERENCED_TABLE_NAME }}({{ datas.REF_COL_NAME }})</td>
+                <td>{{ datas.DELETE_RULE }}</td>
+                <td>{{ datas.UPDATE_RULE }}</td>
+            </tr>
+        </table>
+
+        <hr>
+        <h2>Triggers</h2>
+        <span>Les triggers ne sont pas encore gérées</span>
+        <br>
     </CustomLoader>
 </template>
 
 <style scoped>
 h2 {
     padding-left: 2em;
+}
+
+hr {
+    border: 1px solid var(--color-border);
 }
 
 table {
