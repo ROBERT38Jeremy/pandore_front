@@ -1,19 +1,15 @@
 import './assets/main.css'
-
+import { markRaw } from "vue";
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
 
-import { plugin, defaultConfig } from '@formkit/vue'
-import config from '../formkit.config.js'
-import '@formkit/themes/genesis'
-
 const app = createApp(App)
+const pinia = createPinia()
 
-app.use(createPinia())
-app.use(plugin, defaultConfig(config))
+app.use(pinia)
 app.use(router)
 
 app.mount('#app')

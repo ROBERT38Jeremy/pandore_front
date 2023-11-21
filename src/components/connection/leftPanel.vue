@@ -1,17 +1,14 @@
 <script setup>
 import { useAxios } from '../../hooks/useAxios.js';
-import { ref } from 'vue';
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useDBConnectStore } from '../../stores/DBConnect.js'
 import CustomInput from '../../components/form/customInput.vue';
 import CustomSubmit from '../../components/form/customSubmit.vue';
 import CustomLoader from '../../components/global/CustomLoader.vue'
-import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const { connect } = useDBConnectStore()
-const { DBConnection } = storeToRefs(useDBConnectStore());
+const { connect, setDatabase } = useDBConnectStore()
 const loading = ref(false);
 const message = ref(null);
 const form = ref({
@@ -47,13 +44,14 @@ function submit() {
                 msg: 'Connection failed'
             }
         } else {
-            connect(formData.user, formData.pwd, formData.host, formData.port)
+            connect()
             message.value = {
                 type: 'SUCCESS',
                 msg: 'Connexion établie',
             }
             if (formData.db) {
-                router.push(`/database/${formData.db}/data`)
+                setDatabase(formData.db);
+                router.push(`/database/${formData.db}/structure`)
             }
         }
     })

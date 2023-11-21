@@ -81,7 +81,7 @@ onMounted(showTableStructure)
             <tr>
                 <th></th>
                 <th>Type</th>
-                <th>Nom</th>
+                <th>Name</th>
             </tr>
             <tr v-for="(datas, index) in tableIndexes">
                 <td>{{ index + 1 }}</td>
@@ -94,7 +94,7 @@ onMounted(showTableStructure)
         <h2>Foreign Keys</h2>
         <table v-if="Object.entries(tableConstraints).length > 0">
             <tr>
-                <th>Nom</th>
+                <th>Name</th>
                 <th>Source</th>
                 <th>Target</th>
                 <th>ON DELETE</th>
