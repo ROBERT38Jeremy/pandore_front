@@ -6,7 +6,7 @@ const props = defineProps({
     },
     label: {
         type: String,
-        required: true,
+        required: false,
     },
     info: {
         type: String,
@@ -45,14 +45,14 @@ select {
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 0.2em;
     outline: none;
-    width: calc(100% - 30px);
+    width: 100%;
     font-size: large;
 }
 
 .input-contain {
     position: relative;
     padding-top: 1.5em;
-    width: 20em;
+    width: calc(100% - 30px);
 }
 
 .input-contain input::placeholder {
@@ -87,5 +87,9 @@ select {
     font-size: small;
     opacity: 0.8;
     padding-left: 0.2em;
+}
+
+.input-contain>div:first-child {
+    width: 100%;
 }
 </style>
