@@ -14,6 +14,9 @@
 </template>
 
 <style scoped>
+* {
+    user-select: none;
+}
 div.container {
     position: absolute;
     top: 50%;
