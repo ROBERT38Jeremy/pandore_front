@@ -1,8 +1,8 @@
 <script setup>
 import { ref, toRef, watch, watchEffect } from 'vue';
-import CustomLoader from '../components/global/CustomLoader.vue'
 import { useDBConnectStore } from '../stores/DBConnect'
 import { useAxios } from '../hooks/useAxios.js';
+import CustomLoader from '../components/global/CustomLoader.vue'
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import "vue-code-highlight/themes/duotone-sea.css";
 

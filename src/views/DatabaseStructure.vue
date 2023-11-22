@@ -2,9 +2,9 @@
 import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
 import { formatBytes } from '../hooks/formatBytes.js';
-import CustomLoader from '../components/global/CustomLoader.vue'
 import { useDBConnectStore } from '../stores/DBConnect'
 import { useRouter } from 'vue-router'
+import CustomLoader from '../components/global/CustomLoader.vue'
 
 const router = useRouter()
 const { setTable, unsetTable } = useDBConnectStore()

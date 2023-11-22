@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
-import CustomLoader from '../components/global/CustomLoader.vue'
 import { useDBConnectStore } from '../stores/DBConnect'
 import { useTabStore } from '../stores/Tabs'
+import CustomLoader from '../components/global/CustomLoader.vue'
 
 const props = defineProps({
     databaseName: {
