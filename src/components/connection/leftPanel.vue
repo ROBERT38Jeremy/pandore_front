@@ -59,10 +59,11 @@ function submit() {
 </script>
 
 <template>
-    {{ message }}
     <form class="left-panel" v-on:submit.prevent="submit">
         <CustomLoader :loading="loading">
             <h1>Connection</h1>
+
+            <div v-if="message" class="error-message">Failed to connect : {{ message?.msg }}</div>
 
             <CustomInput
                 type="text"
@@ -86,8 +87,6 @@ function submit() {
             />
             <br>
             <CustomSubmit label="Authentification" />
-
-            <!-- <pre><h3>Form-datas</h3>{{ form }}</pre> -->
         </CustomLoader>
     </form>
 </template>
@@ -138,5 +137,9 @@ svg {
 pre {
     padding: 0.5em;
     background-color: rgb(216, 216, 216);
+}
+
+.error-message {
+    color: red;
 }
 </style>
