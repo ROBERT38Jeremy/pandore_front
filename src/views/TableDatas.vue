@@ -33,6 +33,7 @@ const primary = toRef(props, "primary");
 const itemId = toRef(props, "itemId");
 const message = ref(null)
 const selectedRows = ref(-1);
+const displayTextareaValue = ref([])
 const requestParams = ref({
     limit: 50,
     where: {}
@@ -76,6 +77,18 @@ const getContraintData = (col, COL_NAME) => {
     return constraints.value.filter(c => c.FOR_COL_NAME === col)[0][COL_NAME]
 }
 
+const clickTd = (e) => {
+    if (e.ctrlKey) {
+        if (displayTextareaValue.value.includes(e.target.id)) {
+            displayTextareaValue.value = displayTextareaValue.value.filter((item) => {
+                return item !== e.target.id
+            });
+        } else {
+            displayTextareaValue.value.push(e.target.id)
+        }
+    }
+}
+
 watch([database, table, primary, itemId], showTableStructure);
 onMounted(showTableStructure)
 </script>
@@ -94,28 +107,48 @@ onMounted(showTableStructure)
             </div>
         </div>
         <span class="nb-result">{{ rows.length }} résultats</span>
+        <br>
         <table v-if="rows.length > 0">
             <tr>
                 <th v-for="(champs, cle) in rows[0]">{{cle}}</th>
             </tr>
             <tr v-for="(row, index) in rows" :id="index" @click="selectRow(index)" :class="rows.length > 1 && selectedRows === index ? 'selected-row' : ''">
-                <td v-for="(champs, cle) in row">
-                    <span v-if="champs && isContrained(cle)">
-                        <RouterLink
-                            :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs"
-                            @click="selectTab('Datas')"
+                <td v-for="(champs, cle) in row" @click="clickTd" :id="`${cle}-${champs}`">
+                    <span v-if="displayTextareaValue.includes(`${cle}-${champs}`)">
+                        <textarea>{{ champs }}</textarea>
+                    </span>
+
+                    <span v-else>
+                        <span v-if="champs && isContrained(cle)">
+                            <RouterLink
+                                :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs"
+                                @click="selectTab('Datas')"
+                            >
+                                {{ champs }}
+                            </RouterLink>
+                        </span>
+                        <a
+                            v-else-if="
+                                typeof champs === 'string' &&
+                                champs.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)
+                            "
+                            :href="champs"
                         >
                             {{ champs }}
-                        </RouterLink>
+                        </a>
+                        <span
+                            v-else-if="
+                                typeof champs === 'string' &&
+                                champs.match(/[^\w\s.\d@\.\,-[À-ú]]/)
+                            "
+                            class="weird-char"
+                            title="Value may contain non UTF-8 characters"
+                        >
+                            {{ champs }}
+                        </span>
+                        <span v-else-if="champs">{{ champs }}</span>
+                        <span v-else class="null-value">NULL</span>
                     </span>
-                    <a
-                        v-else-if="typeof champs === 'string' && champs.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
-                        :href="champs"
-                    >
-                        {{ champs }}
-                    </a>
-                    <span v-else-if="champs">{{ champs }}</span>
-                    <span v-else class="null-value">NULL</span>
                 </td>
             </tr>
         </table>
@@ -159,6 +192,10 @@ tr td:first-child {
 
 tr td {
     white-space: nowrap;
+    max-width: 40em;
+    overflow: hidden;
+    white-space: nowrap; /* Don't forget this one */
+    text-overflow: ellipsis;
 }
 
 .message {
@@ -209,5 +246,10 @@ tr.selected-row td {
 
 .number {
     color: orange;
+}
+
+.weird-char {
+    border-bottom: 1px dashed orange;
+    cursor: default;
 }
 </style>
