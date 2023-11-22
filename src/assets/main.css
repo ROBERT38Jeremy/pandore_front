@@ -17,6 +17,10 @@ button {
     cursor: pointer;
 }
 
+a {
+    border-bottom: 1px solid transparent;
+}
+
 a:hover {
     border-bottom: 1px solid var(--color-button);
 }
