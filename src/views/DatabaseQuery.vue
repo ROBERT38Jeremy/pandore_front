@@ -46,6 +46,7 @@ const runQuery = () => {
             } else if (result.value.isLoading === false && result.value.error) {
                 message.value = result.value.error.message;
                 queryLoading.value = false;
+                queryResult.value = []
             }
         })
     }
