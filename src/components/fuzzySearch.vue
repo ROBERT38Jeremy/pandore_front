@@ -37,6 +37,7 @@ const fuzzy = async (e) => {
     // first char is cmd string luncher
     if ((string.match(/^>$/g) || []).length === 1) {
         search.value += " ";
+        propositions.value = databaseList.value;
     }
     // match table name
     else if ((string.match(/(?<!^>\s)(?<=>\s)\w+/g) || []).length === 1) {
@@ -63,7 +64,12 @@ const fuzzy = async (e) => {
         input.value.selectionStart = search.value.length
     } else if(e.key !== 'Enter') {
         selectedProposition.value = -1;
-    } else {
+    } else if(propositions.value[selectedProposition.value]) {
+        if (search.value === '> ') {
+            search.value = `> ${propositions.value[selectedProposition.value]}`;
+        } else if (search.value === `> ${fuzzySearchParams.value.database} > `) {
+            search.value = `> ${fuzzySearchParams.value.database} > ${propositions.value[selectedProposition.value].TABLE_NAME}`;
+        }
         selectItem(propositions.value[selectedProposition.value].TABLE_NAME ?? propositions.value[selectedProposition.value])
         selectedProposition.value = -1;
         await getTableList();
@@ -145,7 +151,7 @@ const selectItem = (itemName) => {
         setTable(itemName);
         selectTab('Datas');
         active.value = false;
-        search.value = `> ${fuzzySearchParams.value.database} > `;
+        search.value = '';
         input.value.blur();
     }
     // match database name
@@ -172,7 +178,7 @@ onBeforeUnmount(() => {
     <div :class="'container '+(active ? 'active' : '')">
         <div>
             <input ref="input" type="search" placeholder="Search (CTRL + K)" @keyup="fuzzy" v-model="search">
-            <div :class="'propositions '+(active && propositions.length ? 'active' : '')">
+            <div :class="'propositions '+(active && propositions.length ? 'active' : '')" v-if="active">
                 <div
                     v-for="(prop, index) in propositions"
                     @click="selectItem(prop.TABLE_NAME ?? prop)"
