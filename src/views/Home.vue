@@ -39,7 +39,6 @@ onBeforeMount(getDatabaseList);
             <div></div>
             <div></div>
         </div>
-        <div></div>
         <CustomLoader :loading="loading">
             <div class="databases-list">
                 <RouterLink v-for="database in databaseList" :to="'/database/'+database+'/structure'">{{ database }}</RouterLink>

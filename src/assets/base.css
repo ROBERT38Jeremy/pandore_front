@@ -5,6 +5,7 @@
   --vt-c-white-mute: #f2f2f2;
 
   --vt-c-blue: #059ffb;
+  --vt-c-blue-dark: #4120e9;
   --vt-c-purple: #f509e2;
 
   --vt-c-black: #181818;
@@ -39,6 +40,8 @@
 
   --color-button: var(--vt-c-blue);
   --color-purple: var(--vt-c-purple);
+  --color-blue: var(--vt-c-blue);
+  --color-blue-dark: var(--vt-c-blue-dark);
 
   --section-gap: 160px;
 }
