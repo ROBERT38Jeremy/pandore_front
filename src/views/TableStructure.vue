@@ -89,6 +89,7 @@ onMounted(showTableStructure)
                 <td>{{ datas.COLUMN_NAME }}</td>
             </tr>
         </table>
+        <div v-else class="error">No index found</div>
 
         <hr>
         <h2>Foreign Keys</h2>
@@ -115,10 +116,11 @@ onMounted(showTableStructure)
                 <td>{{ datas.UPDATE_RULE }}</td>
             </tr>
         </table>
+        <div v-else class="error">No foreign key found</div>
 
         <hr>
         <h2>Triggers</h2>
-        <span>Les triggers ne sont pas encore gérées</span>
+        <div class="error">This feature is not supported yet</div>
         <br>
     </CustomLoader>
 </template>
@@ -167,5 +169,9 @@ tr td:first-child {
 .foreign-target {
     opacity: 0.5;
     border-bottom: 1px dotted var(--color-text);
+}
+
+.error {
+    margin-left: 1em;
 }
 </style>
