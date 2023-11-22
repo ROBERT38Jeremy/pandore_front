@@ -42,7 +42,7 @@ const showTableStructure = () => {
     })
 }
 
-watch(database, showTableStructure);
+watch([database, table], showTableStructure);
 onMounted(showTableStructure)
 </script>
 
@@ -106,7 +106,7 @@ onMounted(showTableStructure)
                 <td>{{ datas.FOR_COL_NAME }}</td>
                 <td>
                     <RouterLink
-                        :to="'/database/'+datas.REFERENCED_TABLE_NAME+'/structure'"
+                        :to="`/database/${database}/${datas.REFERENCED_TABLE_NAME}/structure`"
                         @click="unsetTable, selectTab('Structure')"
                     >
                         {{ datas.REFERENCED_TABLE_NAME }}
