@@ -32,6 +32,9 @@ onBeforeMount(getDatabaseList)
 
 <template>
     <div class="menu-container">
+        <div class="logo">
+            <img src="@/assets/logo.png">
+        </div>
         <div class="title">Pandore</div>
         <span>Databases managment</span>
         <customSelect
@@ -50,11 +53,22 @@ onBeforeMount(getDatabaseList)
     justify-content: center;
 }
 
+.logo {
+    max-height: 100px;
+    text-align: center;
+    position: relative;
+    padding-top: 1em;
+}
+
+.logo>img {
+    max-height: 100px;
+}
+
 div.title {
     font-size: xx-large;
     text-align: center;
     text-transform: uppercase;
-    padding-top: 1em;
+    padding-top: 0.2em;
 }
 
 div.title~span {
