@@ -14,12 +14,39 @@ export const useTabStore = defineStore('Tab', () => {
     const getTabs = () => {
         currentTab.value = 'Structure'
         const tabList = [
+            // PRIVILEGES
+            {
+                title: 'Privileges',
+                path: `/privileges`,
+                conditions: {
+                    display: database.value === null && table.value === null,
+                    click: database.value === null && table.value === null
+                }
+            },
+            // PROCESS LIST
+            {
+                title: 'Process List',
+                path: `/process-list`,
+                conditions: {
+                    display: database.value === null && table.value === null,
+                    click: database.value === null && table.value === null
+                }
+            },
+            // CREATE DATABASE
+            {
+                title: 'Create Database',
+                path: `/database/create`,
+                conditions: {
+                    display: database.value === null && table.value === null,
+                    click: database.value === null && table.value === null
+                }
+            },
             // DATABASE structure
             {
                 title: 'Structure',
                 path: `/database/${database.value}/structure`,
                 conditions: {
-                    display: table.value === null,
+                    display: database.value !== null && table.value === null,
                     click: database.value !== null && table.value === null
                 }
             },
@@ -46,7 +73,7 @@ export const useTabStore = defineStore('Tab', () => {
                 title: 'SQL',
                 path: `/database/${database.value}/sql`,
                 conditions: {
-                    display: true,
+                    display: database.value !== null,
                     click: database.value !== null
                 }
             },
