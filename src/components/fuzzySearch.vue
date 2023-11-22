@@ -70,10 +70,21 @@ const fuzzy = async (e) => {
         } else if (search.value === `> ${fuzzySearchParams.value.database} > `) {
             search.value = `> ${fuzzySearchParams.value.database} > ${propositions.value[selectedProposition.value].TABLE_NAME}`;
         }
-        selectItem(propositions.value[selectedProposition.value].TABLE_NAME ?? propositions.value[selectedProposition.value])
+
+        // on selectionne une database -> on cherche les tables
+        if (fuzzySearchParams.value.database === null) {
+            selectItem(propositions.value[selectedProposition.value])
+            await getTableList();
+            fuzzyTable('');
+        } else {
+            selectItem(propositions.value[selectedProposition.value])
+            propositions.value = []
+            fuzzySearchParams.value = {
+                database: null,
+                table: null
+            }
+        }
         selectedProposition.value = -1;
-        await getTableList();
-        fuzzyTable('');
     }
 }
 
@@ -146,13 +157,13 @@ const selectItem = (itemName) => {
     propositions.value = [];
     // match table name
     if ((search.value.match(/(?<!^>\s)(?<=>\s)\w+/g) || []).length === 1) {
-        router.push(`/database/${fuzzySearchParams.value.database}/${itemName}/datas`);
         setDatabase(fuzzySearchParams.value.database);
         setTable(itemName);
         selectTab('Datas');
         active.value = false;
         search.value = '';
         input.value.blur();
+        router.push(`/database/${fuzzySearchParams.value.database}/${itemName}/datas`);
     }
     // match database name
     else if ((search.value.match(/(?<=^>\s)\w+/g) || []).length === 1 && (search.value.match(/\w+(?![\w\s>])/g) || []).length === 1) {
