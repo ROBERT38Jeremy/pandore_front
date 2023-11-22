@@ -52,10 +52,16 @@ const loading = toRef(props, "loading");
   border-radius: 50%;
   animation: loader 0.6s infinite alternate;
 }
+
+.loader > div:first-child {
+    background: var(--color-purple);
+  }
 .loader > div:nth-child(2) {
-  animation-delay: 0.2s;
+    background-color: #4120e9;
+    animation-delay: 0.2s;
 }
 .loader > div:nth-child(3) {
-  animation-delay: 0.4s;
+    animation-delay: 0.4s;
+    background: var(--color-button);
 }
 </style>

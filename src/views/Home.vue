@@ -35,6 +35,11 @@ onBeforeMount(getDatabaseList);
             <span>RE</span>
         </div>
         <p>Select a Database First.</p>
+        <div class="style">
+            <div></div>
+            <div></div>
+        </div>
+        <div></div>
         <CustomLoader :loading="loading">
             <div class="databases-list">
                 <RouterLink v-for="database in databaseList" :to="'/database/'+database+'/structure'">{{ database }}</RouterLink>
@@ -51,6 +56,7 @@ div.container {
     text-align: center;
     width: 100%;
     height: 100%;
+    margin-top: 3.1em;
 }
 div.flex-container {
     display: flex;
@@ -62,7 +68,7 @@ div.databases-list {
     display: flex;
     gap: 1em 3em;
     align-items: stretch;
-    padding: 0 3em;
+    padding: 3em 3em;
 }
 
 div.databases-list>a {
@@ -71,6 +77,7 @@ div.databases-list>a {
    border-radius: 0.2em;
    cursor: pointer;
    transition: all 0.1s ease-in-out;
+   box-shadow: 0px 0px 10px -6px #000000;
 }
 
 div.databases-list>a:hover {
@@ -111,4 +118,34 @@ div>span:last-child {
         transform: rotate(45deg);
     }
 }
+
+.style {
+    height: 40em;
+    position: relative;
+    overflow: hidden;
+}
+
+.style div {
+    position: absolute;
+    width: 200%;
+    height: 50em;
+    -webkit-box-shadow: 0px 0px 15px -6px #000000;
+    box-shadow: 0px 0px 15px -6px #000000;
+}
+
+.style div:first-child {
+    top: 40%;
+    left: -10em;
+    transform: rotate(9deg);
+    background-color: var(--color-button);
+}
+
+.style div:nth-child(2) {
+    top: 90%;
+    right: -10em;
+    transform: rotate(-15deg);
+    background-color: var(--color-purple);
+}
+
+
 </style>

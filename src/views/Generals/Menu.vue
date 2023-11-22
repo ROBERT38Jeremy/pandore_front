@@ -64,7 +64,7 @@ onBeforeMount(getDatabaseList)
                 @change="selectDB"
             />
         </div>
-        
+
         <div class="tables-list-container">
             <CustomLoader :loading="loading">
                 <div class="tables-list" v-if="databaseTables.length > 0">
