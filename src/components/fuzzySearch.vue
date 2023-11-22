@@ -1,9 +1,12 @@
 <script setup>
-import { onBeforeMount, onMounted, ref, watchEffect } from 'vue';
-import { onBeforeUnmount } from 'vue';
+import { onBeforeMount, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios';
 import { useRouter } from 'vue-router'
+import { useDBConnectStore } from '../stores/DBConnect'
+import { useTabStore } from '../stores/Tabs'
 
+const { setDatabase, setTable } = useDBConnectStore()
+const { selectTab } = useTabStore()
 const router = useRouter()
 const active = ref(false);
 const input = ref(null);
@@ -27,9 +30,10 @@ const hotKey = (e) => {
     }
 }
 
-const fuzzy = (e) => {
+const fuzzy = async (e) => {
     const string = e.target.value
     search.value = string;
+
     // first char is cmd string luncher
     if ((string.match(/^>$/g) || []).length === 1) {
         search.value += " ";
@@ -51,10 +55,19 @@ const fuzzy = (e) => {
         selectedProposition.value += 1;
     } else if (e.key === 'ArrowDown') {
         selectedProposition.value = 0;
+    } else if (e.key === 'ArrowUp' && selectedProposition.value > 0) {
+        selectedProposition.value -= 1;
+        input.value.selectionStart = search.value.length
+    } else if (e.key === 'ArrowUp') {
+        selectedProposition.value = propositions.value.length -1;
+        input.value.selectionStart = search.value.length
     } else if(e.key !== 'Enter') {
         selectedProposition.value = -1;
     } else {
         selectItem(propositions.value[selectedProposition.value].TABLE_NAME ?? propositions.value[selectedProposition.value])
+        selectedProposition.value = -1;
+        await getTableList();
+        fuzzyTable('');
     }
 }
 
@@ -77,16 +90,23 @@ const fuzzyDatabaseAndSelect = (value) => {
         search.value = `> ${match[0]} > `;
         propositions.value = [];
         input.value.focus();
+        fuzzyTable('');
     } else {
         propositions.value = match
     }
 }
 
 const fuzzyTable = (value) => {
-    const match = tableList.value.filter((table) => {
-        return table.TABLE_NAME.includes(value)
-    })
-    propositions.value = match
+    if (value === '') {
+        propositions.value = tableList.value.map((table) => {
+            return table.TABLE_NAME
+        })
+    } else {
+        const match = tableList.value.filter((table) => {
+            return table.TABLE_NAME.includes(value)
+        })
+        propositions.value = match
+    }
 }
 
 const getDatabaseList = () => {
@@ -101,15 +121,18 @@ const getDatabaseList = () => {
     })
 }
 
-const getTableList = () => {
-    const result = ref({});
+const getTableList = async () => {
+    const result = await new Promise((resolve, reject) => {
+        const res = ref({});
 
-    result.value = useAxios({ url: `/database/${fuzzySearchParams.value.database}/data`, method: 'GET' });
+        res.value = useAxios({ url: `/database/${fuzzySearchParams.value.database}/data`, method: 'GET' });
 
-    watchEffect(() => {
-        if (result.value.isLoading === false && result.value.resp.data.success) {
-            tableList.value = result.value.resp.data.success;
-        }
+        watchEffect(() => {
+            if (res.value.isLoading === false && res.value.resp.data.success) {
+                tableList.value = res.value.resp.data.success;
+                return resolve();
+            }
+        })
     })
 }
 
@@ -118,6 +141,9 @@ const selectItem = (itemName) => {
     // match table name
     if ((search.value.match(/(?<!^>\s)(?<=>\s)\w+/g) || []).length === 1) {
         router.push(`/database/${fuzzySearchParams.value.database}/${itemName}/datas`);
+        setDatabase(fuzzySearchParams.value.database);
+        setTable(itemName);
+        selectTab('Datas');
         active.value = false;
         search.value = `> ${fuzzySearchParams.value.database} > `;
         input.value.blur();
