@@ -2,7 +2,7 @@ import { ref, watchEffect, toValue } from 'vue'
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000/api'
+  baseURL: 'http://localhost:3001/api'
 })
 
 axiosInstance.defaults.headers.post['Content-Type'] = 'application/json'

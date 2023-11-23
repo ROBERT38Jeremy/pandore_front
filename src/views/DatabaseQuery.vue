@@ -43,6 +43,7 @@ const runQuery = () => {
             if (result.value.isLoading === false && result.value.resp?.data?.success) {
                 queryResult.value = result.value.resp.data.success;
                 queryLoading.value = false;
+                message.value = null;
             } else if (result.value.isLoading === false && result.value.error) {
                 message.value = result.value.error.message;
                 queryLoading.value = false;
