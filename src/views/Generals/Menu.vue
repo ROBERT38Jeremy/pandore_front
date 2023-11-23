@@ -7,7 +7,7 @@ import { storeToRefs } from 'pinia';
 import customSelect from '../../components/form/customSelect.vue';
 import CustomLoader from '../../components/global/CustomLoader.vue'
 
-const { setDatabase, unsetTable } = useDBConnectStore()
+const { setDatabase, setTable } = useDBConnectStore()
 const { database } = storeToRefs(useDBConnectStore())
 const router = useRouter()
 const databaseList = ref({});
@@ -71,7 +71,7 @@ onBeforeMount(getDatabaseList)
                     <div v-for="table in databaseTables">
                         <div><img src="@/assets/table.png"></div>
                         <div>
-                            <RouterLink :to="'/database/'+database+'/'+table+'/structure'">{{ table }}</RouterLink>
+                            <RouterLink :to="'/database/'+database+'/'+table+'/structure'" @click="setTable(table)">{{ table }}</RouterLink>
                         </div>
                     </div>
                 </div>
