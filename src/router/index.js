@@ -10,6 +10,9 @@ import TableOperations from '../views/TableOperations.vue'
 import TableTriggers from '../views/TableTriggers.vue'
 import DatabaseQuery from '../views/DatabaseQuery.vue'
 import Options from '../views/Options.vue'
+import Privileges from '../views/Privileges.vue'
+import ProcessList from '../views/ProcessList.vue'
+import CreateDatabase from '../views/CreateDatabase.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -84,7 +87,28 @@ const router = createRouter({
             component: Options,
             beforeEnter: [checkDBConnection],
             props: true
-        }
+        },
+        {
+            path: '/privileges',
+            name: 'Privileges',
+            component: Privileges,
+            beforeEnter: [checkDBConnection],
+            props: true
+        },
+        {
+            path: '/process-list',
+            name: 'ProcessList',
+            component: ProcessList,
+            beforeEnter: [checkDBConnection],
+            props: true
+        },
+        {
+            path: '/database/create',
+            name: 'CreateDatabase',
+            component: CreateDatabase,
+            beforeEnter: [checkDBConnection],
+            props: true
+        },
     ]
 })
 
