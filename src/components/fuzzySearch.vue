@@ -4,9 +4,11 @@ import { useAxios } from '../hooks/useAxios';
 import { useRouter } from 'vue-router'
 import { useDBConnectStore } from '../stores/DBConnect'
 import { useTabStore } from '../stores/Tabs'
+import { storeToRefs } from 'pinia';
 
+const { selectTab, getTabs } = useTabStore()
+const { tabs } = storeToRefs(useTabStore())
 const { setDatabase, setTable } = useDBConnectStore()
-const { selectTab } = useTabStore()
 const router = useRouter()
 const active = ref(false);
 const input = ref(null);
@@ -14,6 +16,7 @@ const search = ref("");
 const databaseList = ref({});
 const tableList = ref({});
 const propositions = ref([]);
+const isActionPropositions = ref(false);
 const selectedProposition = ref(-1);
 const fuzzySearchParams = ref({
     database: null,
@@ -30,28 +33,43 @@ const hotKey = (e) => {
     }
 }
 
-const fuzzy = async (e) => {
-    const string = e.target.value
-    search.value = string;
+const definePropositions = (string) => {
+    // pas encore de recherche
+    if (string === "") {
+        isActionPropositions.value = false;
+        propositions.value = [];
+    }
+    // search for actions
+    else if ((string.toLowerCase().match(/^\w/g) || []).length === 1) {
+        isActionPropositions.value = true;
+        propositions.value = tabs.value.filter((tab) => {
+            return tab.conditions.fuzzy === true && (tab.name.toLowerCase().includes(string) || tab.title.toLowerCase().includes(string));
+        });
+    }
+    // search for databases or tables
+    else {
+        isActionPropositions.value = false;
+        // first char is cmd string luncher
+        if ((string.toLowerCase().match(/^>$/g) || []).length === 1) {
+            search.value += " ";
+            propositions.value = databaseList.value;
+        }
+        // match table name
+        else if ((string.toLowerCase().match(/(?<!^>\s)(?<=>\s)\w+/g) || []).length === 1) {
+            fuzzyTable(string.toLowerCase().match(/(?<!^>\s)(?<=>\s)\w+/g)[0])
+        }
+        // match database name without ">" after : search and click
+        else if ((string.toLowerCase().match(/(?<=^>\s)\w+/g) || []).length === 1 && (string.toLowerCase().match(/\w+(?![\w\s>])/g) || []).length === 1) {
+            fuzzyDatabase(string.toLowerCase().match(/(?<=^>\s)\w+/g)[0])
+        }
+        // match database name but no selection was made so we made it auto
+        else if ((string.toLowerCase().match(/(?<=^>\s)\w+/g) || []).length === 1 && fuzzySearchParams.value.database === null) {
+            fuzzyDatabaseAndSelect(string.toLowerCase().match(/(?<=^>\s)\w+/g)[0])
+        }
+    }
+}
 
-    // first char is cmd string luncher
-    if ((string.match(/^>$/g) || []).length === 1) {
-        search.value += " ";
-        propositions.value = databaseList.value;
-    }
-    // match table name
-    else if ((string.match(/(?<!^>\s)(?<=>\s)\w+/g) || []).length === 1) {
-        fuzzyTable(string.match(/(?<!^>\s)(?<=>\s)\w+/g)[0])
-    }
-    // match database name without ">" after : search and click
-    else if ((string.match(/(?<=^>\s)\w+/g) || []).length === 1 && (string.match(/\w+(?![\w\s>])/g) || []).length === 1) {
-        fuzzyDatabase(string.match(/(?<=^>\s)\w+/g)[0])
-    }
-    // match database name but no selection was made so we made it auto
-    else if ((string.match(/(?<=^>\s)\w+/g) || []).length === 1 && fuzzySearchParams.value.database === null) {
-        fuzzyDatabaseAndSelect(string.match(/(?<=^>\s)\w+/g)[0])
-    }
-
+const handlePropositionNav = async (e) => {
     if (e.key === 'ArrowDown' && selectedProposition.value < propositions.value.length - 1) {
         selectedProposition.value += 1;
     } else if (e.key === 'ArrowDown') {
@@ -65,6 +83,12 @@ const fuzzy = async (e) => {
     } else if(e.key !== 'Enter') {
         selectedProposition.value = -1;
     } else if(propositions.value[selectedProposition.value]) {
+        // on selectionne un action
+        if (isActionPropositions.value === true) {
+            selectAction(propositions.value[selectedProposition.value])
+            return;
+        }
+
         if (search.value === '> ') {
             search.value = `> ${propositions.value[selectedProposition.value]}`;
         } else if (search.value === `> ${fuzzySearchParams.value.database} > `) {
@@ -86,6 +110,13 @@ const fuzzy = async (e) => {
         }
         selectedProposition.value = -1;
     }
+}
+
+const fuzzy = async (e) => {
+    const string = e.target.value
+    search.value = string;
+    definePropositions(string);
+    handlePropositionNav(e);
 }
 
 const fuzzyDatabase = (value) => {
@@ -173,8 +204,20 @@ const selectItem = (itemName) => {
     }
 }
 
+const selectAction = (action) => {
+    active.value = false;
+    search.value = '';
+    propositions.value = [];
+    selectTab(action.title)
+    input.value.blur();
+    router.push(action.path);
+}
 
-onBeforeMount(getDatabaseList)
+
+onBeforeMount(() => {
+    getDatabaseList();
+    getTabs();
+})
 
 onMounted(() => {
     document.addEventListener('keyup', hotKey);
@@ -189,13 +232,22 @@ onBeforeUnmount(() => {
     <div :class="'container '+(active ? 'active' : '')">
         <div>
             <input ref="input" type="search" placeholder="Search (CTRL + K)" @keyup="fuzzy" v-model="search">
-            <div :class="'propositions '+(active && propositions.length ? 'active' : '')" v-if="active">
+            <div :class="'propositions '+(active && (propositions || []).length ? 'active' : '')" v-if="active && isActionPropositions === false">
                 <div
                     v-for="(prop, index) in propositions"
-                    @click="selectItem(prop.TABLE_NAME ?? prop)"
+                    @click="selectItem(prop?.TABLE_NAME ?? prop)"
                     :class="(selectedProposition === index ? 'selected-proposition' : '')"
                 >
-                    {{ prop.TABLE_NAME ?? prop }}
+                    {{ prop?.TABLE_NAME ?? prop }}
+                </div>
+            </div>
+            <div :class="'propositions '+(active && (propositions || []).length ? 'active' : '')" v-else-if="active && isActionPropositions === true">
+                <div
+                    v-for="(prop, index) in propositions"
+                    @click="selectAction(prop)"
+                    :class="(selectedProposition === index ? 'selected-proposition' : '')"
+                >
+                    <b>{{ prop.title }}</b> - {{ prop.name }}
                 </div>
             </div>
         </div>
