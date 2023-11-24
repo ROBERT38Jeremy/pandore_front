@@ -34,8 +34,13 @@ const hotKey = (e) => {
 }
 
 const definePropositions = (string) => {
+    // pas encore de recherche
+    if (string === "") {
+        isActionPropositions.value = true;
+        propositions.value = tabs.value;
+    }
     // search for actions
-    if (string === "" || (string.toLowerCase().match(/^\w/g) || []).length === 1) {
+    else if ((string.toLowerCase().match(/^\w/g) || []).length === 1) {
         isActionPropositions.value = true;
         propositions.value = tabs.value.filter((tab) => {
             return tab.name.toLowerCase().includes(string) || tab.title.toLowerCase().includes(string);
