@@ -1,20 +1,58 @@
 <script setup>
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import CustomLoader from '../components/global/CustomLoader.vue'
+import SimpleTable from '../components/simpleTable.vue'
 
+const socket = new WebSocket('ws://localhost:3002');
+const processList = ref([]);
+const error = ref(null)
+const loading = ref(true);
+
+socket.onmessage = (event) => {
+    const response = JSON.parse(event.data);
+
+    if (response.success !== false) {
+        processList.value = response.success
+    } else {
+        error.value = response.error
+    }
+    loading.value = false;
+}
+onMounted(() => {
+    setTimeout(() => {
+        socket.send('');
+    }, 1000)
+})
+
+onBeforeUnmount(() => {
+    socket.close();
+})
 </script>
 
 <template>
-    <div>
-        PROCESS LIST
-    </div>
+    <CustomLoader :loading="loading">
+        <div class="error" v-if="error">{{ error }}</div>
+        <div v-else-if="processList">
+            <h2>Process List</h2>
+            <SimpleTable :datas="processList"/>
+        </div>
+    </CustomLoader>
 </template>
 
 <style scoped>
-div {
+div.error {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-style: italic;
-    opacity: 0.7;
+    color: red;
+}
+
+h2 {
+    padding-left: 2em;
+    width: fit-content;
+    position: sticky;
+    left: 0;
 }
 </style>

@@ -34,16 +34,11 @@ const hotKey = (e) => {
 }
 
 const definePropositions = (string) => {
-    // pas encore de recherche
-    if (string === "") {
-        isActionPropositions.value = false;
-        propositions.value = [];
-    }
     // search for actions
-    else if ((string.toLowerCase().match(/^\w/g) || []).length === 1) {
+    if (string === "" || (string.toLowerCase().match(/^\w/g) || []).length === 1) {
         isActionPropositions.value = true;
         propositions.value = tabs.value.filter((tab) => {
-            return tab.conditions.fuzzy === true && (tab.name.toLowerCase().includes(string) || tab.title.toLowerCase().includes(string));
+            return tab.name.toLowerCase().includes(string) || tab.title.toLowerCase().includes(string);
         });
     }
     // search for databases or tables
@@ -216,7 +211,7 @@ const selectAction = (action) => {
 
 onBeforeMount(() => {
     getDatabaseList();
-    getTabs();
+    getTabs(true);
 })
 
 onMounted(() => {

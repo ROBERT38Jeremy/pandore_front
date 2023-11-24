@@ -11,7 +11,7 @@ export const useTabStore = defineStore('Tab', () => {
         currentTab.value = tabName
     }
 
-    const getTabs = () => {
+    const getTabs = (isFuzzy = false) => {
         currentTab.value = 'Structure'
         const tabList = [
             // PRIVILEGES
@@ -136,6 +136,12 @@ export const useTabStore = defineStore('Tab', () => {
                 }
             },
         ]
+        if (isFuzzy) {
+            tabs.value = tabList.filter((tab) => {
+                return tab.conditions.fuzzy === true
+            })
+            return
+        }
         tabs.value = tabList.filter((tab) => {
             return tab.conditions.display === true
         })
