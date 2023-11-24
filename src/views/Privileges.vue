@@ -3,7 +3,9 @@ import { onMounted, ref, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
 import CustomLoader from '../components/global/CustomLoader.vue'
 import Simpletable from '../components/simpleTable.vue';
+import { useTabStore } from '../stores/Tabs';
 
+const { selectTab } = useTabStore();
 const loading = ref(false);
 const userPrivileges = ref([]);
 const error = ref(null)
@@ -25,7 +27,10 @@ const getUserPrivileges = () => {
     })
 }
 
-onMounted(getUserPrivileges)
+onMounted(() => {
+    selectTab('Privileges');
+    getUserPrivileges();
+})
 </script>
 
 <template>

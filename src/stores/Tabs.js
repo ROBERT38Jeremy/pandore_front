@@ -1,6 +1,6 @@
-import { ref } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
-import { useDBConnectStore } from './DBConnect'
+import { ref } from 'vue';
+import { defineStore, storeToRefs } from 'pinia';
+import { useDBConnectStore } from './DBConnect';
 
 export const useTabStore = defineStore('Tab', () => {
     const { database, table } = storeToRefs(useDBConnectStore())
@@ -13,9 +13,9 @@ export const useTabStore = defineStore('Tab', () => {
     }
 
     const getTabs = (isFuzzy = false) => {
-        if (isFuzzy !== true) {
-            currentTab.value = 'Structure'
-        }
+        // if (isFuzzy !== true) {
+        //     currentTab.value = 'Structure'
+        // }
         const tabList = [
             // PRIVILEGES
             {

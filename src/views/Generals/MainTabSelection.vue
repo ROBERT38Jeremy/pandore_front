@@ -5,7 +5,7 @@ import { useDBConnectStore } from '../../stores/DBConnect'
 import { useTabStore } from '../../stores/Tabs'
 
 const { database, table } = storeToRefs(useDBConnectStore())
-const { selectTab, getTabs } = useTabStore()
+const { getTabs } = useTabStore()
 const { currentTab, tabs } = storeToRefs(useTabStore())
 
 watch([database, table], getTabs);
@@ -15,7 +15,7 @@ onBeforeMount(getTabs);
 <template>
     <div class="tab-container">
         <div v-for="tab in tabs" :class="(tab.conditions.click && tab.title === currentTab ? 'selected' : '')+' '+(tab.conditions.click ? 'pointer' : 'default')">
-            <RouterLink v-if="tab.conditions.click" @click="selectTab(tab.title)" :to="tab.path">{{ tab.title }}</RouterLink>
+            <RouterLink v-if="tab.conditions.click" :to="tab.path">{{ tab.title }}</RouterLink>
             <div v-else>{{ tab.title }}</div>
         </div>
         <!-- <span>+</span> -->

@@ -1,12 +1,8 @@
 <script setup>
 import { onBeforeMount, ref, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios';
-import { useDBConnectStore } from '../stores/DBConnect'
-import { storeToRefs } from 'pinia';
 import CustomLoader from '../components/global/CustomLoader.vue'
 
-const { setDatabase } = useDBConnectStore()
-const { database } = storeToRefs(useDBConnectStore())
 const databaseList = ref({});
 const loading = ref(false);
 

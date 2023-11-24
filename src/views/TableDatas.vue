@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
-import { useDBConnectStore } from '../stores/DBConnect'
-import { useTabStore } from '../stores/Tabs'
-import CustomLoader from '../components/global/CustomLoader.vue'
+import { useDBConnectStore } from '../stores/DBConnect';
+import { useTabStore } from '../stores/Tabs';
+import CustomLoader from '../components/global/CustomLoader.vue';
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import "vue-code-highlight/themes/duotone-sea.css";
 
@@ -21,8 +21,8 @@ const props = defineProps({
         required: false
     }
 });
-const { unsetTable } = useDBConnectStore()
-const { selectTab } = useTabStore()
+const { unsetTable } = useDBConnectStore();
+const { selectTab } = useTabStore();
 const loading = ref(false);
 const rows = ref([]);
 const sqlQuery = ref(null);
@@ -31,13 +31,13 @@ const database = toRef(props, "databaseName");
 const table = toRef(props, "tableName");
 const primary = toRef(props, "primary");
 const itemId = toRef(props, "itemId");
-const message = ref(null)
+const message = ref(null);
 const selectedRows = ref(-1);
 const displayTextareaValue = ref([])
 const requestParams = ref({
     limit: 50,
     where: {}
-})
+});
 
 const showTableStructure = () => {
     const result = ref({});
@@ -90,20 +90,23 @@ const clickTd = (e) => {
 }
 
 watch([database, table, primary, itemId], showTableStructure);
-onMounted(showTableStructure)
+onMounted(() => {
+    selectTab('Datas');
+    showTableStructure();
+})
 </script>
 
 <template>
     <h2>
-        <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable, selectTab('Structure')">{{ database }}</RouterLink> >
-        <RouterLink :to="'/database/'+database+'/'+table+'/structure'" @click="selectTab('Structure')">{{ table }}</RouterLink> >
+        <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
+        <RouterLink :to="'/database/'+database+'/'+table+'/structure'">{{ table }}</RouterLink> >
         Datas
     </h2>
     <CustomLoader :loading="loading">
         <div v-if="sqlQuery" class="code">
             <pre><code-highlight language="javascript">{{ sqlQuery }}</code-highlight></pre>
             <div>
-                <RouterLink :to="'/database/'+database+'/sql?query='+sqlQuery" @click="selectTab('SQL')">Modify query</RouterLink>
+                <RouterLink :to="'/database/'+database+'/sql?query='+sqlQuery">Modify query</RouterLink>
             </div>
         </div>
         <span class="nb-result">{{ rows.length }} résultats</span>
@@ -120,10 +123,7 @@ onMounted(showTableStructure)
 
                     <span v-else>
                         <span v-if="champs && isContrained(cle)">
-                            <RouterLink
-                                :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs"
-                                @click="selectTab('Datas')"
-                            >
+                            <RouterLink :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs">
                                 {{ champs }}
                             </RouterLink>
                         </span>

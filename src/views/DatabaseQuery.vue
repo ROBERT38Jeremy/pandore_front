@@ -1,6 +1,7 @@
 <script setup>
-import { ref, toRef, watch, watchEffect } from 'vue';
-import { useDBConnectStore } from '../stores/DBConnect'
+import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
+import { useDBConnectStore } from '../stores/DBConnect';
+import { useTabStore } from '../stores/Tabs';
 import { useAxios } from '../hooks/useAxios.js';
 import CustomLoader from '../components/global/CustomLoader.vue'
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
@@ -15,6 +16,7 @@ const props = defineProps({
     }
 });
 const { unsetTable } = useDBConnectStore();
+const { selectTab } = useTabStore();
 const database = toRef(props, "databaseName");
 const query = toRef(props, "query");
 const nbLines = ref(10);
@@ -56,6 +58,9 @@ const runQuery = () => {
 watch(sqlRequest, () => {
     const lines = sqlRequest.value.split("\n").length;
     nbLines.value = lines + 2 > 10 ? lines + 2 : 10
+})
+onMounted(() => {
+    selectTab('SQL');
 })
 </script>
 

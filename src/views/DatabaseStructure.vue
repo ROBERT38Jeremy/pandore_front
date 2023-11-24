@@ -2,12 +2,14 @@
 import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
 import { formatBytes } from '../hooks/formatBytes.js';
-import { useDBConnectStore } from '../stores/DBConnect'
-import { useRouter } from 'vue-router'
-import CustomLoader from '../components/global/CustomLoader.vue'
+import { useDBConnectStore } from '../stores/DBConnect';
+import { useTabStore } from '../stores/Tabs';
+import { useRouter } from 'vue-router';
+import CustomLoader from '../components/global/CustomLoader.vue';
 
-const router = useRouter()
-const { setTable, unsetTable } = useDBConnectStore()
+const router = useRouter();
+const { setTable, unsetTable } = useDBConnectStore();
+const { selectTab } = useTabStore();
 const props = defineProps({
     databaseName: {
         type: String,
@@ -37,7 +39,10 @@ const selectTable = (tableName) => {
 }
 
 watch(database, chooseDatabase);
-onMounted(chooseDatabase)
+onMounted(() => {
+    selectTab('Structure');
+    chooseDatabase();
+})
 </script>
 
 <template>

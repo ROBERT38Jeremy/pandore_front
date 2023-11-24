@@ -191,7 +191,6 @@ const selectItem = (itemName) => {
     if ((search.value.match(/(?<!^>\s)(?<=>\s)\w+/g) || []).length === 1) {
         setDatabase(fuzzySearchParams.value.database);
         setTable(itemName);
-        selectTab('Datas');
         active.value = false;
         search.value = '';
         input.value.blur();
@@ -209,7 +208,6 @@ const selectAction = (action) => {
     active.value = false;
     search.value = '';
     propositions.value = [];
-    selectTab(action.title)
     input.value.blur();
     router.push(action.path);
 }

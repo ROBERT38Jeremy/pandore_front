@@ -2,7 +2,9 @@
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import CustomLoader from '../components/global/CustomLoader.vue'
 import SimpleTable from '../components/simpleTable.vue'
+import { useTabStore } from '../stores/Tabs';
 
+const { selectTab } = useTabStore();
 const socket = new WebSocket('ws://localhost:3002');
 const processList = ref([]);
 const error = ref(null)
@@ -19,9 +21,10 @@ socket.onmessage = (event) => {
     loading.value = false;
 }
 onMounted(() => {
+    selectTab('Process List');
     setTimeout(() => {
         socket.send('');
-    }, 1000)
+    }, 1000);
 })
 
 onBeforeUnmount(() => {

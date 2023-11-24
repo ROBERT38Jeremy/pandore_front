@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
-import { useDBConnectStore } from '../stores/DBConnect'
-import { useTabStore } from '../stores/Tabs'
-import CustomLoader from '../components/global/CustomLoader.vue'
+import { useDBConnectStore } from '../stores/DBConnect';
+import { useTabStore } from '../stores/Tabs';
+import CustomLoader from '../components/global/CustomLoader.vue';
 
 const props = defineProps({
     databaseName: {
@@ -13,15 +13,15 @@ const props = defineProps({
         type: String
     }
 });
-const { unsetTable } = useDBConnectStore()
-const { selectTab } = useTabStore()
+const { unsetTable } = useDBConnectStore();
+const { selectTab } = useTabStore();
 const loading = ref(false);
 const tableStructure = ref([]);
 const tableIndexes = ref([]);
 const tableConstraints = ref([]);
 const database = toRef(props, "databaseName");
 const table = toRef(props, "tableName");
-const message = ref(null)
+const message = ref(null);
 
 const showTableStructure = () => {
     const result = ref({});
@@ -43,13 +43,16 @@ const showTableStructure = () => {
 }
 
 watch([database, table], showTableStructure);
-onMounted(showTableStructure)
+onMounted(() => {
+    selectTab('Structure');
+    showTableStructure();
+})
 </script>
 
 <template>
     <h2>
         <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
-        <RouterLink :to="'/database/'+database+'/'+table+'/datas'" @click="selectTab('Datas')">{{ table }}</RouterLink> >
+        <RouterLink :to="'/database/'+database+'/'+table+'/datas'">{{ table }}</RouterLink> >
         Structure
     </h2>
     <CustomLoader :loading="loading">
@@ -105,10 +108,7 @@ onMounted(showTableStructure)
                 <td>{{ datas.CONSTRAINT_NAME }}</td>
                 <td>{{ datas.FOR_COL_NAME }}</td>
                 <td>
-                    <RouterLink
-                        :to="`/database/${database}/${datas.REFERENCED_TABLE_NAME}/structure`"
-                        @click="unsetTable, selectTab('Structure')"
-                    >
+                    <RouterLink :to="`/database/${database}/${datas.REFERENCED_TABLE_NAME}/structure`" @click="unsetTable">
                         {{ datas.REFERENCED_TABLE_NAME }}
                     </RouterLink>(<span class="foreign-target">{{ datas.REF_COL_NAME }}</span>)
                 </td>
