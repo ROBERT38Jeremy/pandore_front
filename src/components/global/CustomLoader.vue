@@ -6,9 +6,14 @@ const props = defineProps({
         type: Boolean,
         required: true,
         default: true
+    },
+    error: {
+        type: String,
+        required: false
     }
 });
 const loading = toRef(props, "loading");
+const error = toRef(props, "error");
 </script>
 
 <template>
@@ -18,6 +23,7 @@ const loading = toRef(props, "loading");
       <div></div>
       <div></div>
     </div>
+    <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
       <slot />
     </div>
@@ -63,5 +69,14 @@ const loading = toRef(props, "loading");
 .loader > div:nth-child(3) {
     animation-delay: 0.4s;
     background: var(--color-button);
+}
+
+div.error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-style: italic;
+  color: red;
 }
 </style>
