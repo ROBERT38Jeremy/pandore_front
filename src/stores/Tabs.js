@@ -137,7 +137,6 @@ export const useTabStore = defineStore('Tab', () => {
             },
         ]
         if (isFuzzy === true) {
-            console.log("fuzzyTabs")
             tabs.value = tabList.filter((tab) => {
                 return tab.conditions.fuzzy === true
             })
