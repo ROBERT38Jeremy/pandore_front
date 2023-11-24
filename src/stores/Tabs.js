@@ -6,13 +6,16 @@ export const useTabStore = defineStore('Tab', () => {
     const { database, table } = storeToRefs(useDBConnectStore())
     const currentTab = ref('Structure');
     const tabs = ref([]);
+    const fuzzyTabs = ref([]);
 
     const selectTab = (tabName) => {
         currentTab.value = tabName
     }
 
     const getTabs = (isFuzzy = false) => {
-        currentTab.value = 'Structure'
+        if (isFuzzy !== true) {
+            currentTab.value = 'Structure'
+        }
         const tabList = [
             // PRIVILEGES
             {
@@ -136,12 +139,9 @@ export const useTabStore = defineStore('Tab', () => {
                 }
             },
         ]
-        if (isFuzzy === true) {
-            tabs.value = tabList.filter((tab) => {
-                return tab.conditions.fuzzy === true
-            })
-            return
-        }
+        fuzzyTabs.value = tabList.filter((tab) => {
+            return tab.conditions.fuzzy === true
+        })
         tabs.value = tabList.filter((tab) => {
             return tab.conditions.display === true
         })
@@ -150,6 +150,7 @@ export const useTabStore = defineStore('Tab', () => {
     return {
         currentTab,
         tabs,
+        fuzzyTabs,
         selectTab,
         getTabs
     }

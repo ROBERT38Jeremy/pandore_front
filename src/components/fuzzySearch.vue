@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
+import { onBeforeMount, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios';
 import { useRouter } from 'vue-router'
 import { useDBConnectStore } from '../stores/DBConnect'
@@ -7,8 +7,9 @@ import { useTabStore } from '../stores/Tabs'
 import { storeToRefs } from 'pinia';
 
 const { selectTab, getTabs } = useTabStore()
-const { tabs } = storeToRefs(useTabStore())
+const { fuzzyTabs } = storeToRefs(useTabStore())
 const { setDatabase, setTable } = useDBConnectStore()
+const { database, table } = storeToRefs(useDBConnectStore())
 const router = useRouter()
 const active = ref(false);
 const input = ref(null);
@@ -37,12 +38,12 @@ const definePropositions = (string) => {
     // pas encore de recherche
     if (string === "") {
         isActionPropositions.value = true;
-        propositions.value = tabs.value;
+        propositions.value = fuzzyTabs.value;
     }
     // search for actions
     else if ((string.toLowerCase().match(/^\w/g) || []).length === 1) {
         isActionPropositions.value = true;
-        propositions.value = tabs.value.filter((tab) => {
+        propositions.value = fuzzyTabs.value.filter((tab) => {
             return tab.name.toLowerCase().includes(string) || tab.title.toLowerCase().includes(string);
         });
     }
@@ -225,6 +226,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     document.removeEventListener('keyup', hotKey);
+})
+
+watch([database, table], () => {
+    getTabs(true);
 })
 </script>
 
