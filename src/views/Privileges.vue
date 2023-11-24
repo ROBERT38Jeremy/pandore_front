@@ -1,20 +1,44 @@
 <script setup>
+import { onMounted, ref, watch, watchEffect } from 'vue';
+import { useAxios } from '../hooks/useAxios.js';
+import CustomLoader from '../components/global/CustomLoader.vue'
+import Simpletable from '../components/simpleTable.vue';
 
+const loading = ref(false);
+const userPrivileges = ref([]);
+const error = ref(null)
+
+const getUserPrivileges = () => {
+    const result = ref({});
+
+    loading.value = true;
+    result.value = useAxios({ url: `/user/privileges`, method: 'GET' });
+
+    watchEffect(() => {
+        if (result.value.isLoading === false && result.value?.resp?.data?.success) {
+            userPrivileges.value = result.value.resp.data.success;
+            loading.value = false;
+        } else if (result.value.isLoading === false && result.value?.error) {
+            error.value = result.value.error.message
+            loading.value = false;
+        }
+    })
+}
+
+onMounted(getUserPrivileges)
 </script>
 
 <template>
-    <div>
-        PRIVILEGES
-    </div>
+    <h2>
+        Users Privileges
+    </h2>
+    <CustomLoader :loading="loading" :error="error">
+        <Simpletable :datas="userPrivileges" />
+    </CustomLoader>
 </template>
 
 <style scoped>
-div {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-style: italic;
-    opacity: 0.7;
+h2 {
+    padding-left: 2em;
 }
 </style>

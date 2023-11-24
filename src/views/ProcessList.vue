@@ -30,9 +30,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <CustomLoader :loading="loading">
-        <div class="error" v-if="error">{{ error }}</div>
-        <div v-else-if="processList">
+    <CustomLoader :loading="loading" :error="error">
+        <div v-if="processList">
             <h2>Process List</h2>
             <SimpleTable :datas="processList"/>
         </div>
@@ -40,14 +39,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-div.error {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-style: italic;
-    color: red;
-}
 
 h2 {
     padding-left: 2em;
