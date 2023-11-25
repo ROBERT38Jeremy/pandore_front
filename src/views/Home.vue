@@ -1,27 +1,3 @@
-<script setup>
-import { onBeforeMount, ref, watchEffect } from 'vue';
-import { useAxios } from '../hooks/useAxios';
-import CustomLoader from '../components/global/CustomLoader.vue'
-
-const databaseList = ref({});
-const loading = ref(false);
-
-const getDatabaseList = () => {
-    const result = ref({});
-    loading.value = true;
-    result.value = useAxios({ url: `/database/list`, method: 'GET' });
-
-    watchEffect(() => {
-        if (result.value.isLoading === false && result.value.resp.data.success) {
-            databaseList.value = result.value.resp.data.success;
-            loading.value = false;
-        }
-    })
-}
-
-onBeforeMount(getDatabaseList);
-</script>
-
 <template>
     <!-- <RouterLink to="/">Home</RouterLink> -->
     <div class="container">
@@ -31,15 +7,12 @@ onBeforeMount(getDatabaseList);
             <span>RE</span>
         </div>
         <p>Select a Database First.</p>
-        <div class="style">
-            <div></div>
-            <div></div>
-        </div>
-        <CustomLoader :loading="loading">
-            <div class="databases-list">
-                <RouterLink v-for="database in databaseList" :to="'/database/'+database+'/structure'">{{ database }}</RouterLink>
+        <div class="style-container">
+            <div class="style">
+                <div></div>
+                <div></div>
             </div>
-        </CustomLoader>
+        </div>
     </div>
 </template>
 
@@ -51,7 +24,6 @@ div.container {
     text-align: center;
     width: 100%;
     height: 100%;
-    margin-top: 3.1em;
 }
 div.flex-container {
     display: flex;
@@ -112,6 +84,12 @@ div>span:last-child {
     80% {
         transform: rotate(45deg);
     }
+}
+
+.style-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 .style {

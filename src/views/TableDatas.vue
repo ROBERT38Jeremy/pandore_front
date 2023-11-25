@@ -105,7 +105,7 @@ onMounted(() => {
     </h2>
     <CustomLoader :loading="loading">
         <div v-if="sqlQuery" class="code">
-            <pre><code-highlight language="javascript">{{ sqlQuery }}</code-highlight></pre>
+            <pre><code-highlight language="js">{{ sqlQuery }}</code-highlight></pre>
             <div>
                 <RouterLink :to="'/database/'+database+'/sql?query='+sqlQuery">Modify query</RouterLink>
             </div>
