@@ -4,6 +4,7 @@ import { useAxios } from '../hooks/useAxios.js';
 import { useDBConnectStore } from '../stores/DBConnect';
 import { useTabStore } from '../stores/Tabs';
 import CustomLoader from '../components/global/CustomLoader.vue';
+import SimpleTable from '../components/simpleTable.vue';
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import "vue-code-highlight/themes/duotone-sea.css";
 
@@ -109,12 +110,12 @@ onMounted(() => {
                 <RouterLink :to="'/database/'+database+'/sql?query='+sqlQuery">Modify query</RouterLink>
             </div>
         </div>
-        <span class="nb-result">{{ rows.length }} résultats</span>
-        <br>
-        <table v-if="rows.length > 0">
-            <tr>
-                <th v-for="(champs, cle) in rows[0]">{{cle}}</th>
-            </tr>
+
+        <SimpleTable
+            v-if="rows.length > 0"
+            :columns="rows[0]"
+            :nb-result="rows.length"
+        >
             <tr v-for="(row, index) in rows" :id="index" @click="selectRow(index)" :class="rows.length > 1 && selectedRows === index ? 'selected-row' : ''">
                 <td v-for="(champs, cle) in row" @click="clickTd" :id="`${cle}-${champs}`">
                     <span v-if="displayTextareaValue.includes(`${cle}-${champs}`)">
@@ -151,9 +152,8 @@ onMounted(() => {
                     </span>
                 </td>
             </tr>
-        </table>
-        <div v-else-if="message" class="message">{{ message }}</div>
-        <br>
+        </SimpleTable>
+        <div v-else-if="message" class="simple-table-error">{{ message }}</div>
     </CustomLoader>
 </template>
 
@@ -165,60 +165,6 @@ h2 {
     left: 0;
 }
 
-table {
-    width: fit-content;
-    border-spacing: 0;
-    border-left: 1px solid rgba(216, 218, 221, 0.4);
-    border-top: 1px solid rgba(216, 218, 221, 0.4);
-    margin-left: 1em;
-    margin-right: 1em;
-}
-
-th {
-    text-align: left;
-    background-color: rgb(236, 239, 244);
-}
-
-td, th {
-    padding: 0.4em 0.7em;
-    border-right: 1px solid rgba(216, 218, 221, 0.4);
-    border-bottom: 1px solid rgba(216, 218, 221, 0.4);
-}
-
-tr td:first-child {
-    text-align: center;
-    background-color: rgb(236, 239, 244);
-}
-
-tr td {
-    white-space: nowrap;
-    max-width: 40em;
-    overflow: hidden;
-    white-space: nowrap; /* Don't forget this one */
-    text-overflow: ellipsis;
-}
-
-.message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.null-value {
-    border: 1px solid var(--color-border-hover);
-    background-color: var(--color-border);
-    padding: 0.2em;
-    border-radius: 0.2em;
-    font-size: small;
-    font-family: sans-serif;
-    opacity: 0.5;
-    cursor: default;
-}
-
-tr.selected-row td {
-    background-color: rgb(236, 239, 244)
-}
 
 .code {
     min-width: 50em;
@@ -238,18 +184,4 @@ tr.selected-row td {
     text-align: right;
 }
 
-.code~span {
-    width: fit-content;
-    position: sticky;
-    left: 1em;
-}
-
-.number {
-    color: orange;
-}
-
-.weird-char {
-    border-bottom: 1px dashed orange;
-    cursor: default;
-}
 </style>

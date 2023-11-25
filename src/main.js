@@ -1,5 +1,5 @@
 import './assets/main.css'
-import { markRaw } from "vue";
+import './assets/table.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 

@@ -1,0 +1,77 @@
+table.simple-table {
+    width: fit-content;
+    border-spacing: 0;
+    border-left: 1px solid rgba(216, 218, 221, 0.4);
+    border-top: 1px solid rgba(216, 218, 221, 0.4);
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.simple-table th {
+    text-align: left;
+    background-color: rgb(236, 239, 244);
+}
+
+.simple-table td, .simple-table th {
+    padding: 0.4em 0.7em;
+    border-right: 1px solid rgba(216, 218, 221, 0.4);
+    border-bottom: 1px solid rgba(216, 218, 221, 0.4);
+}
+
+.simple-table:not(.raw) tr td:first-child {
+    text-align: center;
+    background-color: rgb(236, 239, 244);
+}
+
+.simple-table tr td {
+    white-space: nowrap;
+    max-width: 40em;
+    overflow: hidden;
+    white-space: nowrap; /* Don't forget this one */
+    text-overflow: ellipsis;
+}
+
+.simple-table .null-value {
+    border: 1px solid var(--color-border-hover);
+    background-color: var(--color-border);
+    padding: 0.2em;
+    border-radius: 0.2em;
+    font-size: small;
+    font-family: sans-serif;
+    opacity: 0.5;
+    cursor: default;
+}
+
+.simple-table-error {
+    margin-left: 1em;
+    color: red;
+}
+
+.simple-table .foreign-target {
+    opacity: 0.5;
+    border-bottom: 1px dotted var(--color-text);
+}
+
+.simple-table-nb-result {
+    width: fit-content;
+    position: sticky;
+    left: 1em;
+}
+
+.simple-table tr.selected-row td {
+    background-color: rgb(236, 239, 244)
+}
+
+
+.simple-table .number {
+    color: orange;
+}
+
+.simple-table .weird-char {
+    border-bottom: 1px dashed orange;
+    cursor: default;
+}
+
+h2.simple-table-title {
+    padding-left: 2em;
+}

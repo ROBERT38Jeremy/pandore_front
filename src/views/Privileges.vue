@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, ref, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
+import { useTabStore } from '../stores/Tabs';
 import CustomLoader from '../components/global/CustomLoader.vue'
 import Simpletable from '../components/simpleTable.vue';
-import { useTabStore } from '../stores/Tabs';
 
 const { selectTab } = useTabStore();
 const loading = ref(false);
@@ -38,7 +38,7 @@ onMounted(() => {
         Users Privileges
     </h2>
     <CustomLoader :loading="loading" :error="error">
-        <Simpletable :datas="userPrivileges" />
+        <Simpletable :datas="userPrivileges" :auto-id-column="true"/>
     </CustomLoader>
 </template>
 
