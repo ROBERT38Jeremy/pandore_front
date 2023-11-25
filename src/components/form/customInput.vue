@@ -1,19 +1,19 @@
 <script setup>
 const props = defineProps({
-  type: {
-      type: String,
-      required: false,
-      default: 'text'
-  },
-  label: {
-      type: String,
-      required: false,
-  },
-  info: {
-      type: String,
-      required: false,
-  },
-  modelValue: {
+    type: {
+        type: String,
+        required: false,
+        default: 'text'
+    },
+    label: {
+        type: String,
+        required: false,
+    },
+    info: {
+        type: String,
+        required: false,
+    },
+    modelValue: {
         required: false,
     },
 });

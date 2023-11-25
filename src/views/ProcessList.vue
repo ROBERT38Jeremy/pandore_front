@@ -33,7 +33,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <CustomLoader :loading="loading" :error="error">
+    <CustomLoader :loading="loading" :error="error" loading-text="Connecting...">
         <div v-if="processList">
             <h2>Process List</h2>
             <SimpleTable :datas="processList"/>
