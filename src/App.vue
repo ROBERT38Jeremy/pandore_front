@@ -1,10 +1,18 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import { ref } from 'vue';
 import isConnectedView from './components/connection/isConnected.vue';
 import Toast from './components/global/Toast.vue';
 import HeaderView from './views/Generals/Header.vue';
 import MenuView from './views/Generals/Menu.vue';
 import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
+
+const displayMenu = ref(true);
+
+const triggerDIsplayMenu = () => {
+    displayMenu.value = !displayMenu.value
+}
+
 </script>
 
 <template>
@@ -12,11 +20,11 @@ import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
     <isConnectedView>
         <table class="main-table">
             <tr>
-                <td rowspan="3" class="main-menu">
+                <td rowspan="3" class="main-menu" v-if="displayMenu">
                     <MenuView />
                 </td>
                 <td class="main-header">
-                    <HeaderView />
+                    <HeaderView :isMenuDisplayed="displayMenu" @displayMenu="triggerDIsplayMenu"/>
                 </td>
             </tr>
             <tr>
