@@ -69,7 +69,15 @@ onBeforeMount(getDatabaseList)
             <CustomLoader :loading="loading">
                 <div class="tables-list" v-if="databaseTables.length > 0">
                     <div v-for="table in databaseTables">
-                        <div><img src="@/assets/table.png"></div>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" id="table" style="fill:var(--color-text);">
+                                <path d="M20 24H4c-2.2 0-4-1.8-4-4V5c0-.6.4-1 1-1h22c.6 0 1 .4 1 1v15c0 2.2-1.8 4-4 4zM2 6v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6H2z"></path>
+                                <path d="M23 5H1V4c0-1.7 1.3-3 3-3h16c1.7 0 3 1.3 3 3v1z"></path>
+                                <path d="M23 6H1c-.6 0-1-.4-1-1V4c0-2.2 1.8-4 4-4h16c2.2 0 4 1.8 4 4v1c0 .6-.4 1-1 1zM2 4h20c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2z"></path>
+                                <path d="M7 24c-.6 0-1-.4-1-1V5c0-.6.4-1 1-1s1 .4 1 1v18c0 .6-.4 1-1 1z"></path>
+                                <path d="M23 12H1c-.6 0-1-.4-1-1s.4-1 1-1h22c.6 0 1 .4 1 1s-.4 1-1 1zM23 18H1c-.6 0-1-.4-1-1s.4-1 1-1h22c.6 0 1 .4 1 1s-.4 1-1 1z"></path>
+                            </svg>
+                        </div>
                         <div>
                             <RouterLink :to="'/database/'+database+'/'+table+'/structure'" @click="setTable(table)">{{ table }}</RouterLink>
                         </div>
@@ -130,6 +138,7 @@ div.title~span {
     padding: 0.2em;
     display: flex;
     gap: 0 1em;
+    align-items: center;
 }
 
 .tables-list>div img {
