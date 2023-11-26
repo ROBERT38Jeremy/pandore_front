@@ -116,44 +116,47 @@ onMounted(() => {
             :columns="rows[0]"
             :nb-result="rows.length"
         >
-            <tr v-for="(row, index) in rows" :id="index" @click="selectRow(index)" :class="rows.length > 1 && selectedRows === index ? 'selected-row' : ''">
-                <td v-for="(champs, cle) in row" @click="clickTd" :id="`${cle}-${champs}`">
-                    <span v-if="displayTextareaValue.includes(`${cle}-${champs}`)">
-                        <textarea>{{ champs }}</textarea>
-                    </span>
+            <template v-slot:tableContent>
+                <tr v-for="(row, index) in rows" :id="index" @click="selectRow(index)" :class="rows.length > 1 && selectedRows === index ? 'selected-row' : ''">
+                    <td v-for="(champs, cle) in row" @click="clickTd" :id="`${cle}-${champs}`">
+                        <span v-if="displayTextareaValue.includes(`${cle}-${champs}`)">
+                            <textarea>{{ champs }}</textarea>
+                        </span>
 
-                    <span v-else>
-                        <span v-if="champs && isContrained(cle)">
-                            <RouterLink :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs">
+                        <span v-else>
+                            <span v-if="champs && isContrained(cle)">
+                                <RouterLink :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs">
+                                    {{ champs }}
+                                </RouterLink>
+                            </span>
+                            <a
+                                v-else-if="
+                                    typeof champs === 'string' &&
+                                    champs.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)
+                                "
+                                :href="champs"
+                            >
                                 {{ champs }}
-                            </RouterLink>
+                            </a>
+                            <span
+                                v-else-if="
+                                    typeof champs === 'string' &&
+                                    champs.match(/[^\w\s.\d@\.\,-[À-ú]]/)
+                                "
+                                class="weird-char"
+                                title="Value may contain non UTF-8 characters"
+                            >
+                                {{ champs }}
+                            </span>
+                            <span v-else-if="champs">{{ champs }}</span>
+                            <span v-else class="null-value">NULL</span>
                         </span>
-                        <a
-                            v-else-if="
-                                typeof champs === 'string' &&
-                                champs.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)
-                            "
-                            :href="champs"
-                        >
-                            {{ champs }}
-                        </a>
-                        <span
-                            v-else-if="
-                                typeof champs === 'string' &&
-                                champs.match(/[^\w\s.\d@\.\,-[À-ú]]/)
-                            "
-                            class="weird-char"
-                            title="Value may contain non UTF-8 characters"
-                        >
-                            {{ champs }}
-                        </span>
-                        <span v-else-if="champs">{{ champs }}</span>
-                        <span v-else class="null-value">NULL</span>
-                    </span>
-                </td>
-            </tr>
+                    </td>
+                </tr>
+            </template>
         </SimpleTable>
         <div v-else-if="message" class="simple-table-error">{{ message }}</div>
+        <br>
     </CustomLoader>
 </template>
 

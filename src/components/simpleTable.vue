@@ -1,6 +1,6 @@
 <script setup>
 import { createPinia } from 'pinia';
-import { onMounted, ref, toRef, watch } from 'vue';
+import { onMounted, ref, toRef, useSlots, watch } from 'vue';
 
 const props = defineProps({
     datas: {
@@ -42,6 +42,8 @@ const props = defineProps({
 const datas = toRef(props, "datas");
 const errorText = toRef(props, "errorText");
 const nbResult = toRef(props, "nbResult");
+const slots = useSlots();
+const hasSlot = !!slots?.tableContent;
 </script>
 
 <template>
@@ -92,8 +94,8 @@ const nbResult = toRef(props, "nbResult");
                 </td>
             </tr>
         </tbody>
-        <slot v-else/>
+        <slot name="tableContent" v-else/>
 
     </table>
-    <div v-if="datas && datas.length === 0 || !datas" class="simple-table-error">{{ errorText }}</div>
+    <div v-if="datas && datas.length === 0 || (!datas && !hasSlot)" class="simple-table-error">{{ errorText }}</div>
 </template>
