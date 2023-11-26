@@ -26,7 +26,7 @@ const props = defineProps({
 });
 const { unsetTable } = useDBConnectStore();
 const { selectTab } = useTabStore();
-const { Toast, ToastLoadStart, ToastLoadEnd } = useToastStore();
+const { ToastLoadStart, ToastLoadEnd } = useToastStore();
 const loading = ref(false);
 const rows = ref([]);
 const sqlQuery = ref(null);
@@ -136,6 +136,10 @@ const deleteRow = (rowIndex, row) => {
     })
 }
 
+const updateRow = (rowIndex, row) => {
+    console.log(rowIndex, row);
+}
+
 watch([database, table, searchColumn, itemId], showTableStructure);
 onMounted(() => {
     selectTab('Datas');
@@ -158,7 +162,8 @@ onMounted(() => {
         </div>
 
         <span class="table-options">
-            <span @click="triggerShowRowOptions">Show rows options</span>
+            <span v-if="showRowOptions" @click="triggerShowRowOptions" >Hide rows options</span>
+            <span v-else @click="triggerShowRowOptions" >Show rows options</span>
         </span>
         <SimpleTable
             v-if="rows.length > 0"
@@ -171,6 +176,7 @@ onMounted(() => {
                     <td v-if="showRowOptions" class="action-col">
                         <RowActions
                             @delete="deleteRow(index, row)"
+                            @update="updateRow(index, row)"
                         />
                     </td>
                     <td
