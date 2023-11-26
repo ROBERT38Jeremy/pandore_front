@@ -9,7 +9,7 @@ table.simple-table {
 
 .simple-table th {
     text-align: left;
-    background-color: rgb(236, 239, 244);
+    background-color: var(--color-background);
 }
 
 .simple-table td, .simple-table th {
@@ -20,7 +20,7 @@ table.simple-table {
 
 .simple-table tr td.colored-col {
     text-align: center;
-    background-color: rgb(236, 239, 244);
+    background-color: var(--color-background);
 }
 
 .simple-table tr td {

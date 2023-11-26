@@ -6,6 +6,7 @@ import { useDBConnectStore } from '../stores/DBConnect';
 import { useTabStore } from '../stores/Tabs';
 import { useRouter } from 'vue-router';
 import CustomLoader from '../components/global/CustomLoader.vue';
+import SimpleTable from '../components/simpleTable.vue';
 
 const router = useRouter();
 const { setTable, unsetTable } = useDBConnectStore();
@@ -51,62 +52,34 @@ onMounted(() => {
         Structure
     </h2>
     <CustomLoader :loading="loading">
-        <table v-if="databaseTables">
-            <tr>
-                <th></th>
-                <th>Table</th>
-                <th>Moteur</th>
-                <th>Interclassement</th>
-                <th>Nombre de lignes</th>
-                <th>Taille de la table</th>
-                <th>Taille de l'index</th>
-                <th>Commentaire</th>
-            </tr>
-            <tr v-for="(datas, index) in databaseTables">
-                <td>{{ index + 1 }}</td>
-                <td @click="selectTable(datas.TABLE_NAME)"><a>{{ datas.TABLE_NAME }}</a></td>
-                <td>{{ datas.ENGINE }}</td>
-                <td>{{ datas.TABLE_COLLATION }}</td>
-                <td>{{ datas.TABLE_ROWS }}</td>
-                <td>{{ formatBytes(datas.DATA_LENGTH, 2) }}</td>
-                <td>{{ datas.INDEX_LENGTH }}</td>
-                <td>{{ datas.TABLE_COMMENT == '' ? '?' : datas.TABLE_COMMENT }}</td>
-            </tr>
-        </table>
+        <SimpleTable
+            :columns="{
+                'Table': 'Table',
+                'Moteur': 'Moteur',
+                'Interclassement': 'Interclassement',
+                'Nombre de lignes': 'Nombre de lignes',
+                'Taille de la table': 'Taille de la table',
+                'Taille de l\'index': 'Taille de l\'index',
+                'Commentaire': 'Commentaire',
+            }"
+        >
+            <template v-slot:tableContent>
+                <tr v-for="(datas, index) in databaseTables">
+                    <td @click="selectTable(datas.TABLE_NAME)"><a>{{ datas.TABLE_NAME }}</a></td>
+                    <td>{{ datas.ENGINE }}</td>
+                    <td>{{ datas.TABLE_COLLATION }}</td>
+                    <td>{{ datas.TABLE_ROWS }}</td>
+                    <td>{{ formatBytes(datas.DATA_LENGTH, 2) }}</td>
+                    <td>{{ datas.INDEX_LENGTH }}</td>
+                    <td>{{ datas.TABLE_COMMENT == '' ? '?' : datas.TABLE_COMMENT }}</td>
+                </tr>
+            </template>
+        </SimpleTable>
     </CustomLoader>
 </template>
 
 <style scoped>
 h2 {
     padding-left: 2em;
-}
-
-table {
-    width: fit-content;
-    border-spacing: 0;
-    border-left: 1px solid rgba(216, 218, 221, 0.4);
-    border-top: 1px solid rgba(216, 218, 221, 0.4);
-    margin-left: 1em;
-    margin-right: 1em;
-}
-
-th {
-    text-align: left;
-    background-color: rgb(236, 239, 244);
-}
-
-td, th {
-    padding: 0.4em 0.7em;
-    border-right: 1px solid rgba(216, 218, 221, 0.4);
-    border-bottom: 1px solid rgba(216, 218, 221, 0.4);
-}
-
-tr td:first-child {
-    text-align: center;
-    background-color: rgb(236, 239, 244);
-}
-
-a {
-    cursor: pointer;
 }
 </style>

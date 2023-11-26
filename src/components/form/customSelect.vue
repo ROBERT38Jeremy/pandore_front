@@ -47,6 +47,7 @@ select {
     outline: none;
     width: 100%;
     font-size: large;
+    color: var(--color-text);
 }
 
 .input-contain {

@@ -48,7 +48,7 @@ const datas = toRef(props, "datas");
 const errorText = toRef(props, "errorText");
 const nbResult = toRef(props, "nbResult");
 const slots = useSlots();
-const hasTableContentSlot = !!slots?.tableContent;
+const hasTableContentSlot = ref(!!slots?.tableContent);
 </script>
 
 <template>

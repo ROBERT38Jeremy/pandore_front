@@ -90,7 +90,7 @@ const triggerDIsplayMenu = () => {
 .main-header,
 .main-view {
     vertical-align: top;
-    background-color: white;
+    background-color: var(--color-background-light);
     border-radius: 5px;
     border: 1px solid var(--color-background);
 }
