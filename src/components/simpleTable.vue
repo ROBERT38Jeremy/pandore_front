@@ -37,13 +37,18 @@ const props = defineProps({
         type: Boolean,
         required: false,
         default: true
+    },
+    addActionTD: {
+        type: Boolean,
+        required: false,
+        default: false,
     }
 });
 const datas = toRef(props, "datas");
 const errorText = toRef(props, "errorText");
 const nbResult = toRef(props, "nbResult");
 const slots = useSlots();
-const hasSlot = !!slots?.tableContent;
+const hasTableContentSlot = !!slots?.tableContent;
 </script>
 
 <template>
@@ -53,10 +58,12 @@ const hasSlot = !!slots?.tableContent;
     <table class="simple-table" v-if="showTable">
         <thead>
             <tr v-if="props.columns">
+                <th v-if="addActionTD" class="action-col-th">Options</th>
                 <th v-if="autoIdColumn"></th>
                 <th v-for="(column, columnName) in props.columns">{{ columnName }}</th>
             </tr>
             <tr v-else-if="datas">
+                <th v-if="addActionTD" class="action-col-th">Options</th>
                 <th v-if="autoIdColumn"></th>
                 <th v-for="(datas, column) in datas[0]">{{ column }}</th>
             </tr>
@@ -64,7 +71,8 @@ const hasSlot = !!slots?.tableContent;
 
         <tbody v-if="datas && props.columns">
             <tr v-for="(row, index) in datas">
-                <td v-if="autoIdColumn">{{ index + 1 }}</td>
+                <td v-if="addActionTD"></td>
+                <td v-if="autoIdColumn" class="colored-col">{{ index + 1 }}</td>
                 <td v-for="(column, columnName) in props.columns">
                     <a
                         v-if="typeof row[column] === 'string' && row[column].match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
@@ -80,7 +88,8 @@ const hasSlot = !!slots?.tableContent;
         </tbody>
         <tbody v-else-if="datas">
             <tr v-for="(row, index) in datas">
-                <td v-if="autoIdColumn">{{ index + 1 }}</td>
+                <td v-if="addActionTD"></td>
+                <td v-if="autoIdColumn" class="colored-col">{{ index + 1 }}</td>
                 <td v-for="(datas, column) in datas[0]">
                     <a
                         v-if="typeof row[column] === 'string' && row[column].match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
@@ -97,5 +106,5 @@ const hasSlot = !!slots?.tableContent;
         <slot name="tableContent" v-else/>
 
     </table>
-    <div v-if="datas && datas.length === 0 || (!datas && !hasSlot)" class="simple-table-error">{{ errorText }}</div>
+    <div v-if="datas && datas.length === 0 || (!datas && !hasTableContentSlot)" class="simple-table-error">{{ errorText }}</div>
 </template>

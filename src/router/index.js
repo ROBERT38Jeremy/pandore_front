@@ -37,7 +37,7 @@ const router = createRouter({
             props: true
         },
         {
-            path: '/database/:databaseName/:tableName/datas/:primary?/:itemId?',
+            path: '/database/:databaseName/:tableName/datas/:searchColumn?/:itemId?',
             name: 'TableDatas',
             component: TableDatas,
             beforeEnter: [checkDBConnection],

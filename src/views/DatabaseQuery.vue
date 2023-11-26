@@ -187,53 +187,6 @@ button.save {
     tab-size: 2em;
 }
 
-
-
-
-table.datas-table {
-    width: fit-content;
-    border-spacing: 0;
-    border-left: 1px solid rgba(216, 218, 221, 0.4);
-    border-top: 1px solid rgba(216, 218, 221, 0.4);
-    margin-left: 1em;
-    margin-right: 1em;
-}
-
-table.datas-table th {
-    text-align: left;
-    background-color: rgb(236, 239, 244);
-}
-
-table.datas-table td, table.datas-table th {
-    padding: 0.4em 0.7em;
-    border-right: 1px solid rgba(216, 218, 221, 0.4);
-    border-bottom: 1px solid rgba(216, 218, 221, 0.4);
-}
-
-table.datas-table tr td:first-child {
-    text-align: center;
-    background-color: rgb(236, 239, 244);
-}
-
-table.datas-table tr td {
-    white-space: nowrap;
-}
-
-.null-value {
-    border: 1px solid var(--color-border-hover);
-    background-color: var(--color-border);
-    padding: 0.2em;
-    border-radius: 0.2em;
-    font-size: small;
-    font-family: sans-serif;
-    opacity: 0.5;
-    cursor: default;
-}
-
-table.datas-table tr.selected-row td {
-    background-color: rgb(236, 239, 244)
-}
-
 .code {
     min-width: 50em;
     width: fit-content;

@@ -1,12 +1,14 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import isConnectedView from './components/connection/isConnected.vue';
+import Toast from './components/global/Toast.vue';
 import HeaderView from './views/Generals/Header.vue';
 import MenuView from './views/Generals/Menu.vue';
 import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 </script>
 
 <template>
+    <Toast />
     <isConnectedView>
         <table class="main-table">
             <tr>

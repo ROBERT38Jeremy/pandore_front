@@ -18,7 +18,7 @@ table.simple-table {
     border-bottom: 1px solid rgba(216, 218, 221, 0.4);
 }
 
-.simple-table:not(.raw) tr td:first-child {
+.simple-table tr td.colored-col {
     text-align: center;
     background-color: rgb(236, 239, 244);
 }
