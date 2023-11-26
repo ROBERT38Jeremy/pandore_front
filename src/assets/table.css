@@ -31,15 +31,24 @@ table.simple-table {
     text-overflow: ellipsis;
 }
 
-.simple-table .null-value {
-    border: 1px solid var(--color-border-hover);
-    background-color: var(--color-border);
+.simple-table .null-value,
+.simple-table .empty-value {
     padding: 0.2em;
     border-radius: 0.2em;
     font-size: small;
     font-family: sans-serif;
     opacity: 0.5;
     cursor: default;
+}
+
+.simple-table .null-value {
+    border: 1px solid var(--color-border-hover);
+    background-color: var(--color-border);
+}
+
+.simple-table .empty-value {
+    border: 1px solid orange;
+    background-color: rgba(255, 255, 0, 0.4);
 }
 
 .simple-table-error {

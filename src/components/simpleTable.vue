@@ -54,7 +54,13 @@ const nbResult = toRef(props, "nbResult");
             <tr v-for="(row, index) in datas">
                 <td v-if="autoIdColumn">{{ index + 1 }}</td>
                 <td v-for="(column, columnName) in props.columns">
-                    <span v-if="row[column] === null" class="null-value">NULL</span>
+                    <a
+                        v-if="typeof row[column] === 'string' && row[column].match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
+                        :href="row[column]"
+                    >
+                        {{ row[column] }}
+                    </a>
+                    <span v-else-if="row[column] === null" class="null-value">NULL</span>
                     <span v-else>{{ row[column] }}</span>
                 </td>
             </tr>
@@ -63,7 +69,14 @@ const nbResult = toRef(props, "nbResult");
             <tr v-for="(row, index) in datas">
                 <td v-if="autoIdColumn">{{ index + 1 }}</td>
                 <td v-for="(datas, column) in datas[0]">
-                    <span v-if="row[column] === null" class="null-value">NULL</span>
+                    <a
+                        v-if="typeof row[column] === 'string' && row[column].match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
+                        :href="row[column]"
+                    >
+                        {{ row[column] }}
+                    </a>
+                    <span v-else-if="row[column] === null" class="null-value">NULL</span>
+                    <span v-else-if="row[column] === ''" class="empty-value" title="String is empty but not null">EMPTY</span>
                     <span v-else>{{ row[column] }}</span>
                 </td>
             </tr>

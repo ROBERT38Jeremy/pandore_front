@@ -4,6 +4,7 @@ import { useDBConnectStore } from '../stores/DBConnect';
 import { useTabStore } from '../stores/Tabs';
 import { useAxios } from '../hooks/useAxios.js';
 import CustomLoader from '../components/global/CustomLoader.vue'
+import SimpleTable from '../components/simpleTable.vue';
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import "vue-code-highlight/themes/duotone-sea.css";
 
@@ -22,7 +23,7 @@ const query = toRef(props, "query");
 const nbLines = ref(10);
 const sqlRequest = ref(query.value);
 const queryLoading = ref(false);
-const queryResult = ref([])
+const queryResult = ref(null)
 const message = ref(null)
 
 const preventTab = (e) => {
@@ -87,27 +88,17 @@ onMounted(() => {
     <CustomLoader :class="queryLoading ? 'sql-result' : ''" :loading="queryLoading">
         <br>
         <div v-if="message" class="code">{{ message }}</div>
-        <div v-if="(queryResult.length > 0 || message) && sqlRequest" class="code">
+        <div v-if="((queryResult || []).length > 0 || message) && sqlRequest" class="code">
             <pre><code-highlight language="javascript">{{ sqlRequest }}</code-highlight></pre>
         </div>
         <br>
-        <table v-if="queryResult.length > 0" class="datas-table">
-            <tr>
-                <th v-for="(champs, cle) in queryResult[0]">{{cle}}</th>
-            </tr>
-            <tr v-for="(row, index) in queryResult" :id="index" @click="selectRow(index)">
-                <td v-for="(champs, cle) in row">
-                    <a
-                        v-if="typeof champs === 'string' && champs.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
-                        :href="champs"
-                    >
-                        {{ champs }}
-                    </a>
-                    <span v-else-if="champs">{{ champs }}</span>
-                    <span v-else class="null-value">NULL</span>
-                </td>
-            </tr>
-        </table>
+        <SimpleTable
+            v-if="queryResult"
+            :datas="queryResult"
+            table-title="SQL Result"
+            error-text="No result found"
+            :nb-result="queryResult.length"
+        />
     </CustomLoader>
 </template>
 
