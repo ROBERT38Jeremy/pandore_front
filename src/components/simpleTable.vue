@@ -7,6 +7,11 @@ const props = defineProps({
         type: Array,
         required: false
     },
+    showTable: {
+        type: Boolean,
+        required: false,
+        default: true
+    },
     columns: {
         required: false
     },
@@ -27,6 +32,11 @@ const props = defineProps({
     tableTitle: {
         type: String,
         required: false
+    },
+    checkEmptyString: {
+        type: Boolean,
+        required: false,
+        default: true
     }
 });
 const datas = toRef(props, "datas");
@@ -38,7 +48,7 @@ const nbResult = toRef(props, "nbResult");
     <h2 v-if="tableTitle" class="simple-table-title">{{ tableTitle }}</h2>
     <span v-if="nbResult" class="simple-table-nb-result">{{ nbResult }} results</span>
     <br>
-    <table class="simple-table">
+    <table class="simple-table" v-if="showTable">
         <thead>
             <tr v-if="props.columns">
                 <th v-if="autoIdColumn"></th>
@@ -61,6 +71,7 @@ const nbResult = toRef(props, "nbResult");
                         {{ row[column] }}
                     </a>
                     <span v-else-if="row[column] === null" class="null-value">NULL</span>
+                    <span v-else-if="checkEmptyString === true && row[column] === ''" class="empty-value" title="String is empty but not null">EMPTY</span>
                     <span v-else>{{ row[column] }}</span>
                 </td>
             </tr>
@@ -76,7 +87,7 @@ const nbResult = toRef(props, "nbResult");
                         {{ row[column] }}
                     </a>
                     <span v-else-if="row[column] === null" class="null-value">NULL</span>
-                    <span v-else-if="row[column] === ''" class="empty-value" title="String is empty but not null">EMPTY</span>
+                    <span v-else-if="checkEmptyString === true && row[column] === ''" class="empty-value" title="String is empty but not null">EMPTY</span>
                     <span v-else>{{ row[column] }}</span>
                 </td>
             </tr>
@@ -84,5 +95,5 @@ const nbResult = toRef(props, "nbResult");
         <slot v-else/>
 
     </table>
-    <div v-if="datas && datas.length === 0" class="simple-table-error">{{ errorText }}</div>
+    <div v-if="datas && datas.length === 0 || !datas" class="simple-table-error">{{ errorText }}</div>
 </template>

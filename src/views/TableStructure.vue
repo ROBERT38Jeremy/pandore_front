@@ -61,12 +61,14 @@ onMounted(() => {
             :datas="tableStructure"
             :auto-id-column="true"
             :error-text="message"
+            :check-empty-string="false"
         />
 
         <hr>
         <SimpleTable
             :datas="tableIndexes"
             :auto-id-column="true"
+            :check-empty-string="false"
             :columns="{
                 'Type': 'CONSTRAINT_TYPE',
                 'Name': 'COLUMN_NAME'
@@ -77,8 +79,9 @@ onMounted(() => {
 
         <hr>
         <SimpleTable
-            v-if="Object.entries(tableConstraints).length > 0"
+            :show-table="Object.entries(tableConstraints).length > 0"
             table-title="Foreign Keys"
+            :check-empty-string="false"
             :columns="{
                 'Name': 'Name',
                 'Source' : 'Source',
@@ -86,6 +89,7 @@ onMounted(() => {
                 'ON DELETE': 'ON DELETE',
                 'ON UPDATE': 'ON UPDATE'
             }"
+            error-text="No foreign key found"
         >
             <tr v-for="datas in tableConstraints">
                 <td>{{ datas.CONSTRAINT_NAME }}</td>
@@ -99,11 +103,11 @@ onMounted(() => {
                 <td>{{ datas.UPDATE_RULE }}</td>
             </tr>
         </SimpleTable>
-        <div v-else class="simple-table-error">No foreign key found</div>
 
         <hr>
         <SimpleTable
             :datas="[]"
+            :check-empty-string="false"
             table-title="Triggers"
             error-text="This feature is not supported yet"
         />
