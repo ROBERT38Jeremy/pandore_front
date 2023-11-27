@@ -5,7 +5,8 @@ const props = defineProps({
     },
     checkEmptyString: {
         type: Boolean,
-        required: true
+        required: false,
+        default: true
     },
 });
 
@@ -18,6 +19,7 @@ const props = defineProps({
     >
         {{ dataValue }}
     </a>
+    <span v-else-if="dataValue">{{ dataValue }}</span>
     <span v-else-if="dataValue === null" class="null-value">NULL</span>
     <span v-else-if="checkEmptyString === true && dataValue === ''" class="empty-value" title="String is empty but not null">EMPTY</span>
     <span v-else>{{ dataValue }}</span>

@@ -6,6 +6,7 @@ import { useTabStore } from '../stores/Tabs';
 import { useToastStore } from '../stores/Toast.store'
 import CustomLoader from '../components/global/CustomLoader.vue';
 import SimpleTable from '../components/simpleTable.vue';
+import TdDatas from '../components/tableDatas/tdDatas.vue';
 import RowActions from '../components/tableDatas/rowActions.vue';
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import "vue-code-highlight/themes/duotone-sea.css";
@@ -38,7 +39,6 @@ const searchColumn = toRef(props, "searchColumn");
 const itemId = toRef(props, "itemId");
 const message = ref(null);
 const selectedRows = ref(-1);
-const displayTextareaValue = ref([])
 const showRowOptions = ref(false);
 const requestParams = ref({
     limit: 50,
@@ -88,18 +88,6 @@ const isPrimaryIndex = (col) => {
 
 const getContraintData = (col, COL_NAME) => {
     return constraints.value.filter(c => c.FOR_COL_NAME === col)[0][COL_NAME]
-}
-
-const clickTd = (e) => {
-    if (e.ctrlKey) {
-        if (displayTextareaValue.value.includes(e.target.id)) {
-            displayTextareaValue.value = displayTextareaValue.value.filter((item) => {
-                return item !== e.target.id
-            });
-        } else {
-            displayTextareaValue.value.push(e.target.id)
-        }
-    }
 }
 
 const triggerShowRowOptions = () => {
@@ -183,42 +171,18 @@ onMounted(() => {
                     </td>
                     <td
                         v-for="(champs, cle) in row"
-                        @click="selectRow(index), clickTd"
+                        @click="selectRow(index)"
                         :id="`${cle}-${champs}`"
                         :class="isPrimaryIndex(cle) ? 'colored-col' : ''"
                     >
-                        <span v-if="displayTextareaValue.includes(`${cle}-${champs}`)">
-                            <textarea>{{ champs }}</textarea>
-                        </span>
-
-                        <span v-else>
-                            <span v-if="champs && isContrained(cle)">
-                                <RouterLink :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs">
-                                    {{ champs }}
-                                </RouterLink>
-                            </span>
-                            <a
-                                v-else-if="
-                                    typeof champs === 'string' &&
-                                    champs.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)
-                                "
-                                :href="champs"
-                            >
+                        <span v-if="champs !== null && isContrained(cle)">
+                            <RouterLink :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs">
                                 {{ champs }}
-                            </a>
-                            <span
-                                v-else-if="
-                                    typeof champs === 'string' &&
-                                    champs.match(/[^\w\s.\d@\.\,-[À-ú]]/)
-                                "
-                                class="weird-char"
-                                title="Value may contain non UTF-8 characters"
-                            >
-                                {{ champs }}
-                            </span>
-                            <span v-else-if="champs">{{ champs }}</span>
-                            <span v-else class="null-value">NULL</span>
+                            </RouterLink>
                         </span>
+                        <TdDatas v-else
+                            :data-value="champs"
+                        />
                     </td>
                 </tr>
             </template>

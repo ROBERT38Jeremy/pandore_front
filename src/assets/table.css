@@ -74,7 +74,7 @@ table.simple-table {
 }
 
 .simple-table tr.selected-row td {
-    background-color: rgb(236, 239, 244)
+    background-color: var(--color-background)
 }
 
 
