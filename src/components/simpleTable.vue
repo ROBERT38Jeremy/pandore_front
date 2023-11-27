@@ -1,6 +1,7 @@
 <script setup>
-import { createPinia } from 'pinia';
-import { onMounted, ref, toRef, useSlots, watch } from 'vue';
+import { ref, toRef, useSlots } from 'vue';
+import ThIndex from './tableDatas/thIndexes.vue';
+import TdDatas from './tableDatas/tdDatas.vue';
 
 const props = defineProps({
     datas: {
@@ -14,6 +15,16 @@ const props = defineProps({
     },
     columns: {
         required: false
+    },
+    primaries: {
+        type: Array,
+        required: false,
+        default: []
+    },
+    foreigns: {
+        type: Array,
+        required: false,
+        default: []
     },
     autoIdColumn: {
         type: Boolean,
@@ -49,6 +60,14 @@ const errorText = toRef(props, "errorText");
 const nbResult = toRef(props, "nbResult");
 const slots = useSlots();
 const hasTableContentSlot = ref(!!slots?.tableContent);
+
+const isPrimary = (col) => {
+    return props.primaries.includes(col);
+}
+
+const isForeign = (col) => {
+    return props.foreigns.includes(col);
+}
 </script>
 
 <template>
@@ -60,12 +79,24 @@ const hasTableContentSlot = ref(!!slots?.tableContent);
             <tr v-if="props.columns">
                 <th v-if="addActionTD" class="action-col-th">Options</th>
                 <th v-if="autoIdColumn"></th>
-                <th v-for="(column, columnName) in props.columns">{{ columnName }}</th>
+                <th v-for="(column, columnName) in props.columns">
+                    <ThIndex
+                        :column-name="columnName"
+                        :is-primary="isPrimary(columnName)"
+                        :is-foreign="isForeign(columnName)"
+                    />
+                </th>
             </tr>
             <tr v-else-if="datas">
                 <th v-if="addActionTD" class="action-col-th">Options</th>
                 <th v-if="autoIdColumn"></th>
-                <th v-for="(datas, column) in datas[0]">{{ column }}</th>
+                <th v-for="(data, column) in datas[0]">
+                    <ThIndex
+                        :column-name="column"
+                        :is-primary="isPrimary(column)"
+                        :is-foreign="isForeign(column)"
+                    />
+                </th>
             </tr>
         </thead>
 
@@ -74,15 +105,10 @@ const hasTableContentSlot = ref(!!slots?.tableContent);
                 <td v-if="addActionTD"></td>
                 <td v-if="autoIdColumn" class="colored-col">{{ index + 1 }}</td>
                 <td v-for="(column, columnName) in props.columns">
-                    <a
-                        v-if="typeof row[column] === 'string' && row[column].match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
-                        :href="row[column]"
-                    >
-                        {{ row[column] }}
-                    </a>
-                    <span v-else-if="row[column] === null" class="null-value">NULL</span>
-                    <span v-else-if="checkEmptyString === true && row[column] === ''" class="empty-value" title="String is empty but not null">EMPTY</span>
-                    <span v-else>{{ row[column] }}</span>
+                    <TdDatas
+                        :data-value="row[column]"
+                        :check-empty-string="checkEmptyString"
+                    />
                 </td>
             </tr>
         </tbody>
@@ -91,15 +117,10 @@ const hasTableContentSlot = ref(!!slots?.tableContent);
                 <td v-if="addActionTD"></td>
                 <td v-if="autoIdColumn" class="colored-col">{{ index + 1 }}</td>
                 <td v-for="(datas, column) in datas[0]">
-                    <a
-                        v-if="typeof row[column] === 'string' && row[column].match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
-                        :href="row[column]"
-                    >
-                        {{ row[column] }}
-                    </a>
-                    <span v-else-if="row[column] === null" class="null-value">NULL</span>
-                    <span v-else-if="checkEmptyString === true && row[column] === ''" class="empty-value" title="String is empty but not null">EMPTY</span>
-                    <span v-else>{{ row[column] }}</span>
+                    <TdDatas
+                        :data-value="row[column]"
+                        :check-empty-string="checkEmptyString"
+                    />
                 </td>
             </tr>
         </tbody>

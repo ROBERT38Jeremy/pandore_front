@@ -168,6 +168,8 @@ onMounted(() => {
         <SimpleTable
             v-if="rows.length > 0"
             :columns="rows[0]"
+            :foreigns="constraints.map(c => c.FOR_COL_NAME)"
+            :primaries="primaryIndexes"
             :nb-result="rows.length"
             :add-action-t-d="showRowOptions"
         >
