@@ -45,6 +45,7 @@ input {
     outline: none;
     width: calc(100% - 30px);
     font-size: large;
+    color: var(--color-text);
 }
 
 .input-contain {

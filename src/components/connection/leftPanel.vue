@@ -103,7 +103,7 @@ function submit() {
 
 .left-panel {
     padding: 5em 6em;
-    background-color: #ffffff;
+    background-color: var(--color-background-light);
     box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.10);
     transition: all 0.2s ease-in-out;
 }
