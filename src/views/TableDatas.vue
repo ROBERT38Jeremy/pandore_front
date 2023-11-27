@@ -161,7 +161,7 @@ onMounted(() => {
             </div>
         </div>
 
-        <span class="table-options">
+        <span v-if="rows.length > 0" class="table-options">
             <span v-if="showRowOptions" @click="triggerShowRowOptions" >Hide rows options</span>
             <span v-else @click="triggerShowRowOptions" >Show rows options</span>
         </span>
@@ -222,6 +222,7 @@ onMounted(() => {
             </template>
         </SimpleTable>
         <div v-else-if="message" class="simple-table-error">{{ message }}</div>
+        <div v-else class="simple-table-error">No result</div>
         <br>
     </CustomLoader>
 </template>
