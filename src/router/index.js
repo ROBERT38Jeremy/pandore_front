@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { checkDBConnection } from './DBConnect'
 import HomeView from '../views/Home.vue'
+import HomeViewV2 from '../views/HomeV2.vue'
 import DatabaseStructure from '../views/DatabaseStructure.vue'
 import TableStructure from '../views/TableStructure.vue'
 import TableDatas from '../views/TableDatas.vue'
@@ -20,7 +21,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: HomeView
+            component: HomeViewV2
         },
         {
             path: '/database/:databaseName/structure',
