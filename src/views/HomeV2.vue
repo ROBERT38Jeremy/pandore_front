@@ -34,19 +34,16 @@ img {
     0% {
         transform: translate(-50%, -50%) scale(1);
     }
-    50% {
-        transform: translate(-50%, -50%) scale(1);
-    }
-    60% {
+    10% {
         transform: translate(-50%, -50%) scale(0.9);
     }
-    70% {
+    20% {
         transform: translate(-50%, -50%) scale(1.05);
     }
-    80% {
+    30% {
         transform: translate(-50%, -50%) scale(0.95);
     }
-    100% {
+    40% {
         transform: translate(-50%, -50%) scale(1);
     }
 }
@@ -54,13 +51,13 @@ img {
 .circle {
     width: calc(min(100% - 25vmin, 100% - 17.5vmax));
     aspect-ratio: 1;
-    background: radial-gradient(circle at 60% 20%, rgba(4,2,11,1) 37%, rgba(26,26,36,1) 97%, rgba(48,58,60,1) 100%);
+    background: radial-gradient(circle at 60% 20%, var(--color-background-light) 37%, var(--color-background) 97%, var(--color-background) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     flex-shrink: 0;
-    box-shadow: -0.25em 0.35em 5em rgba(4,2,11,1), 0.075em -0.125em 0.1em var(--color-blue);
+    box-shadow: -0.25em 0.35em 5em var(--color-background-light), 0.075em -0.125em 0.1em var(--color-border);
     animation: circle-animation 2s ease-in-out;
 }
 
@@ -85,19 +82,16 @@ img {
     0% {
         transform: scale(1);
     }
-    50% {
-        transform: scale(1);
-    }
-    60% {
+    10% {
         transform: scale(0.9);
     }
-    70% {
+    20% {
         transform: scale(1.05);
     }
-    80% {
+    30% {
         transform: scale(0.95);
     }
-    100% {
+    40% {
         transform: scale(1);
     }
 }
@@ -114,7 +108,7 @@ img {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(14,12,21,1);
+    background: var(--color-background);
 }
 
 </style>
