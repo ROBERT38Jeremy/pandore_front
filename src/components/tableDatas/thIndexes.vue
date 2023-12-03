@@ -16,6 +16,11 @@ const props = defineProps({
         required: false,
         default: false
     },
+    isUnique: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
 });
 
 </script>
@@ -35,5 +40,6 @@ const props = defineProps({
         </svg>
         <div>{{ columnName }}</div>
     </div>
+    <div v-else-if="isUnique"><u>{{ columnName }}</u></div>
     <div v-else>{{ columnName }}</div>
 </template>
