@@ -47,7 +47,7 @@ const props = defineProps({
     checkEmptyString: {
         type: Boolean,
         required: false,
-        default: true
+        default: false
     },
     addActionTD: {
         type: Boolean,
