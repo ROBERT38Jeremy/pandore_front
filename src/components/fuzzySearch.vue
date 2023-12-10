@@ -34,6 +34,11 @@ const hotKey = (e) => {
     }
 }
 
+const triggerInput = (e) => {
+    active.value = true;
+    fuzzy(e);
+}
+
 const definePropositions = (string) => {
     // pas encore de recherche
     if (string === "") {
@@ -234,7 +239,7 @@ watch([database, table], () => {
 <template>
     <div :class="'container '+(active ? 'active' : '')">
         <div>
-            <input ref="input" type="search" placeholder="Search (CTRL + K)" @keyup="fuzzy" v-model="search">
+            <input ref="input" type="search" placeholder="Search (CTRL + K)" @keyup="fuzzy" @click="triggerInput" v-model="search">
             <div :class="'propositions '+(active && (propositions || []).length ? 'active' : '')" v-if="active && isActionPropositions === false">
                 <div
                     v-for="(prop, index) in propositions"

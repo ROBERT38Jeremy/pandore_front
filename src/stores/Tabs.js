@@ -113,7 +113,7 @@ export const useTabStore = defineStore('Tab', () => {
                 conditions: {
                     display: table.value !== null,
                     click: false && table.value !== null,
-                    fuzzy: table.value !== null,
+                    fuzzy: false && table.value !== null,
                 }
             },
             // TABLE operations
@@ -124,7 +124,7 @@ export const useTabStore = defineStore('Tab', () => {
                 conditions: {
                     display: table.value !== null,
                     click: false && table.value !== null,
-                    fuzzy: table.value !== null,
+                    fuzzy: false && table.value !== null,
                 }
             },
             // TABLE triggers
@@ -135,7 +135,7 @@ export const useTabStore = defineStore('Tab', () => {
                 conditions: {
                     display: table.value !== null,
                     click: false && table.value !== null,
-                    fuzzy: table.value !== null,
+                    fuzzy: false && table.value !== null,
                 }
             },
         ]
