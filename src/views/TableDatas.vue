@@ -32,6 +32,7 @@ const loading = ref(false);
 const rows = ref([]);
 const sqlQuery = ref(null);
 const constraints = ref(null);
+const structure = ref(null);
 const primaryIndexes = ref([]);
 const database = toRef(props, "databaseName");
 const table = toRef(props, "tableName");
@@ -58,6 +59,7 @@ const showTableStructure = () => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
             rows.value = result.value.resp.data.success;
             sqlQuery.value = result.value.resp.data.request;
+            structure.value = result.value.resp.data.structure;
             constraints.value = result.value.resp.data.constraints;
             primaryIndexes.value = result.value.resp.data.primary.map((col) => {
                 return col.COLUMN_NAME
@@ -158,6 +160,7 @@ onMounted(() => {
             :columns="rows[0]"
             :foreigns="constraints.map(c => c.FOR_COL_NAME)"
             :primaries="primaryIndexes"
+            :structure="structure"
             :nb-result="rows.length"
             :add-action-t-d="showRowOptions"
         >

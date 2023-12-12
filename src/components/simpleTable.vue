@@ -26,6 +26,11 @@ const props = defineProps({
         required: false,
         default: []
     },
+    structure: {
+        type: Array,
+        required: false,
+        default: []
+    },
     autoIdColumn: {
         type: Boolean,
         required: false,
@@ -84,6 +89,7 @@ const isForeign = (col) => {
                         :column-name="columnName"
                         :is-primary="isPrimary(columnName)"
                         :is-foreign="isForeign(columnName)"
+                        :structure="structure"
                     />
                 </th>
             </tr>
@@ -95,6 +101,7 @@ const isForeign = (col) => {
                         :column-name="column"
                         :is-primary="isPrimary(column)"
                         :is-foreign="isForeign(column)"
+                        :structure="structure"
                     />
                 </th>
             </tr>

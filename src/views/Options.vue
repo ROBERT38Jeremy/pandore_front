@@ -22,8 +22,8 @@ const getUserConf = () => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
             pandoreConf.value = result.value.resp.data.success;
             loading.value = false;
-        } else if (result.value.isLoading === false && result.value?.error) {
-            loadingError.value = result.value.error.message
+        } else if (result.value.isLoading === false) {
+            loadingError.value = result?.value?.error?.message ?? result.value?.resp?.data?.error
             loading.value = false;
         }
     })
