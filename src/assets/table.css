@@ -10,6 +10,9 @@ table.simple-table {
 .simple-table th {
     text-align: left;
     background-color: var(--color-background);
+    position: sticky;
+    top: 0;
+    z-index: 3;
 }
 
 .simple-table th>div.th-index {

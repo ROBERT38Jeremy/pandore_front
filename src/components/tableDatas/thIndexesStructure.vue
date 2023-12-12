@@ -71,7 +71,7 @@ table.structure {
     top: 1em;
     left: calc(100% + 0.5em);
     background-color: var(--color-background-light);
-    z-index: 3;
+    z-index: 4;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
     padding: 0;
