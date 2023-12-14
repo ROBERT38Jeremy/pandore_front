@@ -8,6 +8,7 @@ import CustomLoader from '../components/global/CustomLoader.vue';
 import SimpleTable from '../components/simpleTable.vue';
 import TdDatas from '../components/tableDatas/tdDatas.vue';
 import RowActions from '../components/tableDatas/rowActions.vue';
+import DatabaseSearch from '../components/tableDatas/databaseSearch.vue';
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import "vue-code-highlight/themes/duotone-sea.css";
 
@@ -46,12 +47,16 @@ const requestParams = ref({
     where: {}
 });
 
-const showTableStructure = () => {
+const showTableDatas = (params = {}) => {
     const result = ref({});
 
     loading.value = true;
     if (searchColumn.value !== "" && itemId.value !== "") {
         requestParams.value.where[searchColumn.value] = itemId.value;
+    }
+
+    if (params) {
+        requestParams.value = {...params}
     }
     result.value = useAxios({ url: `/database/${database.value}/${table.value}/datas`, method: 'POST', body: {...requestParams.value} });
 
@@ -130,10 +135,10 @@ const updateRow = (rowIndex, row) => {
     console.log(rowIndex, row);
 }
 
-watch([database, table, searchColumn, itemId], showTableStructure);
+watch([database, table, searchColumn, itemId], showTableDatas);
 onMounted(() => {
     selectTab('Datas');
-    showTableStructure();
+    showTableDatas();
 })
 </script>
 
@@ -144,6 +149,8 @@ onMounted(() => {
         Datas
     </h2>
     <CustomLoader :loading="loading">
+        <DatabaseSearch :table-structure="structure" @search-query="(conditions) => showTableDatas(conditions)" />
+
         <div v-if="sqlQuery" class="code">
             <pre><code-highlight language="js">{{ sqlQuery }}</code-highlight></pre>
             <div>
