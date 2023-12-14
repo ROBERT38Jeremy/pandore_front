@@ -68,8 +68,9 @@ span {
 
 table.structure {
     position: absolute;
-    top: 1em;
-    left: calc(100% + 0.5em);
+    top: calc(100% + 0.5em);
+    left: calc(50%);
+    transform: translateX(-50%);
     background-color: var(--color-background-light);
     z-index: 4;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
