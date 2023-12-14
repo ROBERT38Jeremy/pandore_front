@@ -44,7 +44,8 @@ const selectedRows = ref(-1);
 const showRowOptions = ref(false);
 const requestParams = ref({
     limit: 50,
-    where: {}
+    where: [],
+    select: []
 });
 
 const showTableDatas = (params = {}) => {
@@ -52,10 +53,14 @@ const showTableDatas = (params = {}) => {
 
     loading.value = true;
     if (searchColumn.value !== "" && itemId.value !== "") {
-        requestParams.value.where[searchColumn.value] = itemId.value;
+        requestParams.value.where = [{
+            field: searchColumn.value,
+            operator: '=',
+            value: itemId.value
+        }]
     }
 
-    if (params) {
+    if (Object.entries(params).length > 0) {
         requestParams.value = {...params}
     }
     result.value = useAxios({ url: `/database/${database.value}/${table.value}/datas`, method: 'POST', body: {...requestParams.value} });
@@ -143,6 +148,7 @@ onMounted(() => {
 </script>
 
 <template>
+    {{ searchColumn }} {{ itemId }}
     <h2>
         <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
         <RouterLink :to="'/database/'+database+'/'+table+'/structure'">{{ table }}</RouterLink> >
