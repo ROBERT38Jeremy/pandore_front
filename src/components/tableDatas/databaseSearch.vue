@@ -14,12 +14,26 @@ const conditions = ref({
     where: [],
     limit: 50
 })
-const storeSelect = (selectIndex, select) => {
-    conditions.value.select[selectIndex] = select
+const storeSelect = (select) => {
+    conditions.value.select.push(select)
+}
+const deleteSelect = (index) => {
+    conditions.value.select.splice(index, 1);
 }
 
-const storeWhere = (whereIndex, where) => {
-    console.log(whereIndex, where)
+const storeWhere = (index, object, value) => {
+    console.log(index, object, value)
+    if (!conditions.value.where[index]) {
+        conditions.value.where[index] = {
+            field: '',
+            operator: '=',
+            value: ''
+        }
+    }
+    conditions.value.where[index][object] = value
+}
+const deleteWhere = (index) => {
+    conditions.value.where.splice(index, 1);
 }
 </script>
 
@@ -27,26 +41,46 @@ const storeWhere = (whereIndex, where) => {
     <details class="DQC">
         <summary>Database Query Constructor</summary>
         <div class="select">
-            <h3>SELECT</h3>
-            <table class="row" v-for="(n, selectNum) in (conditions.select.length + 1)">
+            <table class="select-table">
                 <tr>
-                    <td class="row-num">{{ selectNum + 1 }}</td>
+                    <td><h4>SELECT</h4></td>
                     <td>
-                        <SearchableInput :propositions-list="tableStructure" index="Field" value="Field" placeholder="Champs" @find="(find) => storeSelect(selectNum, find)" />
+                        <SearchableInput
+                            :propositions-list="tableStructure"
+                            index="Field"
+                            value="Field"
+                            placeholder="Champs"
+                            @find="storeSelect"
+                            :empty-on-find="true"
+                        />
                     </td>
                 </tr>
             </table>
+            <div class="select-list">
+                <div v-for="(column, idx) in conditions.select" @click="deleteSelect(idx)">
+                    <div>
+                        <svg height="10px" width="10px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 490 490" xml:space="preserve">
+                            <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
+                        </svg>
+                    </div>
+                    <div>{{ column }}</div>
+                </div>
+            </div>
         </div>
         <div class="where">
-            <h3>WHERE</h3>
-            <table class="row" v-for="selectNum in (conditions.where.length + 1)">
+            <h4>WHERE</h4>
+            <table class="row" v-for="(value, selectNum) in (conditions.where.length + 1)">
                 <tr>
-                    <td class="row-num">{{ selectNum }}</td>
-                    <td>
-                        <SearchableInput :propositions-list="tableStructure" index="Field" value="Field" placeholder="Champs" @find="(find) => storeWhere(selectNum, find)" />
+                    <td @click="deleteWhere(selectNum)">
+                        <svg v-if="conditions.where[selectNum]" height="10px" width="10px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 490 490" xml:space="preserve">
+                            <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
+                        </svg>
                     </td>
                     <td>
-                        <select name="" id="">
+                        <SearchableInput :propositions-list="tableStructure" index="Field" value="Field" placeholder="Champs" @find="(find) => storeWhere(selectNum, 'field', find)" />
+                    </td>
+                    <td>
+                        <select name="" id="" @change="(e) => { storeWhere(selectNum, 'operator', e.target.value) }">
                             <option value="=">=</option>
                             <option value="!=">!=</option>
                             <option value="<">{{ "<" }}</option>
@@ -60,7 +94,7 @@ const storeWhere = (whereIndex, where) => {
                         </select>
                     </td>
                     <td>
-                        <input type="text" placeholder="Valeur">
+                        <input type="text" placeholder="Valeur" @keyup="(e) => { storeWhere(selectNum, 'value', e.target.value) }">
                     </td>
                 </tr>
             </table>
@@ -111,9 +145,20 @@ select {
     margin-bottom: 5px;
 }
 
-.row-num {
+.row tr td:first-child {
+    min-width: 32px;
+}
+
+.row tr td:first-child svg {
+    fill: #000000;
+    opacity: 0.5;
     padding: 0 0.5em 0 1em;
-    font-weight: bold;
+    cursor: pointer;
+}
+
+.row tr td:first-child:hover svg {
+    fill: red;
+    opacity: 1;
 }
 
 .run-DQC-container {
@@ -135,5 +180,38 @@ select {
 .run-DQC:hover {
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+}
+
+.select-table {
+    border-spacing: 0.5em 0;
+}
+
+.select-list {
+    border: 1px dashed var(--color-border);
+    min-height: 1em;
+    max-width: 50vw;
+    display: flex;
+    gap: 1.5em 0.5em;
+    padding: 0.3em;
+    flex-wrap: wrap;
+}
+
+.select-list>div {
+    background-color: var(--color-background-light);
+    padding: 0.3em 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    cursor: pointer;
+}
+
+.select-list>div svg {
+    fill: #000000;
+    opacity: 0.5;
+}
+
+.select-list>div:hover svg {
+    fill: red;
+    opacity: 1;
 }
 </style>

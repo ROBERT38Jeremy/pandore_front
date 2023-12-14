@@ -19,6 +19,11 @@ const props = defineProps({
         type: String,
         required: false,
         default: ''
+    },
+    emptyOnFind: {
+        type: Boolean,
+        required: false,
+        default: false
     }
 });
 const input = ref(null);
@@ -64,7 +69,11 @@ const navigate = (e) => {
 const selectItem = (propIndex) => {
     const find = propositions.value?.[propIndex]?.[props.index];
     emit('find', find);
-    search.value = find;
+    if (props.emptyOnFind) {
+        search.value = '';
+    } else {
+        search.value = find;
+    }
     selectedProposition.value = propositions.value.length -1;
     input.value.blur();
 }
@@ -80,7 +89,7 @@ watch([propositionsList, search], searchInPropositions);
             v-model="search"
             @focusin="triggerFocus(true)"
             @focusout="triggerFocus(false)"
-            @keyup="navigate, emit('find', search)"
+            @keyup="navigate"
             :placeholder="placeholder"
         >
         <div class="propositions" v-if="propositions.length > 0 && searching">
