@@ -76,7 +76,13 @@ const deleteWhere = (index) => {
                         </svg>
                     </td>
                     <td>
-                        <SearchableInput :propositions-list="tableStructure" index="Field" value="Field" placeholder="Champs" @find="(find) => storeWhere(selectNum, 'field', find)" />
+                        <SearchableInput
+                            :propositions-list="tableStructure"
+                            index="Field"
+                            value="Field"
+                            placeholder="Champs"
+                            @find="(find) => storeWhere(selectNum, 'field', find)"
+                        />
                     </td>
                     <td>
                         <select name="" id="" @change="(e) => { storeWhere(selectNum, 'operator', e.target.value) }">
@@ -93,7 +99,12 @@ const deleteWhere = (index) => {
                         </select>
                     </td>
                     <td>
-                        <input type="text" placeholder="Valeur" @keyup="(e) => { storeWhere(selectNum, 'value', e.target.value) }">
+                        <input
+                            v-if="!['IS NULL', 'IS NOT NULL'].includes(conditions.where?.[selectNum]?.operator)"
+                            type="text"
+                            placeholder="Valeur"
+                            @keyup="(e) => { storeWhere(selectNum, 'value', e.target.value) }"
+                        >
                     </td>
                 </tr>
             </table>
