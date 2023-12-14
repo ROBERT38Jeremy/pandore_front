@@ -266,7 +266,7 @@ watch([database, table], () => {
 input {
     transition: all 0.1s ease-in-out;
     position: relative;
-    padding: 0 1em 0 1em;
+    padding: 0.2em 1em 0.2em 1em;
     border-radius: 1em;
     outline: none;
 }
