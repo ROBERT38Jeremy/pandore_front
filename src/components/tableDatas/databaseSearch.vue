@@ -22,7 +22,6 @@ const deleteSelect = (index) => {
 }
 
 const storeWhere = (index, object, value) => {
-    console.log(index, object, value)
     if (!conditions.value.where[index]) {
         conditions.value.where[index] = {
             field: '',
