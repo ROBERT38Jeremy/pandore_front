@@ -33,6 +33,7 @@ const loading = ref(false);
 const rows = ref([]);
 const sqlQuery = ref(null);
 const constraints = ref(null);
+const conditions = ref(null);
 const structure = ref(null);
 const primaryIndexes = ref([]);
 const database = toRef(props, "databaseName");
@@ -67,6 +68,7 @@ const showTableDatas = (params = {}) => {
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
+            conditions.value = result.value.resp.data.conf;
             rows.value = result.value.resp.data.success;
             sqlQuery.value = result.value.resp.data.request;
             structure.value = result.value.resp.data.structure;
@@ -154,7 +156,7 @@ onMounted(() => {
         Datas
     </h2>
     <CustomLoader :loading="loading">
-        <DatabaseSearch :table-structure="structure" @search-query="(conditions) => showTableDatas(conditions)" />
+        <DatabaseSearch :table-structure="structure" @search-query="(conditions) => showTableDatas(conditions)" :query-conditions="conditions" />
 
         <div v-if="sqlQuery" class="code">
             <pre><code-highlight language="js">{{ sqlQuery }}</code-highlight></pre>

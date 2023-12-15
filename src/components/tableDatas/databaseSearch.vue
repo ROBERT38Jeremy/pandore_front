@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onBeforeMount, onMounted, toRef } from 'vue';
 import SearchableInput from "../global/SearchableInput.vue";
 
 const emit = defineEmits(['searchQuery']);
@@ -8,12 +8,16 @@ const props = defineProps({
         type: Array,
         required: false,
     },
+    queryConditions: {
+        required: false,
+        default: {
+            select: [],
+            where: [],
+            limit: 50
+        }
+    }
 });
-const conditions = ref({
-    select: [],
-    where: [],
-    limit: 50
-})
+const conditions = toRef(props, 'queryConditions');
 const storeSelect = (select) => {
     conditions.value.select.push(select)
 }
@@ -56,7 +60,7 @@ const deleteWhere = (index) => {
                 </tr>
             </table>
             <div class="select-list">
-                <div v-for="(column, idx) in conditions.select" @click="deleteSelect(idx)">
+                <div v-for="(column, idx) in conditions?.select" @click="deleteSelect(idx)">
                     <div>
                         <svg height="10px" width="10px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 490 490" xml:space="preserve">
                             <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
@@ -68,10 +72,10 @@ const deleteWhere = (index) => {
         </div>
         <div class="where">
             <h4>WHERE</h4>
-            <table class="row" v-for="(value, selectNum) in (conditions.where.length + 1)">
+            <table class="row" v-for="(value, selectNum) in ((conditions?.where || []).length + 1)">
                 <tr>
                     <td @click="deleteWhere(selectNum)">
-                        <svg v-if="conditions.where[selectNum]" height="10px" width="10px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 490 490" xml:space="preserve">
+                        <svg v-if="conditions?.where[selectNum]" height="10px" width="10px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 490 490" xml:space="preserve">
                             <polygon points="456.851,0 245,212.564 33.149,0 0.708,32.337 212.669,245.004 0.708,457.678 33.149,490 245,277.443 456.851,490 489.292,457.678 277.331,245.004 489.292,32.337 "/>
                         </svg>
                     </td>
@@ -100,7 +104,7 @@ const deleteWhere = (index) => {
                     </td>
                     <td>
                         <input
-                            v-if="!['IS NULL', 'IS NOT NULL'].includes(conditions.where?.[selectNum]?.operator)"
+                            v-if="!['IS NULL', 'IS NOT NULL'].includes(conditions?.where?.[selectNum]?.operator)"
                             type="text"
                             placeholder="Valeur"
                             @keyup="(e) => { storeWhere(selectNum, 'value', e.target.value) }"
@@ -110,7 +114,12 @@ const deleteWhere = (index) => {
             </table>
         </div>
         <div class="limit">
-            <input type="number" @input="(e) => conditions.limit = e.target.value" :value="conditions.limit">
+            <table class="select-table">
+                <tr>
+                    <td><h4>LIMIT</h4></td>
+                    <td><input type="number" @input="(e) => conditions.limit = e.target.value" :value="conditions?.limit"></td>
+                </tr>
+            </table>
         </div>
         <div class="run-DQB-container">
             <button class="run-DQB" @click="emit('searchQuery', conditions)">RUN QUERY</button>
