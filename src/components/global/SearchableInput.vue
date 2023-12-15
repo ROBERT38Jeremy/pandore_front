@@ -62,12 +62,18 @@ const navigate = (e) => {
         selectedProposition.value = propositions.value.length -1;
         input.value.selectionStart = search.value.length
     } else if(e.key === 'Enter') {
-        selectItem(selectedProposition.value)
+        if (selectedProposition.value === -1) {
+            selectItem(-1, search.value);
+        } else {
+            selectItem(selectedProposition.value)
+        }
+    } else {
+        selectedProposition.value = -1;
     }
 }
 
-const selectItem = (propIndex) => {
-    const find = propositions.value?.[propIndex]?.[props.index];
+const selectItem = (propIndex, rawValue = '') => {
+    const find = (rawValue === '') ? propositions.value?.[propIndex]?.[props.index] : rawValue;
     emit('find', find);
     if (props.emptyOnFind) {
         search.value = '';

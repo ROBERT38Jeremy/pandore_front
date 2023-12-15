@@ -148,7 +148,6 @@ onMounted(() => {
 </script>
 
 <template>
-    {{ searchColumn }} {{ itemId }}
     <h2>
         <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
         <RouterLink :to="'/database/'+database+'/'+table+'/structure'">{{ table }}</RouterLink> >

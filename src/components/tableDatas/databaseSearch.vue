@@ -37,8 +37,8 @@ const deleteWhere = (index) => {
 </script>
 
 <template>
-    <details class="DQC">
-        <summary>Database Query Constructor</summary>
+    <details class="DQB">
+        <summary>Database Query Builder</summary>
         <div class="select">
             <table class="select-table">
                 <tr>
@@ -109,8 +109,11 @@ const deleteWhere = (index) => {
                 </tr>
             </table>
         </div>
-        <div class="run-DQC-container">
-            <button class="run-DQC" @click="emit('searchQuery', conditions)">RUN QUERY</button>
+        <div class="limit">
+            <input type="number" @input="(e) => conditions.limit = e.target.value" :value="conditions.limit">
+        </div>
+        <div class="run-DQB-container">
+            <button class="run-DQB" @click="emit('searchQuery', conditions)">RUN QUERY</button>
         </div>
     </details>
 </template>
@@ -125,15 +128,21 @@ input, select {
     min-width: 5em;
 }
 
-.DQC {
+.DQB {
     margin-left: 1em;
     background-color: var(--color-background);
     width: fit-content;
     padding: 0.5em 0.7em;
     border-radius: 0.2em;
+    transition: all 0.2s ease-in-out;
 }
 
-.DQC>summary {
+.DQB[open] {
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+}
+
+.DQB>summary {
     font-weight: bold;
     outline: none;
     list-style: none;
@@ -141,7 +150,7 @@ input, select {
     user-select: none;
 }
 
-.DQC>summary::-webkit-details-marker {
+.DQB>summary::-webkit-details-marker {
     display: none;
 }
 
@@ -171,13 +180,13 @@ select {
     opacity: 1;
 }
 
-.run-DQC-container {
+.run-DQB-container {
     display: flex;
     justify-content: flex-end;
     margin-top: 1em;
 }
 
-.run-DQC {
+.run-DQB {
     background-color: var(--color-blue);
     padding: 0.5em 0.8em;
     border: none;
@@ -187,7 +196,7 @@ select {
     color: white;
 }
 
-.run-DQC:hover {
+.run-DQB:hover {
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
 }
