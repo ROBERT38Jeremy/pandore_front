@@ -29,7 +29,7 @@ const triggerShowDatabase = (databaseName) => {
 }
 
 onBeforeMount(getDatabaseList)
-onMounted(() => {
+watchEffect(() => {
     if (selectedDatabase.value !== '') {
         triggerShowDatabase(selectedDatabase.value)
     }
