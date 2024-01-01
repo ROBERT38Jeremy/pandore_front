@@ -41,7 +41,6 @@ const deleteWhere = (index) => {
 </script>
 
 <template>
-    <pre>{{ conditions }}</pre>
     <details class="DQB">
         <summary>Database Query Builder</summary>
         <div class="select">
