@@ -60,14 +60,14 @@ const showTableDatas = (params = {}) => {
             operator: '=',
             value: itemId.value
         }]
-    } else {
+    } else if (requestParams.value.where.length > 0) {
         requestParams.value.where = requestParams.value.where.filter((condition) => {
             return !condition?.isAuto
         })
     }
 
     if (Object.entries(params).length > 0) {
-        requestParams.value.where = {...params}
+        requestParams.value = {...params}
     }
     result.value = useAxios({ url: `/database/${database.value}/${table.value}/datas`, method: 'POST', body: {...requestParams.value} });
 
