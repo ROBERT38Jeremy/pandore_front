@@ -39,8 +39,8 @@ onBeforeMount(getDatabaseList)
 
         <CustomLoader :loading="loading">
             <div class="database-list-global-container">
-                <div v-for="(tables, database) in databaseList" class="database-list-container"  @click="triggerShowDatabase(database)">
-                    <div>
+                <div v-for="(tables, database) in databaseList" class="database-list-container">
+                    <div @click="triggerShowDatabase(database)">
                         <div>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M4 18V6" stroke="var(--color-text)" stroke-width="1.5" stroke-linecap="round"/>
@@ -67,7 +67,7 @@ onBeforeMount(getDatabaseList)
                                     </svg>
                                 </div>
                                 <div>
-                                    <RouterLink :to="'/database/'+database+'/'+table+'/structure'" @click="setTable(table), setDatabase(database)">{{ table }}</RouterLink>
+                                    <RouterLink :to="'/database/'+database+'/'+table+'/structure'" >{{ table }}</RouterLink>
                                 </div>
                             </div>
                         </div>
