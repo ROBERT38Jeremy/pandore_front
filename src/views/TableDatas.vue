@@ -55,14 +55,19 @@ const showTableDatas = (params = {}) => {
     loading.value = true;
     if (searchColumn.value !== "" && itemId.value !== "") {
         requestParams.value.where = [{
+            isAuto: true,
             field: searchColumn.value,
             operator: '=',
             value: itemId.value
         }]
+    } else {
+        requestParams.value.where = requestParams.value.where.filter((condition) => {
+            return !condition?.isAuto
+        })
     }
 
     if (Object.entries(params).length > 0) {
-        requestParams.value = {...params}
+        requestParams.value.where = {...params}
     }
     result.value = useAxios({ url: `/database/${database.value}/${table.value}/datas`, method: 'POST', body: {...requestParams.value} });
 
@@ -142,7 +147,7 @@ const updateRow = (rowIndex, row) => {
     console.log(rowIndex, row);
 }
 
-watch([database, table, searchColumn, itemId], showTableDatas);
+watch([database, table, searchColumn, itemId], () => { showTableDatas() });
 onMounted(() => {
     selectTab('Datas');
     showTableDatas();
