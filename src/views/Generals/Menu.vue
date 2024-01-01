@@ -1,9 +1,11 @@
 <script setup>
-import { onBeforeMount, ref, watchEffect } from 'vue';
+import { onBeforeMount, onMounted, ref, watchEffect } from 'vue';
 import { useAxios } from '../../hooks/useAxios';
 import { useDBConnectStore } from '../../stores/DBConnect'
+import { storeToRefs } from 'pinia';
 import CustomLoader from '../../components/global/CustomLoader.vue'
 
+const { database: selectedDatabase, table: selectedTable } = storeToRefs(useDBConnectStore())
 const { setDatabase, setTable, unsetTable } = useDBConnectStore()
 const databaseList = ref({});
 const loading = ref(false);
@@ -27,6 +29,11 @@ const triggerShowDatabase = (databaseName) => {
 }
 
 onBeforeMount(getDatabaseList)
+onMounted(() => {
+    if (selectedDatabase.value !== '') {
+        triggerShowDatabase(selectedDatabase.value)
+    }
+})
 </script>
 
 <template>
@@ -56,7 +63,7 @@ onBeforeMount(getDatabaseList)
                     </div>
                     <div v-if="showDatabase === database">
                         <div class="tables-list" v-if="tables.length > 0">
-                            <div v-for="table in tables">
+                            <div v-for="table in tables" :class="(table === selectedTable ? 'selected' : '')">
                                 <div>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" id="table" style="fill:var(--color-text);">
                                         <path d="M20 24H4c-2.2 0-4-1.8-4-4V5c0-.6.4-1 1-1h22c.6 0 1 .4 1 1v15c0 2.2-1.8 4-4 4zM2 6v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6H2z"></path>
@@ -112,11 +119,44 @@ div.title~span {
 
 .tables-list>div {
     width: calc(100% - 1em);
-    margin-left: 1em;
     padding: 0.2em;
+    padding-left: 1em;
     display: flex;
     gap: 0 1em;
     align-items: center;
+}
+
+.tables-list>div.selected {
+    background-color: var(--color-background);
+    border-top-left-radius: 0.5em;
+    border-bottom-left-radius: 0.5em;
+    position: relative;
+}
+
+.tables-list>div.selected::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    right: 2px;
+    background-color: var(--color-background-light);
+    border-bottom-right-radius: 100%;
+    width: 1em;
+    height: 1em;
+    -webkit-box-shadow: 10px 9px 0px 10px var(--color-background);
+    box-shadow: 10px 10px 0px 10px var(--color-background);
+}
+
+.tables-list>div.selected::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    right: 2px;
+    background-color: var(--color-background-light);
+    border-top-right-radius: 100%;
+    width: 1em;
+    height: 1em;
+    -webkit-box-shadow: 10px -9px 0px 10px var(--color-background);
+    box-shadow: 10px -10px 0px 10px var(--color-background);
 }
 
 .tables-list>div img {
@@ -131,7 +171,6 @@ div.title~span {
 }
 
 .database-list-container {
-    padding-left: 1em;
     margin-bottom: 0.5em;
 }
 

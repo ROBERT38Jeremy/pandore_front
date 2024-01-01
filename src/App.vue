@@ -61,6 +61,7 @@ const triggerDIsplayMenu = () => {
 
 .main-menu {
     width: 20em;
+    padding: 0;
 }
 
 .main-view {
