@@ -8,7 +8,6 @@ const { isLoaded } = storeToRefs(useAppLoaderStore())
 <template>
     <slot />
     <div v-if="!isLoaded" class="app-loader">
-        CECI EST UN TEST
         <div class="logo-container">
             <div class="logo-contour1"></div>
             <div class="logo-contour2"></div>
