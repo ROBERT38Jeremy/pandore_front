@@ -2,11 +2,13 @@
 import { onBeforeMount, onMounted, ref, watchEffect } from 'vue';
 import { useAxios } from '../../hooks/useAxios';
 import { useDBConnectStore } from '../../stores/DBConnect'
+import { useAppLoaderStore } from '../../stores/AppLoader'
 import { storeToRefs } from 'pinia';
 import CustomLoader from '../../components/global/CustomLoader.vue'
 
 const { database: selectedDatabase, table: selectedTable } = storeToRefs(useDBConnectStore())
 const { setDatabase, setTable, unsetTable } = useDBConnectStore()
+const { setModuleStatus } = useAppLoaderStore()
 const databaseList = ref({});
 const loading = ref(false);
 const showDatabase = ref(null);
@@ -20,6 +22,7 @@ const getDatabaseList = () => {
         if (result.value.isLoading === false && result.value.resp.data.success) {
             databaseList.value = result.value.resp.data.success;
             loading.value = false;
+            setModuleStatus('menu', true);
         }
     })
 }

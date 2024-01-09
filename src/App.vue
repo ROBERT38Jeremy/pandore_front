@@ -1,46 +1,51 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import { ref } from 'vue';
+import { useAppLoaderStore } from './stores/AppLoader'
+import { storeToRefs } from 'pinia';
 import isConnectedView from './components/connection/isConnected.vue';
 import Toast from './components/global/Toast.vue';
+import AppLoader from './components/global/AppLoader.vue';
 import HeaderView from './views/Generals/Header.vue';
 import MenuView from './views/Generals/Menu.vue';
 import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 
+const { isLoaded } = storeToRefs(useAppLoaderStore())
 const displayMenu = ref(true);
 
 const triggerDIsplayMenu = () => {
     displayMenu.value = !displayMenu.value
 }
-
 </script>
 
 <template>
     <Toast />
-    <isConnectedView>
-        <table class="main-table">
-            <tr>
-                <td rowspan="3" class="main-menu" v-if="displayMenu">
-                    <MenuView />
-                </td>
-                <td class="main-header">
-                    <HeaderView :isMenuDisplayed="displayMenu" @displayMenu="triggerDIsplayMenu"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="main-tab-selection">
-                    <MainTabSelectionView />
-                </td>
-            </tr>
-            <tr>
-                <td class="main-view">
-                    <div class="main-view-container">
-                        <RouterView />
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </isConnectedView>
+    <AppLoader>
+        <isConnectedView>
+            <table class="main-table">
+                <tr>
+                    <td rowspan="3" class="main-menu" v-if="displayMenu">
+                        <MenuView />
+                    </td>
+                    <td class="main-header">
+                        <HeaderView :isMenuDisplayed="displayMenu" @displayMenu="triggerDIsplayMenu"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="main-tab-selection">
+                        <MainTabSelectionView />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="main-view">
+                        <div class="main-view-container">
+                            <RouterView v-if="isLoaded" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </isConnectedView>
+    </AppLoader>
 </template>
 
 <style scoped>
