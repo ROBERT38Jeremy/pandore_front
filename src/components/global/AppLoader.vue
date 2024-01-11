@@ -1,13 +1,15 @@
 <script setup>
 import { useAppLoaderStore } from '../../stores/AppLoader'
+import { useDBConnectStore } from '../../stores/DBConnect'
 import { storeToRefs } from 'pinia';
 
+const { isConnected } = storeToRefs(useDBConnectStore())
 const { isLoaded } = storeToRefs(useAppLoaderStore())
 </script>
 
 <template>
     <slot />
-    <div v-if="!isLoaded" class="app-loader">
+    <div v-if="!isLoaded && isConnected" class="app-loader">
         <div class="logo-container">
             <div class="logo-contour1"></div>
             <div class="logo-contour2"></div>
