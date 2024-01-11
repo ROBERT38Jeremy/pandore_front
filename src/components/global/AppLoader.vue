@@ -4,7 +4,7 @@ import { useDBConnectStore } from '../../stores/DBConnect'
 import { storeToRefs } from 'pinia';
 
 const { isConnected } = storeToRefs(useDBConnectStore())
-const { isLoaded } = storeToRefs(useAppLoaderStore())
+const { isLoaded, pctLoaded } = storeToRefs(useAppLoaderStore())
 </script>
 
 <template>
@@ -15,6 +15,11 @@ const { isLoaded } = storeToRefs(useAppLoaderStore())
             <div class="logo-contour2"></div>
             <div class="logo-contour3"></div>
             <img src="@/assets/logo.png">
+            <div class="pct-container">
+                <div class="pct-content">
+                    <div class="pct-value" :style="'width: '+pctLoaded+'%;'"></div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -95,4 +100,35 @@ img {
       transform: translate(-50%, -50%) rotateZ(360deg);
     }
 }
+
+.pct-container {
+    --width: 300px;
+    --height: 10px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: calc(100% + 5em);
+    width: var(--width);
+    height: var(--height);
+    border-radius: 10px;
+}
+
+.pct-content {
+    position: relative;
+    border: 1px solid var(--color-border);
+    width: var(--width);
+    height: var(--height);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.pct-value {
+    position: relative;
+    background: linear-gradient(90deg, rgba(5,159,251,1) 0%, rgba(65,32,233,1) 50%, rgba(245,9,226,1) 100%);
+    width: 0;
+    height: var(--height);
+    border-radius: 10px;
+    transition: all 0.4s ease-in-out;
+}
+
 </style>
