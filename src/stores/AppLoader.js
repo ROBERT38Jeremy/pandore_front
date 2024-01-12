@@ -4,7 +4,8 @@ import { defineStore } from 'pinia'
 export const useAppLoaderStore = defineStore('AppLoader', () => {
     const isLoaded = ref(false);
     const appLoad = ref({
-        menu: false
+        menu: false,
+        pandoreConf: false
     });
     const pctLoaded = ref(0);
 

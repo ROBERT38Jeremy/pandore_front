@@ -1,8 +1,9 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import { ref } from 'vue';
-import { useAppLoaderStore } from './stores/AppLoader'
+import { onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
+import { useAppLoaderStore } from './stores/AppLoader'
+import { usePandoreConfStore } from './stores/PandoreConf'
 import isConnectedView from './components/connection/isConnected.vue';
 import Toast from './components/global/Toast.vue';
 import AppLoader from './components/global/AppLoader.vue';
@@ -11,11 +12,20 @@ import MenuView from './views/Generals/Menu.vue';
 import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 
 const { isLoaded } = storeToRefs(useAppLoaderStore())
+const { setModuleStatus } = useAppLoaderStore()
+const { pandoreConf } = storeToRefs(usePandoreConfStore())
+const { setPandoreConf } = usePandoreConfStore()
 const displayMenu = ref(true);
 
 const triggerDIsplayMenu = () => {
     displayMenu.value = !displayMenu.value
 }
+
+onMounted(async () => {
+    await setPandoreConf()
+    setModuleStatus('pandoreConf', true)
+})
+
 </script>
 
 <template>
@@ -39,7 +49,8 @@ const triggerDIsplayMenu = () => {
                 <tr>
                     <td class="main-view">
                         <div class="main-view-container">
-                            <RouterView v-if="isLoaded" />
+                            <!-- <RouterView v-if="isLoaded" /> -->
+                            <pre>{{ pandoreConf }}</pre>
                         </div>
                     </td>
                 </tr>
