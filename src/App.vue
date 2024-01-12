@@ -49,8 +49,7 @@ onMounted(async () => {
                 <tr>
                     <td class="main-view">
                         <div class="main-view-container">
-                            <!-- <RouterView v-if="isLoaded" /> -->
-                            <pre>{{ pandoreConf }}</pre>
+                            <RouterView v-if="isLoaded" />
                         </div>
                     </td>
                 </tr>
