@@ -1,37 +1,21 @@
 <script setup>
 import { onMounted, ref, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
+import { storeToRefs } from 'pinia';
 import { useTabStore } from '../stores/Tabs';
+import { usePandoreConfStore } from '../stores/PandoreConf'
 import CustomLoader from '../components/global/CustomLoader.vue'
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import "vue-code-highlight/themes/duotone-sea.css";
 
+const { pandoreConf } = storeToRefs(usePandoreConfStore())
 const { selectTab } = useTabStore();
 const loading = ref(false);
 const loadingText = ref(null);
 const loadingError = ref(null);
-const pandoreConf = ref({})
-
-const getUserConf = () => {
-    const result = ref({});
-
-    loading.value = true;
-    result.value = useAxios({ url: `/pandore-user/conf`, method: 'GET' });
-
-    watchEffect(() => {
-        if (result.value.isLoading === false && result.value?.resp?.data?.success) {
-            pandoreConf.value = result.value.resp.data.success;
-            loading.value = false;
-        } else if (result.value.isLoading === false) {
-            loadingError.value = result?.value?.error?.message ?? result.value?.resp?.data?.error
-            loading.value = false;
-        }
-    })
-}
 
 onMounted(() => {
     selectTab('');
-    getUserConf();
 })
 </script>
 

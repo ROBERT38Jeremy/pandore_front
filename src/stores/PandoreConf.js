@@ -4,6 +4,7 @@ import json from '../../config/PandoreUserConf.json';
 
 export const usePandoreConfStore = defineStore('PandoreConf', () => {
     const pandoreConf = ref({});
+    const pandoreConfPath = ref('../../config/PandoreUserConf.json');
 
     async function setPandoreConf() {
         const result = await new Promise((resolve) => {
@@ -14,6 +15,7 @@ export const usePandoreConfStore = defineStore('PandoreConf', () => {
     }
 
     return {
+        pandoreConfPath,
         pandoreConf,
         setPandoreConf
     }
