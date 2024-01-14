@@ -31,6 +31,7 @@ const { selectTab } = useTabStore();
 const { ToastLoadStart, ToastLoadEnd } = useToastStore();
 const loading = ref(false);
 const rows = ref([]);
+const displayedRows = ref([]);
 const sqlQuery = ref(null);
 const constraints = ref(null);
 const conditions = ref(null);
@@ -75,6 +76,7 @@ const showTableDatas = (params = {}) => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
             conditions.value = result.value.resp.data.conf;
             rows.value = result.value.resp.data.success;
+            displayedRows.value= result.value.resp.data.success;
             sqlQuery.value = result.value.resp.data.request;
             structure.value = result.value.resp.data.structure;
             constraints.value = result.value.resp.data.constraints;
@@ -147,6 +149,22 @@ const updateRow = (rowIndex, row) => {
     console.log(rowIndex, row);
 }
 
+const searchInList = (search) => {
+    displayedRows.value = rows.value.filter((row) => {
+        let flagFound = false;
+        Object.values(row).forEach((value) => {
+            if (value !== null && value.toString().toLowerCase().includes(search) === true) {
+                flagFound = true;
+            }
+        })
+        return flagFound === true;
+    })
+}
+
+const clearSarchInList = () => {
+    displayedRows.value = rows.value;
+}
+
 watch([database, table, searchColumn, itemId], () => { showTableDatas() });
 onMounted(() => {
     selectTab('Datas');
@@ -170,10 +188,6 @@ onMounted(() => {
             </div>
         </div>
 
-        <span v-if="rows.length > 0" class="table-options">
-            <span v-if="showRowOptions" @click="triggerShowRowOptions" >Hide rows options</span>
-            <span v-else @click="triggerShowRowOptions" >Show rows options</span>
-        </span>
         <SimpleTable
             v-if="rows.length > 0"
             :table-name="table"
@@ -182,16 +196,15 @@ onMounted(() => {
             :primaries="primaryIndexes"
             :structure="structure"
             :nb-result="rows.length"
-            :add-action-t-d="showRowOptions"
             :sticky-th="true"
+            @search-in-list="searchInList"
+            @clear-search-in-list="clearSarchInList"
+            :selection-column="true"
         >
             <template v-slot:tableContent>
-                <tr v-for="(row, index) in rows" :id="index" :class="rows.length > 1 && selectedRows === index ? 'selected-row' : ''">
-                    <td v-if="showRowOptions" class="action-col">
-                        <RowActions
-                            @delete="deleteRow(index, row)"
-                            @update="updateRow(index, row)"
-                        />
+                <tr v-for="(row, index) in displayedRows" :id="index" :class="displayedRows.length > 1 && selectedRows === index ? 'selected-row' : ''">
+                    <td>
+                        <input type="checkbox">
                     </td>
                     <td
                         v-for="(champs, cle) in row"

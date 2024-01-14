@@ -1,8 +1,8 @@
 <script setup>
-import { ref, toRef, useSlots } from 'vue';
+import { ref, toRef, useSlots, watch } from 'vue';
+import { useDebouncedRef } from '../utils/UseDebouncedRef';
 import ThIndex from './tableDatas/thIndexes.vue';
 import TdDatas from './tableDatas/tdDatas.vue';
-import customInput from './form/customInput.vue';
 
 const props = defineProps({
     tableName: {
@@ -59,12 +59,12 @@ const props = defineProps({
         required: false,
         default: false
     },
-    addActionTD: {
+    stickyTh: {
         type: Boolean,
         required: false,
         default: false,
     },
-    stickyTh: {
+    selectionColumn: {
         type: Boolean,
         required: false,
         default: false,
@@ -75,6 +75,16 @@ const errorText = toRef(props, "errorText");
 const nbResult = toRef(props, "nbResult");
 const slots = useSlots();
 const hasTableContentSlot = ref(!!slots?.tableContent);
+const search = useDebouncedRef('')
+const emit = defineEmits(['searchInList', 'clearSearchInList']);
+
+watch(search, () => {
+    if (search.value === '') {
+        emit('clearSearchInList');
+    } else {
+        emit('searchInList', search.value);
+    }
+})
 
 const isPrimary = (col) => {
     return props.primaries.includes(col);
@@ -87,15 +97,15 @@ const isForeign = (col) => {
 
 <template>
     <h2 v-if="tableTitle" class="simple-table-title">{{ tableTitle }}</h2>
-    <span v-if="nbResult" class="simple-table-nb-result">{{ nbResult }} results</span>
     <br>
     <div v-if="showTable" class="table-container">
         <div v-if="tableName" class="table-header">
             <div class="table-header-table-name">{{ tableName }}</div>
+            <span v-if="nbResult" class="simple-table-nb-result">{{ nbResult }} results</span>
             <div>
                 <div class="tablea-header-search">
                     <img src="@/assets/search.png" class="no-pointer">
-                    <input type="search">
+                    <input type="search" v-model="search">
                 </div>
                 <img src="@/assets/filter.png" class="disabled">
                 <img src="@/assets/settings.png" class="disabled">
@@ -104,7 +114,7 @@ const isForeign = (col) => {
         <table class="simple-table">
             <thead>
                 <tr v-if="props.columns" :class="stickyTh === true ? 'sticky-th' : ''">
-                    <th v-if="addActionTD" class="action-col-th">Options</th>
+                    <th v-if="selectionColumn"></th>
                     <th v-if="autoIdColumn"></th>
                     <th v-for="(column, columnName) in props.columns">
                         <ThIndex
@@ -116,7 +126,7 @@ const isForeign = (col) => {
                     </th>
                 </tr>
                 <tr v-else-if="datas" :class="stickyTh === true ? 'sticky-th' : ''">
-                    <th v-if="addActionTD" class="action-col-th">Options</th>
+                    <th v-if="selectionColumn"></th>
                     <th v-if="autoIdColumn"></th>
                     <th v-for="(data, column) in datas[0]">
                         <ThIndex
@@ -131,7 +141,9 @@ const isForeign = (col) => {
     
             <tbody v-if="datas && props.columns">
                 <tr v-for="(row, index) in datas">
-                    <td v-if="addActionTD"></td>
+                    <th v-if="selectionColumn">
+                        <input type="checkbox" name="" id="">
+                    </th>
                     <td v-if="autoIdColumn" class="primary-col">{{ index + 1 }}</td>
                     <td v-for="(column, columnName) in props.columns">
                         <TdDatas
@@ -143,7 +155,9 @@ const isForeign = (col) => {
             </tbody>
             <tbody v-else-if="datas">
                 <tr v-for="(row, index) in datas">
-                    <td v-if="addActionTD"></td>
+                    <th v-if="selectionColumn">
+                        <input type="checkbox" name="" id="">
+                    </th>
                     <td v-if="autoIdColumn" class="primary-col">{{ index + 1 }}</td>
                     <td v-for="(datas, column) in datas[0]">
                         <TdDatas

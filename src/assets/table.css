@@ -16,6 +16,7 @@ div.table-header {
     top: 0;
     left: 0;
     display: flex;
+    gap: 1.5em;
     align-items: center;
     background-color: var(--color-background-light);
     border-radius: 5px;
@@ -24,6 +25,7 @@ div.table-header {
 
 .table-header-table-name {
     font-weight: bold;
+    text-transform: uppercase;
 }
 
 .table-header-table-name~div {
