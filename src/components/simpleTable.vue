@@ -2,8 +2,13 @@
 import { ref, toRef, useSlots } from 'vue';
 import ThIndex from './tableDatas/thIndexes.vue';
 import TdDatas from './tableDatas/tdDatas.vue';
+import customInput from './form/customInput.vue';
 
 const props = defineProps({
+    tableName: {
+        type: String,
+        requiered: false,
+    },
     datas: {
         type: Array,
         required: false
@@ -58,6 +63,11 @@ const props = defineProps({
         type: Boolean,
         required: false,
         default: false,
+    },
+    stickyTh: {
+        type: Boolean,
+        required: false,
+        default: false,
     }
 });
 const datas = toRef(props, "datas");
@@ -79,60 +89,86 @@ const isForeign = (col) => {
     <h2 v-if="tableTitle" class="simple-table-title">{{ tableTitle }}</h2>
     <span v-if="nbResult" class="simple-table-nb-result">{{ nbResult }} results</span>
     <br>
-    <table class="simple-table" v-if="showTable">
-        <thead>
-            <tr v-if="props.columns">
-                <th v-if="addActionTD" class="action-col-th">Options</th>
-                <th v-if="autoIdColumn"></th>
-                <th v-for="(column, columnName) in props.columns">
-                    <ThIndex
-                        :column-name="columnName"
-                        :is-primary="isPrimary(columnName)"
-                        :is-foreign="isForeign(columnName)"
-                        :structure="structure"
-                    />
-                </th>
-            </tr>
-            <tr v-else-if="datas">
-                <th v-if="addActionTD" class="action-col-th">Options</th>
-                <th v-if="autoIdColumn"></th>
-                <th v-for="(data, column) in datas[0]">
-                    <ThIndex
-                        :column-name="column"
-                        :is-primary="isPrimary(column)"
-                        :is-foreign="isForeign(column)"
-                        :structure="structure"
-                    />
-                </th>
-            </tr>
-        </thead>
-
-        <tbody v-if="datas && props.columns">
-            <tr v-for="(row, index) in datas">
-                <td v-if="addActionTD"></td>
-                <td v-if="autoIdColumn" class="colored-col">{{ index + 1 }}</td>
-                <td v-for="(column, columnName) in props.columns">
-                    <TdDatas
-                        :data-value="row[column]"
-                        :check-empty-string="checkEmptyString"
-                    />
-                </td>
-            </tr>
-        </tbody>
-        <tbody v-else-if="datas">
-            <tr v-for="(row, index) in datas">
-                <td v-if="addActionTD"></td>
-                <td v-if="autoIdColumn" class="colored-col">{{ index + 1 }}</td>
-                <td v-for="(datas, column) in datas[0]">
-                    <TdDatas
-                        :data-value="row[column]"
-                        :check-empty-string="checkEmptyString"
-                    />
-                </td>
-            </tr>
-        </tbody>
-        <slot name="tableContent" v-else/>
-
-    </table>
+    <div v-if="showTable" class="table-container">
+        <div v-if="tableName" class="table-header">
+            <div class="table-header-table-name">{{ tableName }}</div>
+            <div>
+                <div class="tablea-header-search">
+                    <img src="@/assets/search.png" class="no-pointer">
+                    <input type="search">
+                </div>
+                <img src="@/assets/filter.png" class="disabled">
+                <img src="@/assets/settings.png" class="disabled">
+            </div>
+        </div>
+        <table class="simple-table">
+            <thead>
+                <tr v-if="props.columns" :class="stickyTh === true ? 'sticky-th' : ''">
+                    <th v-if="addActionTD" class="action-col-th">Options</th>
+                    <th v-if="autoIdColumn"></th>
+                    <th v-for="(column, columnName) in props.columns">
+                        <ThIndex
+                            :column-name="columnName"
+                            :is-primary="isPrimary(columnName)"
+                            :is-foreign="isForeign(columnName)"
+                            :structure="structure"
+                        />
+                    </th>
+                </tr>
+                <tr v-else-if="datas" :class="stickyTh === true ? 'sticky-th' : ''">
+                    <th v-if="addActionTD" class="action-col-th">Options</th>
+                    <th v-if="autoIdColumn"></th>
+                    <th v-for="(data, column) in datas[0]">
+                        <ThIndex
+                            :column-name="column"
+                            :is-primary="isPrimary(column)"
+                            :is-foreign="isForeign(column)"
+                            :structure="structure"
+                        />
+                    </th>
+                </tr>
+            </thead>
+    
+            <tbody v-if="datas && props.columns">
+                <tr v-for="(row, index) in datas">
+                    <td v-if="addActionTD"></td>
+                    <td v-if="autoIdColumn" class="primary-col">{{ index + 1 }}</td>
+                    <td v-for="(column, columnName) in props.columns">
+                        <TdDatas
+                            :data-value="row[column]"
+                            :check-empty-string="checkEmptyString"
+                        />
+                    </td>
+                </tr>
+            </tbody>
+            <tbody v-else-if="datas">
+                <tr v-for="(row, index) in datas">
+                    <td v-if="addActionTD"></td>
+                    <td v-if="autoIdColumn" class="primary-col">{{ index + 1 }}</td>
+                    <td v-for="(datas, column) in datas[0]">
+                        <TdDatas
+                            :data-value="row[column]"
+                            :check-empty-string="checkEmptyString"
+                        />
+                    </td>
+                </tr>
+            </tbody>
+            <slot name="tableContent" v-else/>
+    
+        </table>
+    </div>
     <div v-if="datas && datas.length === 0 || (!datas && !hasTableContentSlot)" class="simple-table-error">{{ errorText }}</div>
 </template>
+
+<style scoped>
+input {
+    position: relative;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    outline: none;
+    width: calc(100% - 30px);
+    font-size: small;
+    color: var(--color-text);
+}
+</style>

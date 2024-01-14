@@ -176,12 +176,14 @@ onMounted(() => {
         </span>
         <SimpleTable
             v-if="rows.length > 0"
+            :table-name="table"
             :columns="rows[0]"
             :foreigns="constraints.map(c => c.FOR_COL_NAME)"
             :primaries="primaryIndexes"
             :structure="structure"
             :nb-result="rows.length"
             :add-action-t-d="showRowOptions"
+            :sticky-th="true"
         >
             <template v-slot:tableContent>
                 <tr v-for="(row, index) in rows" :id="index" :class="rows.length > 1 && selectedRows === index ? 'selected-row' : ''">
@@ -195,7 +197,7 @@ onMounted(() => {
                         v-for="(champs, cle) in row"
                         @click="selectRow(index)"
                         :id="`${cle}-${champs}`"
-                        :class="isPrimaryIndex(cle) ? 'colored-col' : ''"
+                        :class="isPrimaryIndex(cle) ? 'primary-col' : ''"
                     >
                         <span v-if="champs !== null && isContrained(cle)">
                             <RouterLink :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs">

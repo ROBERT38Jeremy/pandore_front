@@ -1,18 +1,72 @@
+div.table-container {
+    margin-left: 1em;
+    margin-right: 1em;
+    padding: 0;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+    border-radius: 5px;
+    width: fit-content;
+    min-width: 500px;
+}
+
+div.table-header {
+    max-width: calc(100vw - 12em - 200px + 10px);
+    padding: 0.4em 1em;
+    position: sticky;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-background-light);
+    border-radius: 5px;
+    z-index: 3;
+}
+
+.table-header-table-name {
+    font-weight: bold;
+}
+
+.table-header-table-name~div {
+    margin-left: auto;
+    display: flex;
+    gap: 1em;
+}
+
+.table-header-table-name~div>div {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+}
+
+.table-header-table-name~div img {
+    height: 15px;
+}
+
+.table-header-table-name~div img:not(.disabled):not(.no-pointer) {
+    cursor: pointer;
+}
+
+.table-header-table-name~div img.disabled {
+    opacity: 0.5;
+}
+
 table.simple-table {
     width: fit-content;
+    min-width: 500px;
     border-spacing: 0;
     border-left: 1px solid rgba(216, 218, 221, 0.4);
     border-top: 1px solid rgba(216, 218, 221, 0.4);
-    margin-left: 1em;
-    margin-right: 1em;
 }
 
 .simple-table th {
     text-align: left;
     background-color: var(--color-background);
-    position: sticky;
-    top: 0;
     z-index: 3;
+}
+
+.simple-table tr.sticky-th th {
+    position: sticky;
+    top: 2.4em;
 }
 
 .simple-table th>div.th-index {
@@ -22,8 +76,7 @@ table.simple-table {
 }
 
 .simple-table td, .simple-table th {
-    padding: 0.4em 0.7em;
-    border-right: 1px solid rgba(216, 218, 221, 0.4);
+    padding: 0.4em 1em;
     border-bottom: 1px solid rgba(216, 218, 221, 0.4);
 }
 
@@ -32,12 +85,21 @@ table.simple-table {
     background-color: var(--color-background);
 }
 
+.simple-table tr td.primary-col {
+    text-align: center;
+    font-weight: bold;
+}
+
 .simple-table tr td {
     white-space: nowrap;
     max-width: 40em;
     overflow: hidden;
     white-space: nowrap; /* Don't forget this one */
     text-overflow: ellipsis;
+}
+
+.simple-table tr:hover td {
+    background-color: var(--color-background);
 }
 
 .simple-table .null-value,
