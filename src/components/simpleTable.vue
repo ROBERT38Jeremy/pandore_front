@@ -76,7 +76,7 @@ const nbResult = toRef(props, "nbResult");
 const slots = useSlots();
 const hasTableContentSlot = ref(!!slots?.tableContent);
 const search = useDebouncedRef('')
-const emit = defineEmits(['searchInList', 'clearSearchInList']);
+const emit = defineEmits(['searchInList', 'clearSearchInList', 'triggerFilter']);
 
 watch(search, () => {
     if (search.value === '') {
@@ -107,7 +107,7 @@ const isForeign = (col) => {
                     <img src="@/assets/search.png" class="no-pointer">
                     <input type="search" v-model="search">
                 </div>
-                <img src="@/assets/filter.png" class="disabled">
+                <img src="@/assets/filter.png" @click="emit('triggerFilter')">
                 <img src="@/assets/settings.png" class="disabled">
             </div>
         </div>

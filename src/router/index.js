@@ -110,7 +110,10 @@ const router = createRouter({
             beforeEnter: [checkDBConnection],
             props: true
         },
-    ]
+    ],
+    scrollBehavior (to, from, savedPosition) {
+        return { left: 0, top: 0, behavior: "smooth" }
+    }
 })
 
 export default router

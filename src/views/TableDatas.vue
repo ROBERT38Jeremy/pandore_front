@@ -44,6 +44,7 @@ const itemId = toRef(props, "itemId");
 const message = ref(null);
 const selectedRows = ref(-1);
 const showRowOptions = ref(false);
+const databaseQueryBuilderOpen = ref(false);
 const requestParams = ref({
     limit: 50,
     where: [],
@@ -165,6 +166,15 @@ const clearSarchInList = () => {
     displayedRows.value = rows.value;
 }
 
+const triggerFilter = () => {
+    if (databaseQueryBuilderOpen.value === true) {
+        databaseQueryBuilderOpen.value = false;
+    } else {
+        databaseQueryBuilderOpen.value = true
+        document.getElementById('main-view').scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+}
+
 watch([database, table, searchColumn, itemId], () => { showTableDatas() });
 onMounted(() => {
     selectTab('Datas');
@@ -179,8 +189,13 @@ onMounted(() => {
         Datas
     </h2>
     <CustomLoader :loading="loading">
-        <DatabaseSearch :table-structure="structure" @search-query="(conditions) => showTableDatas(conditions)" :query-conditions="conditions" />
-
+        <DatabaseSearch
+            :table-structure="structure"
+            @search-query="(conditions) => showTableDatas(conditions)"
+            :query-conditions="conditions"
+            :open="databaseQueryBuilderOpen"
+        />
+        <br>
         <div v-if="sqlQuery" class="code">
             <pre><code-highlight language="js">{{ sqlQuery }}</code-highlight></pre>
             <div>
@@ -197,9 +212,10 @@ onMounted(() => {
             :structure="structure"
             :nb-result="rows.length"
             :sticky-th="true"
+            :selection-column="true"
             @search-in-list="searchInList"
             @clear-search-in-list="clearSarchInList"
-            :selection-column="true"
+            @trigger-filter="triggerFilter"
         >
             <template v-slot:tableContent>
                 <tr v-for="(row, index) in displayedRows" :id="index" :class="displayedRows.length > 1 && selectedRows === index ? 'selected-row' : ''">

@@ -47,7 +47,7 @@ onMounted(async () => {
                     </td>
                 </tr>
                 <tr>
-                    <td class="main-view">
+                    <td class="main-view" id="main-view">
                         <div class="main-view-container">
                             <RouterView v-if="isLoaded" />
                         </div>
