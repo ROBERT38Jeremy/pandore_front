@@ -75,7 +75,7 @@ const errorText = toRef(props, "errorText");
 const nbResult = toRef(props, "nbResult");
 const slots = useSlots();
 const hasTableContentSlot = ref(!!slots?.tableContent);
-const search = useDebouncedRef('')
+const search = useDebouncedRef('');
 const emit = defineEmits(['searchInList', 'clearSearchInList', 'triggerFilter']);
 
 watch(search, () => {

@@ -13,9 +13,6 @@ export const useTabStore = defineStore('Tab', () => {
     }
 
     const getTabs = (isFuzzy = false) => {
-        // if (isFuzzy !== true) {
-        //     currentTab.value = 'Structure'
-        // }
         const tabList = [
             // PRIVILEGES
             {
@@ -77,6 +74,17 @@ export const useTabStore = defineStore('Tab', () => {
                 title: 'Datas',
                 name: `See ${database.value}.${table.value} datas`,
                 path: `/database/${database.value}/${table.value}/datas`,
+                conditions: {
+                    display: table.value !== null,
+                    click: table.value !== null,
+                    fuzzy: table.value !== null,
+                }
+            },
+            // TABLE INSERT
+            {
+                title: 'Insert',
+                name: `Insert datas in ${database.value}.${table.value}`,
+                path: `/database/${database.value}/${table.value}/insert`,
                 conditions: {
                     display: table.value !== null,
                     click: table.value !== null,

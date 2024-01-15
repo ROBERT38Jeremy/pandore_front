@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^1.6.0",
+    "luxon": "^3.4.4",
     "pinia": "^2.1.7",
     "vue": "^3.3.4",
     "vue-code-highlight": "^0.7.8",

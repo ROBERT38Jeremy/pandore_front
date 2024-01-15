@@ -5,6 +5,7 @@ import HomeViewV2 from '../views/HomeV2.vue'
 import DatabaseStructure from '../views/DatabaseStructure.vue'
 import TableStructure from '../views/TableStructure.vue'
 import TableDatas from '../views/TableDatas.vue'
+import TableInsert from '../views/TableInsert.vue'
 import TableExport from '../views/TableExport.vue'
 import TableImport from '../views/TableImport.vue'
 import TableOperations from '../views/TableOperations.vue'
@@ -41,6 +42,13 @@ const router = createRouter({
             path: '/database/:databaseName/:tableName/datas/:searchColumn?/:itemId?',
             name: 'TableDatas',
             component: TableDatas,
+            beforeEnter: [checkDBConnection],
+            props: true
+        },
+        {
+            path: '/database/:databaseName/:tableName/insert',
+            name: 'TableInsert',
+            component: TableInsert,
             beforeEnter: [checkDBConnection],
             props: true
         },
