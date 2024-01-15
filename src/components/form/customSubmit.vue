@@ -24,5 +24,6 @@ button {
     border-radius: 0.2em;
     color: var(--color-background-light);
     background-color: var(--color-button);
+    cursor: pointer;
 }
 </style>

@@ -9,6 +9,10 @@ const props = defineProps({
         type: String,
         requiered: false,
     },
+    tableClass: {
+        type: String,
+        requiered: false,
+    },
     datas: {
         type: Array,
         required: false
@@ -111,7 +115,7 @@ const isForeign = (col) => {
                 <img src="@/assets/settings.png" class="disabled">
             </div>
         </div>
-        <table class="simple-table">
+        <table :class="'simple-table ' + tableClass">
             <thead>
                 <tr v-if="props.columns" :class="stickyTh === true ? 'sticky-th' : ''">
                     <th v-if="selectionColumn"></th>

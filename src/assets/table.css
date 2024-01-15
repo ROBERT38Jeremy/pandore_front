@@ -100,7 +100,7 @@ table.simple-table {
     text-overflow: ellipsis;
 }
 
-.simple-table tr:hover td {
+.simple-table:not(.no-hover) tr:hover td {
     background-color: var(--color-background);
 }
 
