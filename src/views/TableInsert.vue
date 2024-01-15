@@ -96,7 +96,6 @@ onMounted(() => {
     <CustomLoader :loading="loading">
         <SimpleTable
             :show-table="Object.entries(tableConstraints).length > 0"
-            table-title="Foreign Keys"
             :check-empty-string="false"
             :columns="{
                 'Champ': 'Field',
