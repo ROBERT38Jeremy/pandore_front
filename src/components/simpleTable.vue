@@ -3,6 +3,7 @@ import { ref, toRef, useSlots, watch } from 'vue';
 import { useDebouncedRef } from '../utils/UseDebouncedRef';
 import ThIndex from './tableDatas/thIndexes.vue';
 import TdDatas from './tableDatas/tdDatas.vue';
+import tableHeader from './tableDatas/tableHeader.vue';
 
 const props = defineProps({
     tableName: {
@@ -103,18 +104,12 @@ const isForeign = (col) => {
     <h2 v-if="tableTitle" class="simple-table-title">{{ tableTitle }}</h2>
     <br>
     <div v-if="showTable" class="table-container">
-        <div v-if="tableName" class="table-header">
-            <div class="table-header-table-name">{{ tableName }}</div>
-            <span v-if="nbResult" class="simple-table-nb-result">{{ nbResult }} results</span>
-            <div>
-                <div class="tablea-header-search">
-                    <img src="@/assets/search.png" class="no-pointer">
-                    <input type="search" v-model="search">
-                </div>
-                <img src="@/assets/filter.png" @click="emit('triggerFilter')">
-                <img src="@/assets/settings.png" class="disabled">
-            </div>
-        </div>
+        <tableHeader
+            v-if="tableName"
+            :table-name="tableName"
+            :nb-result="nbResult"
+            @triggerFilter="emit('triggerFilter')"
+        />
         <table :class="'simple-table ' + tableClass">
             <thead>
                 <tr v-if="props.columns" :class="stickyTh === true ? 'sticky-th' : ''">
@@ -178,15 +173,4 @@ const isForeign = (col) => {
     <div v-if="datas && datas.length === 0 || (!datas && !hasTableContentSlot)" class="simple-table-error">{{ errorText }}</div>
 </template>
 
-<style scoped>
-input {
-    position: relative;
-    background-color: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    outline: none;
-    width: calc(100% - 30px);
-    font-size: small;
-    color: var(--color-text);
-}
-</style>
+<style scoped></style>
