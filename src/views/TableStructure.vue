@@ -59,7 +59,7 @@ onMounted(() => {
     <CustomLoader :loading="loading">
         <SimpleTable
             :datas="tableStructure"
-            :auto-id-column="true"
+            :auto-id-column="false"
             :error-text="message"
             :check-empty-string="false"
         />
@@ -67,7 +67,7 @@ onMounted(() => {
         <hr>
         <SimpleTable
             :datas="tableIndexes"
-            :auto-id-column="true"
+            :auto-id-column="false"
             :check-empty-string="false"
             :columns="{
                 'Type': 'CONSTRAINT_TYPE',
