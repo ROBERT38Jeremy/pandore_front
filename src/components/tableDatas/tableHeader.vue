@@ -14,7 +14,7 @@ const props = defineProps({
 });
 const nbResult = toRef(props, "nbResult");
 const search = useDebouncedRef('');
-const emit = defineEmits(['triggerFilter']);
+const emit = defineEmits(['triggerFilter', 'searchInList', 'clearSearchInList']);
 
 watch(search, () => {
     if (search.value === '') {

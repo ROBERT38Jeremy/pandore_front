@@ -80,16 +80,7 @@ const errorText = toRef(props, "errorText");
 const nbResult = toRef(props, "nbResult");
 const slots = useSlots();
 const hasTableContentSlot = ref(!!slots?.tableContent);
-const search = useDebouncedRef('');
 const emit = defineEmits(['searchInList', 'clearSearchInList', 'triggerFilter']);
-
-watch(search, () => {
-    if (search.value === '') {
-        emit('clearSearchInList');
-    } else {
-        emit('searchInList', search.value);
-    }
-})
 
 const isPrimary = (col) => {
     return props.primaries.includes(col);
@@ -109,6 +100,8 @@ const isForeign = (col) => {
             :table-name="tableName"
             :nb-result="nbResult"
             @triggerFilter="emit('triggerFilter')"
+            @search-in-list="(value) => emit('searchInList', value)"
+            @clear-search-in-list="emit('clearSearchInList')"
         />
         <table :class="'simple-table ' + tableClass">
             <thead>
