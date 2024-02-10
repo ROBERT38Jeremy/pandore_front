@@ -47,8 +47,8 @@ const runQuery = () => {
                 queryResult.value = result.value.resp.data.success;
                 queryLoading.value = false;
                 message.value = null;
-            } else if (result.value.isLoading === false && result.value.error) {
-                message.value = result.value.error.message;
+            } else if (result.value.isLoading === false && result.value.resp?.data?.error) {
+                message.value = result.value.resp.data.error;
                 queryLoading.value = false;
                 queryResult.value = []
             }
@@ -87,13 +87,13 @@ onMounted(() => {
     </table>
     <CustomLoader :class="queryLoading ? 'sql-result' : ''" :loading="queryLoading">
         <br>
-        <div v-if="message" class="code">{{ message }}</div>
+        <div v-if="message" class="error">{{ message }}</div>
         <div v-if="((queryResult || []).length > 0 || message) && sqlRequest" class="code">
             <pre><code-highlight language="javascript">{{ sqlRequest }}</code-highlight></pre>
         </div>
         <br>
         <SimpleTable
-            v-if="queryResult"
+            v-if="(queryResult || []).length > 0"
             :datas="queryResult"
             table-title="SQL Result"
             error-text="No result found"
@@ -187,11 +187,16 @@ button.save {
     tab-size: 2em;
 }
 
-.code {
+.code,
+.error {
     min-width: 50em;
     width: fit-content;
     position: sticky;
     left: 1em;
+}
+
+.error {
+    color: red;
 }
 
 .code pre {
