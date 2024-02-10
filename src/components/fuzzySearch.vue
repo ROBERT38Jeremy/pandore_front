@@ -24,10 +24,18 @@ const fuzzySearchParams = ref({
     table: null
 })
 
-const hotKey = (e) => {
+const hotKey = async (e) => {
     if (e.key == 'k' && e.ctrlKey && active.value === false) {
         active.value = true;
         input.value.focus();
+
+        // if user already in database, trigger fuzzy on this database
+        if (database.value) {
+            search.value = '> '+database.value;
+            selectItem(database.value)
+            await getTableList();
+            fuzzyTable('');
+        }
     } else if (e.key == 'Escape' && active.value === true) {
         active.value = false;
         input.value.blur();
