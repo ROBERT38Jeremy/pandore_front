@@ -3,13 +3,15 @@ import { onBeforeMount, onBeforeUnmount, onMounted, ref, watch, watchEffect } fr
 import { useAxios } from '../hooks/useAxios';
 import { useRouter } from 'vue-router'
 import { useDBConnectStore } from '../stores/DBConnect'
+import { usePandoreConfStore } from '../stores/PandoreConf'
 import { useTabStore } from '../stores/Tabs'
 import { storeToRefs } from 'pinia';
 
-const { selectTab, getTabs } = useTabStore()
+const { getTabs } = useTabStore()
 const { fuzzyTabs } = storeToRefs(useTabStore())
 const { setDatabase, setTable } = useDBConnectStore()
 const { database, table } = storeToRefs(useDBConnectStore())
+const { pandoreConf } = storeToRefs(usePandoreConfStore())
 const router = useRouter()
 const active = ref(false);
 const input = ref(null);
@@ -207,7 +209,7 @@ const selectItem = (itemName) => {
         active.value = false;
         search.value = '';
         input.value.blur();
-        router.push(`/database/${fuzzySearchParams.value.database}/${itemName}/datas`);
+        router.push(`/database/${fuzzySearchParams.value.database}/${itemName}/${pandoreConf.value?.tables?.defaultPage ?? 'structure'}`);
     }
     // match database name
     else if ((search.value.match(/(?<=^>\s)\w+/g) || []).length === 1 && (search.value.match(/\w+(?![\w\s>])/g) || []).length === 1) {

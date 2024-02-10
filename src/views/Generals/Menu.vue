@@ -3,12 +3,14 @@ import { onBeforeMount, onMounted, ref, watchEffect } from 'vue';
 import { useAxios } from '../../hooks/useAxios';
 import { useDBConnectStore } from '../../stores/DBConnect'
 import { useAppLoaderStore } from '../../stores/AppLoader'
+import { usePandoreConfStore } from '../../stores/PandoreConf'
 import { storeToRefs } from 'pinia';
 import CustomLoader from '../../components/global/CustomLoader.vue'
 
 const { database: selectedDatabase, table: selectedTable } = storeToRefs(useDBConnectStore())
 const { setDatabase, setTable, unsetTable } = useDBConnectStore()
 const { setModuleStatus } = useAppLoaderStore()
+const { pandoreConf } = storeToRefs(usePandoreConfStore())
 const databaseList = ref({});
 const loading = ref(false);
 const showDatabase = ref(null);
@@ -77,7 +79,7 @@ watchEffect(() => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <RouterLink :to="'/database/'+database+'/'+table+'/structure'" >{{ table }}</RouterLink>
+                                    <RouterLink :to="`/database/${database}/${table}/${pandoreConf?.tables?.defaultPage ?? 'structure'}`" >{{ table }}</RouterLink>
                                 </div>
                             </div>
                         </div>
