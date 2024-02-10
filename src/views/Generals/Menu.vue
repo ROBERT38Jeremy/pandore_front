@@ -14,6 +14,7 @@ const { pandoreConf } = storeToRefs(usePandoreConfStore())
 const databaseList = ref({});
 const loading = ref(false);
 const showDatabase = ref(null);
+const currentUser = ref(null);
 
 const getDatabaseList = () => {
     const result = ref({});
@@ -29,11 +30,23 @@ const getDatabaseList = () => {
     })
 }
 
+const getCurrentUser = () => {
+    const result = ref({});
+    result.value = useAxios({ url: `/user/current`, method: 'GET' });
+
+    watchEffect(() => {
+        if (result.value.isLoading === false && result.value.resp.data.success) {
+            currentUser.value = result.value.resp.data.success?.[0]?.['CURRENT_USER()'];
+        }
+    })
+}
+
 const triggerShowDatabase = (databaseName) => {
     showDatabase.value = databaseName;
 }
 
 onBeforeMount(getDatabaseList)
+onMounted(getCurrentUser)
 watchEffect(() => {
     if (selectedDatabase.value !== '') {
         triggerShowDatabase(selectedDatabase.value)
@@ -47,7 +60,7 @@ watchEffect(() => {
             <img src="@/assets/logo.png">
         </div>
         <div class="title">Pandore</div>
-        <span>Databases managment</span>
+        <span><i>Authenticated as : <b>{{ currentUser }}</b></i></span>
 
         <CustomLoader :loading="loading">
             <div class="database-list-global-container">
