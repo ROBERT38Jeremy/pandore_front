@@ -75,6 +75,7 @@ const getInputAttributes = () => {
         const input = {
             name: champ.Field,
             placeholder: champ.Default ?? '',
+            options: []
         }
         if (champ.Extra === 'auto_increment') {
             input.placeholder = 'auto_increment';
@@ -101,6 +102,39 @@ const getInputAttributes = () => {
                 break;
         }
         inputs.value[champ.Field] = input;
+
+        if (isConstraint(champ.Field) === true) {
+            const tableConstraintDefs = tableConstraints.value.filter(c => c.FOR_COL_NAME === champ.Field)[0]
+            const tableName = tableConstraintDefs.REFERENCED_TABLE_NAME
+            const refColumn = tableConstraintDefs.REF_COL_NAME
+            console.log(tableName)
+            getConstraintsPossibleValues(tableName, refColumn, champ.Field)
+        }
+    })
+}
+
+const isConstraint = (Field) => {
+    return tableConstraints.value.filter(c => c.FOR_COL_NAME === Field).length > 0
+}
+
+const getConstraintsPossibleValues = (tableName, refColumn, Field) => {
+    const result = ref({});
+
+    result.value = useAxios({
+        url: `/database/${database.value}/${tableName}/datas`,
+        method: 'POST',
+        body: { limit: 50_000_000}
+    });
+
+    watchEffect(() => {
+        if (result.value.isLoading === false && result.value?.resp?.data?.success) {
+            inputs.value[Field].options = result.value.resp.data.success.map((row) => {
+                return {
+                    REF_COL_NAME: row?.[refColumn],
+                    LABEL: Object.values(row)[1]
+                }
+            });
+        }
     })
 }
 
@@ -121,7 +155,6 @@ onMounted(() => {
     <CustomLoader :loading="loading">
         <div class="flex-container">
             <SimpleTable
-                :show-table="Object.entries(tableConstraints).length > 0"
                 :check-empty-string="false"
                 :columns="{
                     'Champ': 'Field',
@@ -138,12 +171,22 @@ onMounted(() => {
                         <td>{{ champ.Type }}</td>
                         <td>
                             <input
-                                v-if="inputs?.[champ.Field]"
+                                v-if="inputs?.[champ.Field] && isConstraint(champ.Field) === false"
                                 v-model="insertValues.datas[champ.Field]"
                                 :type="inputs[champ.Field]?.type ?? 'text'"
                                 :placeholder="inputs[champ.Field]?.placeholder ?? ''"
                                 :maxlength="inputs[champ.Field]?.maxlength"
                             >
+                            <span v-if="isConstraint(champ.Field) === true">
+                                <input
+                                    :list="champ.Field"
+                                    v-model="insertValues.datas[champ.Field]"
+                                    :placeholder="inputs[champ.Field]?.placeholder ?? ''"
+                                >
+                                <datalist :id="champ.Field">
+                                    <option v-for="options in inputs[champ.Field].options" :value="options.REF_COL_NAME">{{ options.LABEL }}</option>
+                                </datalist>
+                            </span>
                         </td>
                         <td v-if="idx === 0" :rowspan="tableStructure.length" class="summary">
                             <pre>{{ insertValues }}</pre>
