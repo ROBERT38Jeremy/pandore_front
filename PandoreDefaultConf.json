@@ -1,0 +1,26 @@
+{
+    "databases": {
+        "hidden" : [
+            "information_schema",
+            "mysql",
+            "performance_schema",
+            "sys"
+        ]
+    },
+    "tables": {
+        "query": {
+            "defaultLimit": 100,
+            "absolutLimit": 1000
+        },
+        "defaultPage": "datas",
+        "searchForEmpty": false,
+        "showBooleanAsCheck": true,
+        "dateFormat": "yyyy-LL-dd"
+    },
+    "CSV": {
+        "defaultFormat": {
+            "valueSeparator": ",",
+            "rowSeparator": "\n"
+        }
+    }
+}
