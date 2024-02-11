@@ -1,7 +1,13 @@
 <script setup>
+import { isEnum } from '../../utils/UseColumnType';
+
 const props = defineProps({
     dataValue: {
         required: true
+    },
+    structure: {
+        type: Object,
+        required: false
     },
     checkEmptyString: {
         type: Boolean,
@@ -19,6 +25,7 @@ const props = defineProps({
     >
         {{ dataValue }}
     </a>
+    <span v-else-if="isEnum(structure.Type) === true" class="enum-value">{{ dataValue }}</span>
     <span v-else-if="dataValue">{{ dataValue }}</span>
     <span v-else-if="dataValue === null" class="null-value">NULL</span>
     <span v-else-if="checkEmptyString === true && dataValue === ''" class="empty-value" title="String is empty but not null">EMPTY</span>

@@ -4,10 +4,10 @@ import { useAxios } from '../hooks/useAxios.js';
 import { useDBConnectStore } from '../stores/DBConnect';
 import { useTabStore } from '../stores/Tabs';
 import { useToastStore } from '../stores/Toast.store'
+import { isEnum } from '../utils/UseColumnType'
 import CustomLoader from '../components/global/CustomLoader.vue';
 import SimpleTable from '../components/simpleTable.vue';
 import TdDatas from '../components/tableDatas/tdDatas.vue';
-import RowActions from '../components/tableDatas/rowActions.vue';
 import DatabaseSearch from '../components/tableDatas/databaseSearch.vue';
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import "vue-code-highlight/themes/duotone-sea.css";
@@ -227,7 +227,7 @@ onMounted(() => {
                         @click="selectRow(index)"
                         :id="`${cle}-${champs}`"
                         :class="isPrimaryIndex(cle) ? 'primary-col' : ''"
-                    >
+                        >
                         <span v-if="champs !== null && isContrained(cle)">
                             <RouterLink :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs">
                                 {{ champs }}
@@ -235,6 +235,7 @@ onMounted(() => {
                         </span>
                         <TdDatas v-else
                             :data-value="champs"
+                            :structure="(structure.filter(s => s.Field === cle) || [])[0]"
                         />
                     </td>
                 </tr>

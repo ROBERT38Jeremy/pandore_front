@@ -105,13 +105,18 @@ table.simple-table {
 }
 
 .simple-table .null-value,
+.simple-table .enum-value,
 .simple-table .empty-value {
     padding: 0.2em;
     border-radius: 0.2em;
     font-size: small;
     font-family: sans-serif;
-    opacity: 0.5;
     cursor: default;
+}
+
+.simple-table .null-value,
+.simple-table .empty-value {
+    opacity: 0.5;
 }
 
 .simple-table .null-value {
@@ -122,6 +127,11 @@ table.simple-table {
 .simple-table .empty-value {
     border: 1px solid orange;
     background-color: rgba(255, 255, 0, 0.4);
+}
+
+.simple-table .enum-value {
+    border: 1px solid rgba(0, 128, 0, 0.5);
+    background-color: rgba(0, 128, 0, 0.1);
 }
 
 .simple-table-error {
