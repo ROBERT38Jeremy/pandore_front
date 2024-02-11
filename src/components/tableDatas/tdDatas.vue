@@ -1,7 +1,8 @@
 <script setup>
-import { isEnum, isBoolean } from '../../utils/UseColumnType';
+import { isEnum, isBoolean, isDate } from '../../utils/UseColumnType';
 import { usePandoreConfStore } from '../../stores/PandoreConf'
 import { storeToRefs } from 'pinia';
+import { DateTime } from 'luxon'
 
 const props = defineProps({
     dataValue: {
@@ -22,6 +23,11 @@ const props = defineProps({
     }
 });
 const { pandoreConf } = storeToRefs(usePandoreConfStore())
+
+const getFormatedDate = (SQLDate) => {
+    const date = DateTime.fromSQL(SQLDate);
+    return date.toFormat(pandoreConf.value?.tables?.dateFormat+' HH:mm:ss' ?? 'yyyy-LL-dd HH:mm:ss');
+}
 
 </script>
 
@@ -62,6 +68,7 @@ const { pandoreConf } = storeToRefs(usePandoreConfStore())
         </span>
         <span v-else>{{ dataValue }}</span>
     </span>
+    <span v-else-if="structure?.Type && isDate(structure.Type) === true">{{ getFormatedDate(dataValue) }}</span>
     <span v-else-if="dataValue">{{ dataValue }}</span>
     <span v-else-if="dataValue === null" class="null-value">NULL</span>
     <span v-else-if="checkEmptyString === true && dataValue === ''" class="empty-value" title="String is empty but not null">EMPTY</span>
