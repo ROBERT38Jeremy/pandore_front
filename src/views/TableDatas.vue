@@ -216,6 +216,7 @@ onMounted(() => {
             :table-structure="structure"
             @search-query="(conditions) => showTableDatas(conditions)"
             :query-conditions="conditions"
+            :open="databaseQueryBuilderOpen"
         />
         <br>
         <div v-if="sqlQuery" class="code">
