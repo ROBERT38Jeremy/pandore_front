@@ -22,5 +22,8 @@
             "valueSeparator": ",",
             "rowSeparator": "\n"
         }
+    },
+    "fuzzySearch": {
+        "enabled": true
     }
 }
