@@ -49,7 +49,7 @@ const selectedRows = ref(-1);
 const showRowOptions = ref(false);
 const databaseQueryBuilderOpen = ref(false);
 const requestParams = ref({
-    limit: 50,
+    limit: pandoreConf.value?.tables?.query?.defaultLimit ?? 50,
     where: [],
     select: []
 });

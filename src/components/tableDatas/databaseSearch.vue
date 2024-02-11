@@ -1,23 +1,27 @@
 <script setup>
-import { onBeforeMount, onMounted, toRef } from 'vue';
+import { onMounted, ref } from 'vue';
 import SearchableInput from "../global/SearchableInput.vue";
+import { usePandoreConfStore } from '../../stores/PandoreConf'
+import { storeToRefs } from 'pinia';
 
 const emit = defineEmits(['searchQuery']);
+const { pandoreConf } = storeToRefs(usePandoreConfStore())
+const defaultQueryConditions = {
+    select: [],
+    where: [],
+    limit: pandoreConf.value?.tables?.query?.defaultLimit ?? 50
+};
 const props = defineProps({
     tableStructure: {
         type: Array,
         required: false,
     },
     queryConditions: {
-        required: false,
-        default: {
-            select: [],
-            where: [],
-            limit: 50
-        }
+        required: false
     }
 });
-const conditions = toRef(props, 'queryConditions');
+const conditions = ref({});
+
 const storeSelect = (select) => {
     conditions.value.select.push(select)
 }
@@ -38,10 +42,17 @@ const storeWhere = (index, object, value) => {
 const deleteWhere = (index) => {
     conditions.value.where.splice(index, 1);
 }
+
+onMounted(() => {
+    console.log(props.queryConditions);
+    if (!props.queryConditions) conditions.value = {...defaultQueryConditions}
+    else conditions.value = {...props.queryConditions}
+})
 </script>
 
 <template>
     <details class="DQB">
+        <pre>{{ conditions }}</pre>
         <summary>Database Query Builder</summary>
         <div class="select">
             <table class="select-table">
