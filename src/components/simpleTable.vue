@@ -130,7 +130,7 @@ const isForeign = (col) => {
                     </th>
                 </tr>
             </thead>
-    
+
             <tbody v-if="datas && props.columns">
                 <tr v-for="(row, index) in datas">
                     <th v-if="selectionColumn">
@@ -160,7 +160,7 @@ const isForeign = (col) => {
                 </tr>
             </tbody>
             <slot name="tableContent" v-else/>
-    
+
         </table>
     </div>
     <div v-if="datas && datas.length === 0 || (!datas && !hasTableContentSlot)" class="simple-table-error">{{ errorText }}</div>

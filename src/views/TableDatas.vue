@@ -226,8 +226,6 @@ onMounted(() => {
             </div>
         </div>
 
-        {{ pandoreConf?.tables?.searchForEmpty }}
-
         <SimpleTable
             v-if="rows.length > 0"
             :table-name="table"
