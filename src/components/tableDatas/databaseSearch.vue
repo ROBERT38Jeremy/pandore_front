@@ -44,7 +44,6 @@ const deleteWhere = (index) => {
 }
 
 onMounted(() => {
-    console.log(props.queryConditions);
     if (!props.queryConditions) conditions.value = {...defaultQueryConditions}
     else conditions.value = {...props.queryConditions}
 })
