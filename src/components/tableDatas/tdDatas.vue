@@ -14,6 +14,10 @@ const props = defineProps({
         required: false,
         default: false
     },
+    backgroundColor: {
+        type: String,
+        required: false,
+    }
 });
 
 </script>
@@ -25,7 +29,13 @@ const props = defineProps({
     >
         {{ dataValue }}
     </a>
-    <span v-else-if="structure?.Type && isEnum(structure.Type) === true" class="enum-value">{{ dataValue }}</span>
+    <span
+        v-else-if="structure?.Type && isEnum(structure.Type) === true"
+        class="enum-value"
+        :style="'background-color: '+backgroundColor+';'"
+    >
+        {{ dataValue }}
+    </span>
     <span v-else-if="structure?.Type && isBoolean(structure.Type) === true">
         <span v-if="dataValue > 0">
             <svg width="14" height="14" viewBox="0 -4 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">

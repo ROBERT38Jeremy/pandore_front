@@ -50,6 +50,26 @@ const requestParams = ref({
     where: [],
     select: []
 });
+const colors = [
+    'rgba(0, 128, 0, 0.1)',     // green
+    'rgba(0, 119, 255, 0.1)',   // blue
+    'rgb(245, 9, 226, 0.1)',    // purple
+    'rgba(255, 238, 0, 0.3)',   // yellow
+    'rgba(255, 0, 0, 0.2)',     // red
+];
+const enumColor = ref({});
+const newEnumNumber = ref(0);
+
+const getEnumColor = (value) => {
+    if (enumColor.value?.[value]) return enumColor.value[value];
+    else {
+        const color = colors[newEnumNumber.value];
+        enumColor.value[value] = color;
+        if (newEnumNumber.value >= colors.length) newEnumNumber.value = 0;
+        else newEnumNumber.value++;
+        return color;
+    }
+}
 
 const showTableDatas = (params = {}) => {
     const result = ref({});
@@ -233,6 +253,12 @@ onMounted(() => {
                                 {{ champs }}
                             </RouterLink>
                         </span>
+                        <TdDatas
+                            v-else-if="isEnum((structure.filter(s => s.Field === cle) || [])[0]?.Type) === true"
+                            :data-value="champs"
+                            :structure="(structure.filter(s => s.Field === cle) || [])[0]"
+                            :style="'background-color: '+getEnumColor(champs)+';'"
+                        />
                         <TdDatas v-else
                             :data-value="champs"
                             :structure="(structure.filter(s => s.Field === cle) || [])[0]"
