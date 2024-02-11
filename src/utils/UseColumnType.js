@@ -11,7 +11,7 @@ export const isNumber = (columnType) => {
 }
 
 export const isBoolean = (columnType) => {
-  return (columnType.match(/(bool)/g) || []).length > 0
+  return (columnType.match(/(bool)|(tinyint\(1\))/g) || []).length > 0
 }
 
 export const isEnum = (columnType) => {
