@@ -1,5 +1,7 @@
 <script setup>
 import { isEnum, isBoolean } from '../../utils/UseColumnType';
+import { usePandoreConfStore } from '../../stores/PandoreConf'
+import { storeToRefs } from 'pinia';
 
 const props = defineProps({
     dataValue: {
@@ -19,6 +21,7 @@ const props = defineProps({
         required: false,
     }
 });
+const { pandoreConf } = storeToRefs(usePandoreConfStore())
 
 </script>
 
@@ -37,8 +40,9 @@ const props = defineProps({
         {{ dataValue }}
     </span>
     <span v-else-if="structure?.Type && isBoolean(structure.Type) === true">
-        <span v-if="dataValue > 0">
-            <svg width="14" height="14" viewBox="0 -4 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <span v-if="pandoreConf?.tables?.showBooleanAsCheck ?? false">
+            <svg v-if="dataValue > 0"
+                width="14" height="14" viewBox="0 -4 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>check</title>
                 <desc>Created with Sketch.</desc>
                 <defs>
@@ -56,6 +60,7 @@ const props = defineProps({
                 </g>
             </svg>
         </span>
+        <span v-else>{{ dataValue }}</span>
     </span>
     <span v-else-if="dataValue">{{ dataValue }}</span>
     <span v-else-if="dataValue === null" class="null-value">NULL</span>
