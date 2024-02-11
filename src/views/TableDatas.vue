@@ -5,12 +5,14 @@ import { useDBConnectStore } from '../stores/DBConnect';
 import { useTabStore } from '../stores/Tabs';
 import { useToastStore } from '../stores/Toast.store'
 import { isEnum } from '../utils/UseColumnType'
+import { usePandoreConfStore } from '../stores/PandoreConf'
 import CustomLoader from '../components/global/CustomLoader.vue';
 import SimpleTable from '../components/simpleTable.vue';
 import TdDatas from '../components/tableDatas/tdDatas.vue';
 import DatabaseSearch from '../components/tableDatas/databaseSearch.vue';
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import "vue-code-highlight/themes/duotone-sea.css";
+import { storeToRefs } from 'pinia';
 
 const props = defineProps({
     databaseName: {
@@ -29,6 +31,7 @@ const props = defineProps({
 const { unsetTable } = useDBConnectStore();
 const { selectTab } = useTabStore();
 const { ToastLoadStart, ToastLoadEnd } = useToastStore();
+const { pandoreConf } = storeToRefs(usePandoreConfStore())
 const loading = ref(false);
 const rows = ref([]);
 const displayedRows = ref([]);
@@ -223,6 +226,8 @@ onMounted(() => {
             </div>
         </div>
 
+        {{ pandoreConf?.tables?.searchForEmpty }}
+
         <SimpleTable
             v-if="rows.length > 0"
             :table-name="table"
@@ -233,6 +238,7 @@ onMounted(() => {
             :nb-result="rows.length"
             :sticky-th="true"
             :selection-column="true"
+            :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
             @search-in-list="searchInList"
             @clear-search-in-list="clearSarchInList"
             @trigger-filter="triggerFilter"
@@ -258,10 +264,12 @@ onMounted(() => {
                             :data-value="champs"
                             :structure="(structure.filter(s => s.Field === cle) || [])[0]"
                             :style="'background-color: '+getEnumColor(champs)+';'"
+                            :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
                         />
                         <TdDatas v-else
                             :data-value="champs"
                             :structure="(structure.filter(s => s.Field === cle) || [])[0]"
+                            :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
                         />
                     </td>
                 </tr>
