@@ -1,5 +1,5 @@
 <script setup>
-import { ref, toRef, watch } from 'vue';
+import { onMounted, ref, toRef, watch } from 'vue';
 
 const emit = defineEmits(['find']);
 const props = defineProps({
@@ -13,7 +13,7 @@ const props = defineProps({
     },
     value: {
         type: String,
-        required: true,
+        required: false,
     },
     placeholder: {
         type: String,
@@ -35,7 +35,7 @@ const propositionsList = toRef(props, 'propositionsList');
 
 const searchInPropositions = () => {
     propositions.value = propositionsList.value.filter((proposition) => {
-        return proposition?.[props.index].includes(search.value) || proposition?.[props.value].includes(search.value)
+        return proposition?.[props.index].includes(search.value) || proposition?.[props.index].includes(search.value)
     })
 }
 
@@ -84,6 +84,12 @@ const selectItem = (propIndex, rawValue = '') => {
     input.value.blur();
 }
 
+onMounted(() => {
+    if (props.value) {
+        search.value = props.value;
+    }
+})
+
 watch([propositionsList, search], searchInPropositions);
 </script>
 
@@ -104,7 +110,7 @@ watch([propositionsList, search], searchInPropositions);
                 :class="(selectedProposition === idx ? 'selected-proposition' : '')"
                 @click="selectItem(idx)"
             >
-                {{ prop?.[props.value] }}
+                {{ prop?.[props.index] }}
             </div>
         </div>
     </div>
