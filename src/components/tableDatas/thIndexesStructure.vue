@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import thIndexesTypes from './thIndexesTypes.vue';
 
 const props = defineProps({
     columnName: {
@@ -32,24 +33,10 @@ const showStructure = (isToShow) => {
 <template>
     <span @mouseover="showStructure(true)" @mouseout="showStructure(false)">
         <div class="th">
+            <thIndexesTypes v-if="structure?.Type" :type="structure?.Type" />
             <div><slot /></div>
             <div>{{ columnName }}</div>
         </div>
-
-        <table v-if="structure && structureIsShown" class="structure">
-            <tr>
-                <td>Type</td>
-                <td>{{ structure?.Type }}</td>
-            </tr>
-            <tr>
-                <td>Null</td>
-                <td>{{ structure?.Null }}</td>
-            </tr>
-            <tr>
-                <td>Default</td>
-                <td>{{ structure?.Default }}</td>
-            </tr>
-        </table>
     </span>
 </template>
 
@@ -63,7 +50,7 @@ span {
 .th>div {
     display: flex;
     align-items: center;
-    gap: 0.4em;
+    gap: 0.2em;
 }
 
 table.structure {
