@@ -11,16 +11,28 @@ const router = useRouter()
 const { connect, setDatabase } = useDBConnectStore()
 const loading = ref(false);
 const message = ref(null);
-const form = ref({
+const defaultServeur = {
     serveur: null,
     user: null,
     pwd: null,
     db: null
-});
+};
+const form = ref({...defaultServeur});
 
 function submit() {
     const connection = ref({});
-    const formData = {...form.value}
+    const formData   = {...form.value};
+
+    if (
+        formData.serveur === null &&
+        formData.user    === null &&
+        formData.pwd     === null &&
+        formData.db      === null
+    ) {
+        formData.serveur = 'localhost';
+        formData.user    = 'root';
+        formData.pwd     = 'root';
+    }
 
     loading.value = true;
     connection.value = useAxios({ url: '/try/connect', method: 'POST', body: formData });
@@ -68,16 +80,19 @@ function submit() {
             <CustomInput
                 type="text"
                 label="Host"
+                placeholder="localhost"
                 v-model="form.serveur"
             />
             <CustomInput
                 type="text"
                 label="User"
+                placeholder="root"
                 v-model="form.user"
             />
             <CustomInput
                 type="text"
                 label="Password"
+                placeholder="root"
                 v-model="form.pwd"
             />
             <CustomInput

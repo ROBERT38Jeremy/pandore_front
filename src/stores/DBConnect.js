@@ -48,9 +48,15 @@ export const useDBConnectStore = defineStore('DBConnect', (currentRoutePath) => 
         isConnected.value = true;
     }
 
+    function disconnect() {
+        useAxios({ url: `/disconnect`, method: 'GET' });
+        isConnected.value = false;
+    }
+
     return {
         isConnected,
         connect,
+        disconnect,
         database,
         setDatabase,
         unsetDatabase,

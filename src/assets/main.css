@@ -21,8 +21,16 @@ a {
     border-bottom: 1px solid transparent;
 }
 
-a:hover {
+a:not(.red):hover {
     border-bottom: 1px solid var(--color-button);
+}
+
+a.red {
+    color: red;
+}
+
+a.red:hover {
+    border-bottom: 1px solid red;
 }
 
 input, select {

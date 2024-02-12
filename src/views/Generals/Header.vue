@@ -1,12 +1,12 @@
 <script setup>
 import { useDBConnectStore } from '../../stores/DBConnect';
-import fuzzySearch from '../../components/fuzzySearch.vue';
 import { usePandoreConfStore } from '../../stores/PandoreConf'
 import { toRef } from 'vue';
 import { storeToRefs } from 'pinia';
+import fuzzySearch from '../../components/fuzzySearch.vue';
 
-const { unsetTable, unsetDatabase } = useDBConnectStore();
-const { pandoreConf } = storeToRefs(usePandoreConfStore())
+const { unsetTable, unsetDatabase, disconnect } = useDBConnectStore();
+const { pandoreConf } = storeToRefs(usePandoreConfStore());
 const unsetAll = () => {
     unsetDatabase();
     unsetTable();
@@ -34,6 +34,8 @@ const isMenuDisplayed = toRef(props, "isMenuDisplayed");
         <!-- <RouterLink to="/dashboard" @click="unsetAll">Dashboard</RouterLink> -->
         <RouterLink to="/options" @click="unsetAll">Options</RouterLink>
         <fuzzySearch v-if="pandoreConf?.fuzzySearch?.enabled" />
+
+        <a class="red end" @click="disconnect">Log Out</a>
     </div>
 </template>
 
@@ -46,5 +48,9 @@ div {
 
 div>svg {
     cursor: pointer;
+}
+
+.end {
+    margin-left: auto;
 }
 </style>
