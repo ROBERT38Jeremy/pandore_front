@@ -47,7 +47,7 @@ onBeforeUnmount(() => {
         <div>
             <div class="tablea-header-search">
                 <label for="table-search">
-                    <svg class="no-pointer" fill="var(--color-text)" height="16" width="16" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                    <svg fill="var(--color-text)" height="16" width="16" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                         viewBox="0 0 488.4 488.4" xml:space="preserve">
                         <g>
                             <g>
@@ -82,5 +82,13 @@ input {
     width: calc(100% - 30px);
     font-size: small;
     color: var(--color-text);
+}
+
+svg:not(.disabled) {
+    cursor: pointer;
+}
+
+svg.disabled {
+    opacity: 0.2;
 }
 </style>
