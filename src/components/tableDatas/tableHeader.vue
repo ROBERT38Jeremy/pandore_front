@@ -1,5 +1,5 @@
 <script setup>
-import { toRef, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, toRef, watch } from 'vue';
 import { useDebouncedRef } from '../../utils/UseDebouncedRef';
 
 const props = defineProps({
@@ -14,7 +14,14 @@ const props = defineProps({
 });
 const nbResult = toRef(props, "nbResult");
 const search = useDebouncedRef('');
+const searchRef = ref(null);
 const emit = defineEmits(['triggerFilter', 'searchInList', 'clearSearchInList']);
+
+const hotKey = async (e) => {
+    if (e.key == 'S' && e.ctrlKey && e.shiftKey) {
+        searchRef.value.focus();
+    }
+}
 
 watch(search, () => {
     if (search.value === '') {
@@ -22,6 +29,14 @@ watch(search, () => {
     } else {
         emit('searchInList', search.value);
     }
+})
+
+onMounted(() => {
+    document.addEventListener('keyup', hotKey);
+})
+
+onBeforeUnmount(() => {
+    document.removeEventListener('keyup', hotKey);
 })
 </script>
 
@@ -44,7 +59,7 @@ watch(search, () => {
                         </g>
                     </svg>
                 </label>
-                <input type="search" name="table-search" id="table-search" v-model="search">
+                <input type="search" ref="searchRef" name="table-search" id="table-search" v-model="search" placeholder="Search (CTRL + MAJ + S)">
             </div>
             <svg fill="var(--color-text)" width="15" height="15" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg" @click="emit('triggerFilter')">
                 <path d="m0 .011 741.97 984.808v673.566l502.665 251.332V984.82l675.332-896.544-88.154-66.308-697.508 925.891v783.345L852.301 1590.2V947.858L221.322 110.341h1262.289V.011z" fill-rule="evenodd"/>
