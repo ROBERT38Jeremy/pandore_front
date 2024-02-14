@@ -65,7 +65,6 @@ onMounted(() => {
 
 <template>
     <CustomLoader :loading="loading">
-        <pre>{{ structure.attach }}</pre>
         <div class="schema-container">
             <table v-for="(columns, table) in structure" :id="table">
                 <tr>
