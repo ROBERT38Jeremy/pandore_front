@@ -200,7 +200,7 @@ const getTableList = async () => {
     })
 }
 
-const selectItem = (itemName) => {
+const selectItem = async (itemName) => {
     propositions.value = [];
     // match table name
     if ((search.value.match(/(?<!^>\s)(?<=>\s)\w+/g) || []).length === 1) {
@@ -212,10 +212,19 @@ const selectItem = (itemName) => {
         router.push(`/database/${fuzzySearchParams.value.database}/${itemName}/${pandoreConf.value?.tables?.defaultPage ?? 'structure'}`);
     }
     // match database name
-    else if ((search.value.match(/(?<=^>\s)\w+/g) || []).length === 1 && (search.value.match(/\w+(?![\w\s>])/g) || []).length === 1) {
+    else if (
+        (
+            (search.value.match(/(?<=^>\s)\w+/g) || []).length === 1 &&
+            (search.value.match(/\w+(?![\w\s>])/g) || []).length === 1
+        ) ||
+        search.value === '> '
+    ) {
         fuzzySearchParams.value.database = itemName;
         search.value = `> ${itemName} > `;
         input.value.focus();
+
+        await getTableList();
+        fuzzyTable('');
     }
 }
 
