@@ -20,7 +20,6 @@ const saveNewConf = () => {
     ToastLoadStart()
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
-            console.log('OK');
             ToastLoadEnd({
                 type: "success",
                 message: "Configuration enregistrée"
