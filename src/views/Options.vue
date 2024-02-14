@@ -87,7 +87,7 @@ onMounted(() => {
         </tr>
 
         <tr>
-            <td class="title">Default page when navigating through tables</td>
+            <td class="title">Default Page When Navigating Through Tables</td>
             <td>
                 <select v-model="conf.tables.defaultPage">
                     <option value="datas">Visualisation de données</option>
@@ -104,13 +104,13 @@ onMounted(() => {
         </tr>
 
         <tr>
-            <td class="title">Limit on the number of data displayed</td>
+            <td class="title">Limit On The Number Of Data Displayed</td>
             <td><input type="number" v-model="conf.tables.query.defaultLimit"></td>
         </tr>
 
         <tr>
             <td class="title">
-                Maximum limit on the number of data displayed<br>
+                Maximum Limit On The Number Of Data Displayed<br>
                 <span class="sub-title">
                     (This limit is used to preserve the<br>responsiveness of the application)
                 </span>
