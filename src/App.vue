@@ -26,6 +26,13 @@ onMounted(async () => {
     setModuleStatus('pandoreConf', true)
 })
 
+onMounted(() => {
+    if ((pandoreConf.value?.appDisplay?.displayMenu ?? true) === false) {
+        setModuleStatus('menu', true);
+        displayMenu.value = false;
+    }
+})
+
 </script>
 
 <template>

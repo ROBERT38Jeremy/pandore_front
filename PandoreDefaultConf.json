@@ -17,6 +17,9 @@
         "showBooleanAsCheck": true,
         "dateFormat": "yyyy-LL-dd"
     },
+    "appDisplay": {
+        "displayMenu": true
+    },
     "CSV": {
         "defaultFormat": {
             "valueSeparator": ",",

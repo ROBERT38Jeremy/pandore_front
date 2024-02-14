@@ -21,8 +21,8 @@ onMounted(() => {
 </script>
 
 <template>
-    <div :class="`checkbox-back ${checkboxActive ? 'on' : ''}`">
-        <div class="checkbox-trigger" @click="triggerCheckbox"></div>
+    <div :class="`checkbox-back ${checkboxActive ? 'on' : ''}`" @click="triggerCheckbox">
+        <div class="checkbox-trigger"></div>
     </div>
 </template>
 

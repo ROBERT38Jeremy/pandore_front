@@ -50,6 +50,11 @@ onMounted(() => {
         </tr>
 
         <tr>
+            <td class="title">Afficher le menu au démarrage</td>
+            <td><CustomCheckbox v-model="conf.appDisplay.displayMenu"/></td>
+        </tr>
+
+        <tr>
             <td class="title">Recherche rapide</td>
             <td><CustomCheckbox v-model="conf.fuzzySearch.enabled"/></td>
         </tr>
