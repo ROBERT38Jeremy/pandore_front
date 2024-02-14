@@ -43,46 +43,46 @@ onMounted(() => {
     <h2>Workspace configuration</h2>
 
     <table>
-        <tr>
-            <td colspan="3">
+        <tr class="section">
+            <td colspan="2">
                 <h2>Affichage</h2>
             </td>
         </tr>
 
         <tr>
             <td class="title">Recherche rapide</td>
-            <td>:</td>
             <td><CustomCheckbox v-model="conf.fuzzySearch.enabled"/></td>
         </tr>
 
         <tr>
             <td class="title">Format de date</td>
-            <td>:</td>
-            <td><input type="text" v-model="conf.tables.dateFormat"></td>
+            <td>
+                <select v-model="conf.tables.dateFormat">
+                    <option value="dd/LL/yyyy">Dates FR : 26/01/2024</option>
+                    <option value="yyyy-LL-dd">Dates EN : 2024-01-26</option>
+                </select>
+            </td>
         </tr>
 
         <tr>
             <td class="title">Afficher les champs booléen<br>avec des checks</td>
-            <td>:</td>
             <td><CustomCheckbox v-model="conf.tables.showBooleanAsCheck"/></td>
         </tr>
 
         <tr>
             <td class="title">Mettre en évidence les chaines vides</td>
-            <td>:</td>
             <td><CustomCheckbox v-model="conf.tables.searchForEmpty"/></td>
         </tr>
 
 
-        <tr>
-            <td colspan="3">
+        <tr class="section">
+            <td colspan="2">
                 <h2>Navigation</h2>
             </td>
         </tr>
 
         <tr>
             <td class="title">Page par défaut lors de la<br>navigation dans les tables</td>
-            <td>:</td>
             <td>
                 <select v-model="conf.tables.defaultPage">
                     <option value="datas">Visualisation de données</option>
@@ -92,15 +92,14 @@ onMounted(() => {
         </tr>
 
 
-        <tr>
-            <td colspan="3">
+        <tr class="section">
+            <td colspan="2">
                 <h2>Requêtes</h2>
             </td>
         </tr>
 
         <tr>
             <td class="title">Limite du nombre de données affichées</td>
-            <td>:</td>
             <td><input type="number" v-model="conf.tables.query.defaultLimit"></td>
         </tr>
 
@@ -111,13 +110,12 @@ onMounted(() => {
                     (Cette limite est utilisé pour préservé la <br>réactivité de l'application)
                 </span>
             </td>
-            <td>:</td>
             <td><input type="number" v-model="conf.tables.query.absolutLimit"></td>
         </tr>
 
 
         <tr>
-            <td colspan="2"></td>
+            <td></td>
             <td>
                 <CustomSubmit type="button" label="Enregistrer" @click="saveNewConf"/>
             </td>
@@ -131,7 +129,7 @@ h2 {
 }
 
 table {
-    border-spacing: 1em 0.2em;
+    border-spacing: 1em;
 }
 
 table tr td.title {
@@ -150,5 +148,9 @@ input {
     outline: none;
     font-size: small;
     color: var(--color-text);
+}
+
+.section td {
+    border-bottom: 1px solid var(--color-border);
 }
 </style>
