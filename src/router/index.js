@@ -3,6 +3,7 @@ import { checkDBConnection } from './DBConnect'
 import HomeView from '../views/Home.vue'
 import HomeViewV2 from '../views/HomeV2.vue'
 import DatabaseStructure from '../views/DatabaseStructure.vue'
+import DatabaseSchema from '../views/DatabaseSchema.vue'
 import TableStructure from '../views/TableStructure.vue'
 import TableDatas from '../views/TableDatas.vue'
 import TableInsert from '../views/TableInsert.vue'
@@ -28,6 +29,13 @@ const router = createRouter({
             path: '/database/:databaseName/structure',
             name: 'DatabaseStructure',
             component: DatabaseStructure,
+            beforeEnter: [checkDBConnection],
+            props: true
+        },
+        {
+            path: '/database/:databaseName/schema',
+            name: 'DatabaseSchema',
+            component: DatabaseSchema,
             beforeEnter: [checkDBConnection],
             props: true
         },

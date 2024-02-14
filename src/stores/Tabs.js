@@ -58,6 +58,17 @@ export const useTabStore = defineStore('Tab', () => {
                     fuzzy: database.value !== null && table.value === null,
                 }
             },
+            // DATABASE schema
+            {
+                title: 'Schema',
+                name: `See ${database.value}'s relation`,
+                path: `/database/${database.value}/schema`,
+                conditions: {
+                    display: database.value !== null && table.value === null,
+                    click: database.value !== null && table.value === null,
+                    fuzzy: database.value !== null && table.value === null,
+                }
+            },
             // TABLE structure
             {
                 title: 'Structure',
