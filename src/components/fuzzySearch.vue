@@ -203,7 +203,7 @@ const getTableList = async () => {
 const selectItem = async (itemName) => {
     propositions.value = [];
     // match table name
-    if ((search.value.match(/(?<!^>\s)(?<=>\s)\w+/g) || []).length === 1) {
+    if ((search.value.match(/(?<!^>\s)(?<=>\s)\w+/g) || []).length === 1 || search.value === `> ${fuzzySearchParams.value.database} > `) {
         setDatabase(fuzzySearchParams.value.database);
         setTable(itemName);
         active.value = false;
