@@ -3,13 +3,18 @@ const props = defineProps({
   label: {
       type: String,
       required: true,
+  },
+  type: {
+    type: String,
+    required: false,
+    default: 'submit'
   }
 });
 
 </script>
 
 <template>
-    <button type="submit">{{ label }}</button>
+    <button :type="type">{{ label }}</button>
 </template>
 
 <style scoped>
