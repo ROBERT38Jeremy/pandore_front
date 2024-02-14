@@ -7,6 +7,7 @@ import { usePandoreConfStore } from '../stores/PandoreConf'
 import { useToastStore } from '../stores/Toast.store'
 import "vue-code-highlight/themes/duotone-sea.css";
 import CustomSubmit from '../components/form/customSubmit.vue';
+import CustomCheckbox from '../components/form/customCheckbox.vue';
 
 const { pandoreConf } = storeToRefs(usePandoreConfStore())
 const { ToastLoadStart, ToastLoadEnd } = useToastStore();
@@ -51,7 +52,7 @@ onMounted(() => {
         <tr>
             <td class="title">Recherche rapide</td>
             <td>:</td>
-            <td><input type="checkbox" v-model="conf.fuzzySearch.enabled" ></td>
+            <td><CustomCheckbox v-model="conf.fuzzySearch.enabled"/></td>
         </tr>
 
         <tr>
@@ -63,13 +64,13 @@ onMounted(() => {
         <tr>
             <td class="title">Afficher les champs booléen<br>avec des checks</td>
             <td>:</td>
-            <td><input type="checkbox" v-model="conf.tables.showBooleanAsCheck"></td>
+            <td><CustomCheckbox v-model="conf.tables.showBooleanAsCheck"/></td>
         </tr>
 
         <tr>
             <td class="title">Mettre en évidence les chaines vides</td>
             <td>:</td>
-            <td><input type="checkbox" v-model="conf.tables.searchForEmpty"></td>
+            <td><CustomCheckbox v-model="conf.tables.searchForEmpty"/></td>
         </tr>
 
 
@@ -140,5 +141,14 @@ table tr td.title {
 table tr td span.sub-title {
     font-weight: normal;
     font-style: italic;
+}
+
+input {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-border);
+    outline: none;
+    font-size: small;
+    color: var(--color-text);
 }
 </style>
