@@ -40,27 +40,27 @@ onMounted(() => {
 </script>
 
 <template>
-    <h2>Workspace configuration</h2>
+    <h2>Pandore Configuration</h2>
 
     <table>
         <tr class="section">
             <td colspan="2">
-                <h2>Affichage</h2>
+                <h2>Display</h2>
             </td>
         </tr>
 
         <tr>
-            <td class="title">Afficher le menu au démarrage</td>
+            <td class="title">Show Menu When Application Starts</td>
             <td><CustomCheckbox v-model="conf.appDisplay.displayMenu"/></td>
         </tr>
 
         <tr>
-            <td class="title">Recherche rapide</td>
+            <td class="title">Enable Fuzzy Search</td>
             <td><CustomCheckbox v-model="conf.fuzzySearch.enabled"/></td>
         </tr>
 
         <tr>
-            <td class="title">Format de date</td>
+            <td class="title">Date Format</td>
             <td>
                 <select v-model="conf.tables.dateFormat">
                     <option value="dd/LL/yyyy">Dates FR : 26/01/2024</option>
@@ -70,12 +70,12 @@ onMounted(() => {
         </tr>
 
         <tr>
-            <td class="title">Afficher les champs booléen<br>avec des checks</td>
+            <td class="title">Display Boolean As Check Symbol</td>
             <td><CustomCheckbox v-model="conf.tables.showBooleanAsCheck"/></td>
         </tr>
 
         <tr>
-            <td class="title">Mettre en évidence les chaines vides</td>
+            <td class="title">Highlight Empty Strings</td>
             <td><CustomCheckbox v-model="conf.tables.searchForEmpty"/></td>
         </tr>
 
@@ -87,7 +87,7 @@ onMounted(() => {
         </tr>
 
         <tr>
-            <td class="title">Page par défaut lors de la<br>navigation dans les tables</td>
+            <td class="title">Default page when navigating through tables</td>
             <td>
                 <select v-model="conf.tables.defaultPage">
                     <option value="datas">Visualisation de données</option>
@@ -99,20 +99,20 @@ onMounted(() => {
 
         <tr class="section">
             <td colspan="2">
-                <h2>Requêtes</h2>
+                <h2>SQL Request</h2>
             </td>
         </tr>
 
         <tr>
-            <td class="title">Limite du nombre de données affichées</td>
+            <td class="title">Limit on the number of data displayed</td>
             <td><input type="number" v-model="conf.tables.query.defaultLimit"></td>
         </tr>
 
         <tr>
             <td class="title">
-                Limite maximale du nombre de données affichées<br>
+                Maximum limit on the number of data displayed<br>
                 <span class="sub-title">
-                    (Cette limite est utilisé pour préservé la <br>réactivité de l'application)
+                    (This limit is used to preserve the<br>responsiveness of the application)
                 </span>
             </td>
             <td><input type="number" v-model="conf.tables.query.absolutLimit"></td>
