@@ -65,6 +65,7 @@ onMounted(() => {
 
 <template>
     <CustomLoader :loading="loading">
+        <pre>{{ structure.attach }}</pre>
         <div class="schema-container">
             <table v-for="(columns, table) in structure" :id="table">
                 <tr>
@@ -74,8 +75,10 @@ onMounted(() => {
                 </tr>
                 <tr v-for="(column, columnName) in columns" :id="`${table}.${columnName}`">
                     <td class="column-name">
-                        <a v-if="column.REFERENCED_TABLE_NAME" :href="`#${column.REFERENCED_TABLE_NAME}.${column.REFERENCED_COLUMN_NAME}`">{{ columnName }}</a>
-                        <span v-else>{{ columnName }}</span>
+                        <a v-if="column.REFERENCED_TABLE_NAME" :href="`#${column.REFERENCED_TABLE_NAME}.${column.REFERENCED_COLUMN_NAME}`">
+                            <span :class="column.COLUMN_KEY === 'PRI' ? 'primary' : ''">{{ columnName }}</span>
+                        </a>
+                        <span v-else :class="column.COLUMN_KEY === 'PRI' ? 'primary' : ''">{{ columnName }}</span>
                     </td>
                     <td>{{ column.COLUMN_TYPE }}</td>
                 </tr>
@@ -106,5 +109,9 @@ onMounted(() => {
 
 .schema-container table td.column-name {
     font-weight: bold;
+}
+
+.schema-container table td .primary {
+    text-decoration: underline;
 }
 </style>
