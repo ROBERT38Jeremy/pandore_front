@@ -10,7 +10,8 @@
     "tables": {
         "query": {
             "defaultLimit": 100,
-            "absolutLimit": 1000
+            "absolutLimit": 1000,
+            "easyBuilder": true
         },
         "defaultPage": "datas",
         "searchForEmpty": false,

@@ -104,6 +104,11 @@ onMounted(() => {
         </tr>
 
         <tr>
+            <td class="title">Use EasyBuilder Tool for Building SQL request</td>
+            <td><CustomCheckbox v-model="conf.tables.query.easyBuilder"/></td>
+        </tr>
+
+        <tr>
             <td class="title">Limit On The Number Of Data Displayed</td>
             <td><input type="number" v-model="conf.tables.query.defaultLimit"></td>
         </tr>

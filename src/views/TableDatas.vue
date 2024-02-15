@@ -218,7 +218,6 @@ onMounted(() => {
             :query-conditions="conditions"
             :open="databaseQueryBuilderOpen"
         />
-        <br>
         <div v-if="sqlQuery" class="code">
             <pre><code-highlight language="js">{{ sqlQuery }}</code-highlight></pre>
             <div>

@@ -50,7 +50,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <details class="DQB">
+    <details class="DQB" v-if="(pandoreConf?.tables?.query?.easyBuilder ?? true) == true">
         <pre>{{ conditions }}</pre>
         <summary>Database Query Builder</summary>
         <div class="select">
@@ -157,6 +157,7 @@ input, select {
     padding: 0.5em 0.7em;
     border-radius: 0.2em;
     transition: all 0.2s ease-in-out;
+    margin-bottom: 1em;
 }
 
 .DQB[open] {
