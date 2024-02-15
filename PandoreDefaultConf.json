@@ -15,11 +15,12 @@
         },
         "defaultPage": "datas",
         "searchForEmpty": false,
-        "showBooleanAsCheck": true,
-        "dateFormat": "yyyy-LL-dd"
+        "showBooleanAsCheck": true
     },
     "appDisplay": {
-        "displayMenu": true
+        "displayMenu": true,
+        "dateFormat": "yyyy-LL-dd",
+        "displaySQLRequestInDatasView": true
     },
     "CSV": {
         "defaultFormat": {

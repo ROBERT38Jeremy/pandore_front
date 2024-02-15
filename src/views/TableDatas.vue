@@ -218,7 +218,7 @@ onMounted(() => {
             :query-conditions="conditions"
             :open="databaseQueryBuilderOpen"
         />
-        <div v-if="sqlQuery" class="code">
+        <div v-if="sqlQuery && (pandoreConf?.appDisplay?.displaySQLRequestInDatasView ?? true) === true" class="code">
             <pre><code-highlight language="js">{{ sqlQuery }}</code-highlight></pre>
             <div>
                 <RouterLink :to="'/database/'+database+'/sql?query='+sqlQuery">Modify query</RouterLink>

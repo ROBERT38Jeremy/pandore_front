@@ -26,7 +26,7 @@ const { pandoreConf } = storeToRefs(usePandoreConfStore())
 
 const getFormatedDate = (SQLDate) => {
     const date = DateTime.fromSQL(SQLDate);
-    return date.toFormat(pandoreConf.value?.tables?.dateFormat+' HH:mm:ss' ?? 'yyyy-LL-dd HH:mm:ss');
+    return date.toFormat(pandoreConf.value?.appDisplay?.dateFormat+' HH:mm:ss' ?? 'yyyy-LL-dd HH:mm:ss');
 }
 
 </script>

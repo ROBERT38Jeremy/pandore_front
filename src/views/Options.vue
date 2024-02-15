@@ -62,11 +62,16 @@ onMounted(() => {
         <tr>
             <td class="title">Date Format</td>
             <td>
-                <select v-model="conf.tables.dateFormat">
+                <select v-model="conf.appDisplay.dateFormat">
                     <option value="dd/LL/yyyy">Dates FR : 26/01/2024</option>
                     <option value="yyyy-LL-dd">Dates EN : 2024-01-26</option>
                 </select>
             </td>
+        </tr>
+
+        <tr>
+            <td class="title">Display The SQL Request Executed In The Tables Datas View</td>
+            <td><CustomCheckbox v-model="conf.appDisplay.displaySQLRequestInDatasView"/></td>
         </tr>
 
         <tr>
