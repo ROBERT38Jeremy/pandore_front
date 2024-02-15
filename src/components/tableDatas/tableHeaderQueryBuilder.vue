@@ -98,6 +98,7 @@ onBeforeUnmount(() => {
 <template>
     <div class="query-builder-container">
         <div class="input-container">
+            <i>WHERE &ensp;</i>
             <input type="text" ref="inputSqlQuery" v-model="query" @keyup="typeText" placeholder="Enter a SQL expression to filter results (CTRL + b)">
             <div>
                 <div v-for="(field, idx) in fieldsPossibilities" :class="indexSelectedProposition === idx ? 'selected' : ''">{{ field.Field }}</div>
