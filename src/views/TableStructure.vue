@@ -57,63 +57,70 @@ onMounted(() => {
         Structure
     </h2>
     <CustomLoader :loading="loading">
-        <SimpleTable
-            :datas="tableStructure"
-            :auto-id-column="false"
-            :error-text="message"
-            :check-empty-string="false"
-        />
+        <div class="table-structure-container">
+            <div>
+                <SimpleTable
+                    :datas="tableStructure"
+                    :auto-id-column="false"
+                    :error-text="message"
+                    :check-empty-string="false"
+                    table-title="Structure"
+                />
+            </div>
 
-        <hr>
-        <SimpleTable
-            :datas="tableIndexes"
-            :auto-id-column="false"
-            :check-empty-string="false"
-            :columns="{
-                'Type': 'CONSTRAINT_TYPE',
-                'Name': 'COLUMN_NAME'
-            }"
-            table-title="Index"
-            error-text="No index found"
-        />
+            <div>
+                <SimpleTable
+                    :datas="tableIndexes"
+                    :auto-id-column="false"
+                    :check-empty-string="false"
+                    :columns="{
+                        'Type': 'CONSTRAINT_TYPE',
+                        'Name': 'COLUMN_NAME'
+                    }"
+                    table-title="Index"
+                    error-text="No index found"
+                />
+            </div>
 
-        <hr>
-        <SimpleTable
-            :show-table="Object.entries(tableConstraints).length > 0"
-            table-title="Foreign Keys"
-            :check-empty-string="false"
-            :columns="{
-                'Name': 'Name',
-                'Source' : 'Source',
-                'Target' : 'Target',
-                'ON DELETE': 'ON DELETE',
-                'ON UPDATE': 'ON UPDATE'
-            }"
-            error-text="No foreign key found"
-        >
-            <template v-slot:tableContent>
-                <tr v-for="datas in tableConstraints">
-                    <td>{{ datas.CONSTRAINT_NAME }}</td>
-                    <td>{{ datas.FOR_COL_NAME }}</td>
-                    <td>
-                        <RouterLink :to="`/database/${database}/${datas.REFERENCED_TABLE_NAME}/structure`" @click="unsetTable">
-                            {{ datas.REFERENCED_TABLE_NAME }}
-                        </RouterLink>(<span class="foreign-target">{{ datas.REF_COL_NAME }}</span>)
-                    </td>
-                    <td>{{ datas.DELETE_RULE }}</td>
-                    <td>{{ datas.UPDATE_RULE }}</td>
-                </tr>
-            </template>
-        </SimpleTable>
+            <div>
+                <SimpleTable
+                    :show-table="Object.entries(tableConstraints).length > 0"
+                    table-title="Foreign Keys"
+                    :check-empty-string="false"
+                    :columns="{
+                        'Name': 'Name',
+                        'Source' : 'Source',
+                        'Target' : 'Target',
+                        'ON DELETE': 'ON DELETE',
+                        'ON UPDATE': 'ON UPDATE'
+                    }"
+                    error-text="No foreign key found"
+                >
+                    <template v-slot:tableContent>
+                        <tr v-for="datas in tableConstraints">
+                            <td>{{ datas.CONSTRAINT_NAME }}</td>
+                            <td>{{ datas.FOR_COL_NAME }}</td>
+                            <td>
+                                <RouterLink :to="`/database/${database}/${datas.REFERENCED_TABLE_NAME}/structure`" @click="unsetTable">
+                                    {{ datas.REFERENCED_TABLE_NAME }}
+                                </RouterLink>(<span class="foreign-target">{{ datas.REF_COL_NAME }}</span>)
+                            </td>
+                            <td>{{ datas.DELETE_RULE }}</td>
+                            <td>{{ datas.UPDATE_RULE }}</td>
+                        </tr>
+                    </template>
+                </SimpleTable>
+            </div>
 
-        <hr>
-        <SimpleTable
-            :datas="[]"
-            :check-empty-string="false"
-            table-title="Triggers"
-            error-text="This feature is not supported yet"
-        />
-        <br>
+            <!-- <div>
+                <SimpleTable
+                    :datas="[]"
+                    :check-empty-string="false"
+                    table-title="Triggers"
+                    error-text="This feature is not supported yet"
+                />
+            </div> -->
+        </div>
     </CustomLoader>
 </template>
 
@@ -124,5 +131,11 @@ h2 {
 
 hr {
     border: 1px solid var(--color-border);
+}
+
+.table-structure-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
 }
 </style>
