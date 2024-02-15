@@ -113,7 +113,7 @@ const isForeign = (col) => {
             @clear-search-in-list="emit('clearSearchInList')"
         />
         <tableHeaderQueryBuilder
-            v-if="tableName && structure && (pandoreConf?.appDisplay?.displaySQLRequestInDatasView ?? true) === false"
+            v-if="tableName && structure && (pandoreConf?.tables?.query?.easyBuilder ?? true) === false"
             :structure="structure"
             :where-string="whereString"
             @valid-query-where-string="(query) => emit('validQueryWhereString', query)"
