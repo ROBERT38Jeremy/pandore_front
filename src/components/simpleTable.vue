@@ -4,6 +4,9 @@ import { useDebouncedRef } from '../utils/UseDebouncedRef';
 import ThIndex from './tableDatas/thIndexes.vue';
 import TdDatas from './tableDatas/tdDatas.vue';
 import tableHeader from './tableDatas/tableHeader.vue';
+import tableHeaderQueryBuilder from './tableDatas/tableHeaderQueryBuilder.vue';
+import { usePandoreConfStore } from '../stores/PandoreConf';
+import { storeToRefs } from 'pinia';
 
 const props = defineProps({
     tableName: {
@@ -73,6 +76,11 @@ const props = defineProps({
         type: Boolean,
         required: false,
         default: false,
+    },
+    whereString: {
+        type: String,
+        required: false,
+        default: "",
     }
 });
 const datas = toRef(props, "datas");
@@ -80,7 +88,8 @@ const errorText = toRef(props, "errorText");
 const nbResult = toRef(props, "nbResult");
 const slots = useSlots();
 const hasTableContentSlot = ref(!!slots?.tableContent);
-const emit = defineEmits(['searchInList', 'clearSearchInList', 'triggerFilter']);
+const emit = defineEmits(['searchInList', 'clearSearchInList', 'triggerFilter', 'validQueryWhereString']);
+const { pandoreConf } = storeToRefs(usePandoreConfStore())
 
 const isPrimary = (col) => {
     return props.primaries.includes(col);
@@ -102,6 +111,12 @@ const isForeign = (col) => {
             @triggerFilter="emit('triggerFilter')"
             @search-in-list="(value) => emit('searchInList', value)"
             @clear-search-in-list="emit('clearSearchInList')"
+        />
+        <tableHeaderQueryBuilder
+            v-if="tableName && structure && (pandoreConf?.appDisplay?.displaySQLRequestInDatasView ?? true) === false"
+            :structure="structure"
+            :where-string="whereString"
+            @valid-query-where-string="(query) => emit('validQueryWhereString', query)"
         />
         <table :class="'simple-table ' + tableClass">
             <thead>

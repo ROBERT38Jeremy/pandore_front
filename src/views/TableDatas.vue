@@ -51,7 +51,8 @@ const databaseQueryBuilderOpen = ref(false);
 const requestParams = ref({
     limit: pandoreConf.value?.tables?.query?.defaultLimit ?? 50,
     where: [],
-    select: []
+    select: [],
+    whereString: ""
 });
 const colors = [
     'rgba(0, 128, 0, 0.1)',     // green
@@ -198,6 +199,11 @@ const triggerFilter = () => {
     }
 }
 
+const validQueryWhereString = (queryString) => {
+    requestParams.value.whereString = queryString;
+    showTableDatas();
+}
+
 watch([database, table, searchColumn, itemId], () => { showTableDatas() });
 onMounted(() => {
     selectTab('Datas');
@@ -236,9 +242,11 @@ onMounted(() => {
             :sticky-th="true"
             :selection-column="true"
             :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
+            :whereString="conditions?.whereString"
             @search-in-list="searchInList"
             @clear-search-in-list="clearSarchInList"
             @trigger-filter="triggerFilter"
+            @valid-query-where-string="validQueryWhereString"
         >
             <template v-slot:tableContent>
                 <tr v-for="(row, index) in displayedRows" :id="index" :class="displayedRows.length > 1 && selectedRows === index ? 'selected-row' : ''">
