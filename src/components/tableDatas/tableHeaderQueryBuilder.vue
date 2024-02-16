@@ -1,6 +1,8 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref, toRef } from 'vue';
 import { isString } from '../../utils/UseColumnType';
+import { usePandoreConfStore } from '../../stores/PandoreConf';
+import { storeToRefs } from 'pinia';
 
 const props = defineProps({
     structure: {
@@ -15,11 +17,13 @@ const props = defineProps({
     }
 });
 const structure = toRef(props, "structure");
+const { pandoreConf } = storeToRefs(usePandoreConfStore())
 const fieldsPossibilities = ref([]);
 const query = ref("");
 const inputSqlQuery = ref(null)
 const indexSelectedProposition = ref(-1);
 const emit = defineEmits(['validQueryWhereString']);
+const inputPlaceholder = ref('Enter a SQL expression to filter results');
 
 
 const typeText = (e) => {
@@ -88,6 +92,8 @@ const hotKey = async (e) => {
 onMounted(() => {
     document.addEventListener('keyup', hotKey);
     if (props.whereString !== "") query.value = props.whereString
+
+    if (pandoreConf.value?.appDisplay?.displayKeyboardShortcut ?? true === true) inputPlaceholder.value += " (CTRL + B)";
 })
 
 onBeforeUnmount(() => {
@@ -97,9 +103,9 @@ onBeforeUnmount(() => {
 
 <template>
     <div class="query-builder-container">
+        <i>WHERE &ensp;</i>
         <div class="input-container">
-            <i>WHERE &ensp;</i>
-            <input type="text" ref="inputSqlQuery" v-model="query" @keyup="typeText" placeholder="Enter a SQL expression to filter results (CTRL + b)">
+            <input type="text" ref="inputSqlQuery" v-model="query" @keyup="typeText" :placeholder="inputPlaceholder">
             <div>
                 <div v-for="(field, idx) in fieldsPossibilities" :class="indexSelectedProposition === idx ? 'selected' : ''">{{ field.Field }}</div>
             </div>

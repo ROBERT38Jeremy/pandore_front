@@ -84,6 +84,11 @@ onMounted(() => {
             <td><CustomCheckbox v-model="conf.tables.searchForEmpty"/></td>
         </tr>
 
+        <tr>
+            <td class="title">Display Keyboard Shortcuts In Inputs</td>
+            <td><CustomCheckbox v-model="conf.appDisplay.displayKeyboardShortcut"/></td>
+        </tr>
+
 
         <tr class="section">
             <td colspan="2">

@@ -20,7 +20,8 @@
     "appDisplay": {
         "displayMenu": true,
         "dateFormat": "yyyy-LL-dd",
-        "displaySQLRequestInDatasView": true
+        "displaySQLRequestInDatasView": true,
+        "displayKeyboardShortcut": true
     },
     "CSV": {
         "defaultFormat": {

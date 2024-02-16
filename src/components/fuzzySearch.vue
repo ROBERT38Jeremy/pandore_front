@@ -15,6 +15,7 @@ const { pandoreConf } = storeToRefs(usePandoreConfStore())
 const router = useRouter()
 const active = ref(false);
 const input = ref(null);
+const inputPlaceholder = ref("Search");
 const search = ref("");
 const databaseList = ref({});
 const tableList = ref({});
@@ -244,6 +245,8 @@ onBeforeMount(() => {
 
 onMounted(() => {
     document.addEventListener('keyup', hotKey);
+
+    if (pandoreConf.value?.appDisplay?.displayKeyboardShortcut ?? true === true) inputPlaceholder.value += " (CTRL + MAJ + S)";
 })
 
 onBeforeUnmount(() => {
@@ -258,7 +261,7 @@ watch([database, table], () => {
 <template>
     <div :class="'container '+(active ? 'active' : '')">
         <div>
-            <input ref="input" type="search" placeholder="Search (CTRL + K)" @keyup="fuzzy" @click="triggerInput" v-model="search">
+            <input ref="input" type="search" :placeholder="inputPlaceholder" @keyup="fuzzy" @click="triggerInput" v-model="search">
             <div :class="'propositions '+(active && (propositions || []).length ? 'active' : '')" v-if="active && isActionPropositions === false">
                 <div
                     v-for="(prop, index) in propositions"

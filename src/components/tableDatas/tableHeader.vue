@@ -19,6 +19,7 @@ const search = useDebouncedRef('');
 const searchRef = ref(null);
 const emit = defineEmits(['triggerFilter', 'searchInList', 'clearSearchInList']);
 const { pandoreConf } = storeToRefs(usePandoreConfStore())
+const inputPlaceholder = ref('Search');
 
 const hotKey = async (e) => {
     if (e.key == 'S' && e.ctrlKey && e.shiftKey) {
@@ -36,6 +37,8 @@ watch(search, () => {
 
 onMounted(() => {
     document.addEventListener('keyup', hotKey);
+
+    if (pandoreConf.value?.appDisplay?.displayKeyboardShortcut ?? true === true) inputPlaceholder.value += " (CTRL + MAJ + S)";
 })
 
 onBeforeUnmount(() => {
@@ -62,7 +65,7 @@ onBeforeUnmount(() => {
                         </g>
                     </svg>
                 </label>
-                <input type="search" ref="searchRef" name="table-search" id="table-search" v-model="search" placeholder="Search (CTRL + MAJ + S)">
+                <input type="search" ref="searchRef" name="table-search" id="table-search" v-model="search" :placeholder="inputPlaceholder">
             </div>
             <svg
                 :class="(pandoreConf?.tables?.query?.easyBuilder ?? true) === true ? '' : 'disabled'"
