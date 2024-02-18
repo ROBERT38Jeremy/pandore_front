@@ -131,8 +131,6 @@ onMounted(() => {
             <button class="save">Save</button>
         </div>
     </div>
-    {{ selectedProposition }}<br>
-    {{ autocompletionIsActive }}
     <table class="sql-querier">
         <tr>
             <td>
