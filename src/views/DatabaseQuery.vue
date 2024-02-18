@@ -18,6 +18,7 @@ const props = defineProps({
 });
 const { unsetTable } = useDBConnectStore();
 const { selectTab } = useTabStore();
+const sqlRequestRef = ref(null);
 const database = toRef(props, "databaseName");
 const query = toRef(props, "query");
 const nbLines = ref(10);
@@ -25,13 +26,71 @@ const sqlRequest = ref(query.value);
 const queryLoading = ref(false);
 const queryResult = ref(null)
 const message = ref(null)
+const autocompletionContainerPosition = ref({
+    top: 0,
+    left: 0
+})
+const autocompletionSQL = [
+    'ALL', 'ALTER', 'AVG()', 'AND', 'BETWEEN', 'BY', 'CASE', 'CREATE', 'COALESCE', 'COUNT()', 'DATABASE', 'DELETE',
+    'DROP', 'EXISTS', 'FROM', 'GROUP', 'HAVING', 'IF()', 'IN()', 'INDEX', 'INNER', 'INSERT', 'INTO', 'IS', 'JOIN',
+    'LEFT', 'LIKE', 'LIMIT', 'MAX()', 'MIN()', 'NOT', 'OR', 'ORDER', 'OUTER', 'RIGHT', 'SELECT', 'SET', 'SUM()',
+    'TABLE', 'THEN', 'UNION', 'UPDATE', 'WHERE'
+];
+const autocompletionPropositions = ref([]);
+const autocompletionIsActive = ref(false);
+const selectedProposition = ref(-1);
 
-const preventTab = (e) => {
-    if (e.key == 'Tab') {
+const prevent = (e) => {
+    if (e.key === 'Tab') {
         e.preventDefault();
-        sqlRequest.value += "\t"
+        sqlRequest.value = (sqlRequest.value ?? "")+"\t"
+    } else if (e.key === 'ArrowDown' && selectedProposition.value < autocompletionPropositions.value.length - 1) {
+        selectedProposition.value += 1;
+    } else if (e.key === 'ArrowDown' && autocompletionIsActive.value === true) {
+        e.preventDefault();
+        selectedProposition.value = 0;
+    } else if (e.key === 'ArrowUp' && selectedProposition.value > 0) {
+        e.preventDefault();
+        selectedProposition.value -= 1;
+    } else if (e.key === 'ArrowUp' && autocompletionIsActive.value === true) {
+        e.preventDefault();
+        selectedProposition.value = autocompletionPropositions.value.length -1;
+    } else if (e.key === 'Escape' && autocompletionIsActive.value === true) {
+        e.preventDefault();
+        selectedProposition.value -= 1;
+        autocompletionPropositions.value = [];
+        autocompletionIsActive.value = false;
+    } else if (e.key === 'Enter' && selectedProposition.value > -1) {
+        e.preventDefault();
+        const propValue = autocompletionPropositions.value?.[selectedProposition.value];
+        const selectionStart = sqlRequestRef.value.selectionStart;
+        const lastWord = sqlRequest.value.toLowerCase().slice(0, selectionStart).match(/(\w+)$/g)?.[0] ?? "";
+
+        sqlRequest.value = sqlRequest.value.slice(0, selectionStart - lastWord.length) + propValue + sqlRequest.value.slice(selectionStart + 1)+" ";
+
+        selectedProposition.value -= 1;
+        autocompletionPropositions.value = [];
+        autocompletionIsActive.value = false;
     }
 }
+
+watch(sqlRequest, () => {
+    const lines = (sqlRequest.value || "").split("\n").length;
+    nbLines.value = lines + 2 > 10 ? lines + 2 : 10;
+
+    const selectionStart = sqlRequestRef.value.selectionStart;
+    const selectionLineNumber = sqlRequest.value.slice(0, selectionStart).split("\n").length - 1;
+    autocompletionContainerPosition.value.top = selectionLineNumber;
+
+    const charsCount = sqlRequest.value.split("\n", selectionLineNumber + 1).slice(-1)?.[0].length + sqlRequest.value.split("\n", selectionLineNumber + 1).slice(-1)?.[0].split("\t").length
+    autocompletionContainerPosition.value.left = charsCount;
+
+    const lastWord = sqlRequest.value.toLowerCase().slice(0, selectionStart).match(/(\w+)$/g)?.[0];
+    autocompletionPropositions.value = autocompletionSQL.filter((word) => word.toLowerCase().includes(lastWord));
+
+    if (autocompletionPropositions.value.length > 0) autocompletionIsActive.value = true;
+    else autocompletionIsActive.value = false;
+})
 
 const runQuery = () => {
     if (sqlRequest.value.replaceAll(' ', '').replaceAll("\n", '').replaceAll("\t", '') !== '') {
@@ -56,10 +115,6 @@ const runQuery = () => {
     }
 }
 
-watch(sqlRequest, () => {
-    const lines = sqlRequest.value.split("\n").length;
-    nbLines.value = lines + 2 > 10 ? lines + 2 : 10
-})
 onMounted(() => {
     selectTab('SQL');
 })
@@ -76,13 +131,31 @@ onMounted(() => {
             <button class="save">Save</button>
         </div>
     </div>
-
+    {{ selectedProposition }}<br>
+    {{ autocompletionIsActive }}
     <table class="sql-querier">
         <tr>
             <td>
                 <div v-for="index in nbLines">{{ index }}</div>
             </td>
-            <td><textarea :rows="nbLines" placeholder="SELECT ..." v-model="sqlRequest" @keydown="preventTab"></textarea></td>
+            <td class="textarea-container">
+                <textarea :rows="nbLines" placeholder="SELECT ..." v-model="sqlRequest" ref="sqlRequestRef" @keyup="getPropositions" @keydown="prevent"></textarea>
+                <div
+                    v-if="autocompletionPropositions.length > 0"
+                    class="autocompletion-container"
+                    :style="`
+                        top: calc(${autocompletionContainerPosition.top}em * 1.6 + 2.6em);
+                        left: calc(${autocompletionContainerPosition.left}em * 0.55 + 0.5em);
+                    `"
+                >
+                    <div
+                        v-for="(prop, index) in autocompletionPropositions"
+                        :class="(selectedProposition === index ? 'selected-proposition' : '')"
+                    >
+                        {{ prop }}
+                    </div>
+                </div>
+            </td>
         </tr>
     </table>
     <CustomLoader :class="queryLoading ? 'sql-result' : ''" :loading="queryLoading">
@@ -204,5 +277,29 @@ button.save {
     position: relative;
     border-radius: 0.5em;
     overflow: hidden;
+}
+
+.textarea-container {
+    position: relative;
+    padding: 0;
+}
+
+.textarea-container>div.autocompletion-container {
+    position: absolute;
+    z-index: 30;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background-light);
+}
+
+.textarea-container>div.autocompletion-container>div {
+    padding: 0.2em 0.5em;
+}
+
+.textarea-container>div.autocompletion-container>div.selected-proposition {
+    background-color: var(--color-background);
+}
+
+textarea {
+    font-family: Consolas !important;
 }
 </style>
