@@ -299,5 +299,7 @@ button.save {
 
 textarea {
     font-family: Consolas !important;
+    background-color: var(--color-background);
+    color: var(--color-text);
 }
 </style>
