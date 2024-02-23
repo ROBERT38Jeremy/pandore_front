@@ -20,6 +20,9 @@ const props = defineProps({
     columns: {
         required: false
     },
+    hiddenColumns: {
+        required: false
+    },
     primaries: {
         type: Array,
         required: false,
@@ -72,6 +75,7 @@ const props = defineProps({
 });
 const datas = toRef(props, "datas");
 const errorText = toRef(props, "errorText");
+const hiddenColumns = toRef(props, "hiddenColumns");
 const slots = useSlots();
 const hasTableContentSlot = ref(!!slots?.tableContent);
 
@@ -93,7 +97,7 @@ const isForeign = (col) => {
                 <tr v-if="props.columns" :class="stickyTh === true ? 'sticky-th' : ''">
                     <th v-if="selectionColumn"></th>
                     <th v-if="autoIdColumn"></th>
-                    <th v-for="(_, columnName) in props.columns">
+                    <th v-for="columnName in Object.keys(props.columns).filter((col) => hiddenColumns.includes(col) === false)">
                         <ThIndex
                             :column-name="columnName"
                             :is-primary="isPrimary(columnName)"

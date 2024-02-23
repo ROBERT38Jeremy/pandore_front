@@ -32,7 +32,6 @@ const props = defineProps({
     }
 });
 const emit = defineEmits(['searchInList', 'clearSearchInList', 'triggerFilter', 'validQueryWhereString']);
-const { unsetTable } = useDBConnectStore();
 const { selectTab } = useTabStore();
 const { ToastLoadStart, ToastLoadEnd } = useToastStore();
 const { pandoreConf } = storeToRefs(usePandoreConfStore())
@@ -68,6 +67,7 @@ const colors = [
 ];
 const enumColor = ref({});
 const newEnumNumber = ref(0);
+const hiddenColumns = ref([]);
 
 const getEnumColor = (value) => {
     if (enumColor.value?.[value]) return enumColor.value[value];
@@ -104,9 +104,9 @@ const showTableDatas = (params = {}) => {
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
+            rows.value = [...result.value.resp.data.success];
+            displayedRows.value = [...result.value.resp.data.success];
             conditions.value = result.value.resp.data.conf;
-            rows.value = result.value.resp.data.success;
-            displayedRows.value= result.value.resp.data.success;
             sqlQuery.value = result.value.resp.data.request;
             structure.value = result.value.resp.data.structure;
             constraints.value = result.value.resp.data.constraints;
@@ -114,6 +114,7 @@ const showTableDatas = (params = {}) => {
                 return col.COLUMN_NAME
             });
             loading.value = false;
+            hiddenColumns.value = [];
         } else if (result.value.isLoading === false) {
             message.value = 'Une erreur est survenue...'
             loading.value = false;
@@ -159,7 +160,7 @@ const deleteRow = (rowIndex, row) => {
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
             // on supprimer la ligne de l'affichage
-            rows.value = rows.value.filter((r, index) => {
+            rows.value = [...rows.value].filter((r, index) => {
                 return index !== rowIndex
             })
             ToastLoadEnd({
@@ -180,7 +181,7 @@ const updateRow = (rowIndex, row) => {
 }
 
 const searchInList = (search) => {
-    displayedRows.value = rows.value.filter((row) => {
+    displayedRows.value = [...rows.value].filter((row) => {
         let flagFound = false;
         Object.values(row).forEach((value) => {
             if (value !== null && value.toString().toLowerCase().includes(search) === true) {
@@ -192,7 +193,7 @@ const searchInList = (search) => {
 }
 
 const clearSarchInList = () => {
-    displayedRows.value = rows.value;
+    displayedRows.value = [...rows.value];
 }
 
 const triggerFilter = () => {
@@ -207,6 +208,21 @@ const triggerFilter = () => {
 const validQueryWhereString = (queryString) => {
     requestParams.value.whereString = queryString;
     showTableDatas();
+    hiddenColumns.value = [];
+}
+
+const hideColumn = (column = null) => {
+    if (column) {
+        if (hiddenColumns.value.includes(column)) hiddenColumns.value.splice(hiddenColumns.value.indexOf(column), 1);
+        else hiddenColumns.value.push(column)
+    }
+
+    displayedRows.value = rows.value.map(({...row}) => {
+        hiddenColumns.value.forEach(col => {
+            delete row[col]
+        });
+        return row
+    });
 }
 
 watch([database, table, searchColumn, itemId], () => { showTableDatas() });
@@ -219,11 +235,14 @@ onMounted(() => {
 <template>
     <div class="header">
         <tableHeader
+            :structure="structure"
+            :hidden-columns="hiddenColumns"
             :table-name="tableName"
             :nb-result="rows.length"
             @triggerFilter="triggerFilter"
             @search-in-list="searchInList"
             @clear-search-in-list="clearSarchInList"
+            @hide-column="hideColumn"
         />
         <tableHeaderQueryBuilder
             v-if="tableName && structure && (pandoreConf?.tables?.query?.easyBuilder ?? true) === false"
@@ -249,6 +268,7 @@ onMounted(() => {
         <SimpleTable
             v-if="rows.length > 0"
             :columns="rows[0]"
+            :hidden-columns="hiddenColumns"
             :foreigns="constraints.map(c => c.FOR_COL_NAME)"
             :primaries="primaryIndexes"
             :structure="structure"
@@ -267,7 +287,7 @@ onMounted(() => {
                         @click="selectRow(index)"
                         :id="`${cle}-${champs}`"
                         :class="isPrimaryIndex(cle) ? 'primary-col' : ''"
-                        >
+                    >
                         <span v-if="champs !== null && isContrained(cle)">
                             <RouterLink :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs">
                                 {{ champs }}

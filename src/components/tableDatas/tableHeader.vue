@@ -8,8 +8,17 @@ import filterSvg from '../SVG/filter.svg.vue';
 import eyeSvg from '../SVG/eye.svg.vue';
 import exportSvg from '../SVG/export.svg.vue'
 import parametersSvg from '../SVG/parameters.svg.vue';
+import tableHeaderParameters from './tableHeaderParameters.vue';
 
 const props = defineProps({
+    structure: {
+        type: Object,
+        requiered: true,
+    },
+    hiddenColumns: {
+        type: Array,
+        required: true
+    },
     tableName: {
         type: String,
         requiered: false,
@@ -17,12 +26,12 @@ const props = defineProps({
     nbResult: {
         type: Number,
         required: false
-    },
+    }
 });
 const nbResult = toRef(props, "nbResult");
 const search = useDebouncedRef('');
 const searchRef = ref(null);
-const emit = defineEmits(['triggerFilter', 'searchInList', 'clearSearchInList']);
+const emit = defineEmits(['triggerFilter', 'searchInList', 'clearSearchInList', 'hideColumn']);
 const { pandoreConf } = storeToRefs(usePandoreConfStore())
 const inputPlaceholder = ref('Search');
 
@@ -67,19 +76,12 @@ onBeforeUnmount(() => {
                 @click="emit('triggerFilter')"
             />
 
-            <div class="parameter-container">
-                <parametersSvg v-if="(pandoreConf?.tables?.query?.easyBuilder ?? true) === false"/>
-                <div class="parameter-options-container">
-                    <div>
-                        <eyeSvg/>
-                        <div>Show / Hide columns</div>
-                    </div>
-                    <div>
-                        <exportSvg/>
-                        <div>Export</div>
-                    </div>
-                </div>
-            </div>
+            <tableHeaderParameters
+                v-if="(pandoreConf?.tables?.query?.easyBuilder ?? true) === false"
+                :structure="structure"
+                :hidden-columns="hiddenColumns"
+                @hide-column="(column) => emit('hideColumn', column)"
+            />
         </div>
     </div>
 </template>
@@ -124,15 +126,33 @@ svg.disabled {
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
 }
 
-.parameter-container>div.parameter-options-container>div {
+div.parameter-options-container>div.parameter-option {
     padding: 0.2em 0.4em;
     cursor: pointer;
     display: flex;
     gap: 1em;
     align-items: center;
+    position: relative;
 }
 
-.parameter-container>div.parameter-options-container>div:hover {
+div.parameter-options-container>div.parameter-option:hover {
     background-color: var(--color-background);
+}
+
+div.parameter-option>div.parameter-options-container {
+    position: absolute;
+    right: 100%;
+    top: 0;
+    display: none;
+    background-color: var(--color-background-light);
+    display: none;
+    min-width: 14em;
+    font-size: small;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+}
+
+div.parameter-option:hover>div.parameter-options-container {
+    display: block;
 }
 </style>
