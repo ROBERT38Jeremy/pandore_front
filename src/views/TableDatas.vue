@@ -231,8 +231,7 @@ onMounted(() => {
             :where-string="conditions?.whereString"
             @valid-query-where-string="validQueryWhereString"
         />
-    </div>
-    <CustomLoader :loading="loading" class="datas" :style="`max-width: calc(100vw ${menuIsDisplayed === true ? '- 300px' : ''} - 20px)`">
+
         <DatabaseSearch
             :table-structure="structure"
             @search-query="(conditions) => showTableDatas(conditions)"
@@ -245,7 +244,8 @@ onMounted(() => {
                 <RouterLink :to="'/database/'+database+'/sql?query='+sqlQuery">Modify query</RouterLink>
             </div>
         </div>
-
+    </div>
+    <CustomLoader :loading="loading" class="datas" :style="`max-width: calc(100vw ${menuIsDisplayed === true ? '- 300px' : ''} - 20px)`">
         <SimpleTable
             v-if="rows.length > 0"
             :columns="rows[0]"
@@ -295,14 +295,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-h2 {
-    padding-left: 2em;
-    width: fit-content;
-    position: sticky;
-    left: 0;
-}
-
-
 .code {
     min-width: 50em;
     width: fit-content;
