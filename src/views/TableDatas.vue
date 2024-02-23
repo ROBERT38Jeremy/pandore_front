@@ -181,18 +181,17 @@ const updateRow = (rowIndex, row) => {
 }
 
 const searchInList = (search) => {
+    hiddenColumns.value = [];
     displayedRows.value = [...rows.value].filter((row) => {
-        let flagFound = false;
         Object.values(row).forEach((value) => {
             if (value !== null && value.toString().toLowerCase().includes(search) === true) {
-                flagFound = true;
             }
         })
-        return flagFound === true;
     })
 }
 
 const clearSarchInList = () => {
+    hiddenColumns.value = [];
     displayedRows.value = [...rows.value];
 }
 
