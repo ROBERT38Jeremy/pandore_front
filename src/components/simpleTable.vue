@@ -21,7 +21,8 @@ const props = defineProps({
         required: false
     },
     hiddenColumns: {
-        required: false
+        required: false,
+        default: []
     },
     primaries: {
         type: Array,
