@@ -5,6 +5,8 @@ import { usePandoreConfStore } from '../../stores/PandoreConf'
 import { storeToRefs } from 'pinia';
 import searchSvg from '../SVG/search.svg.vue';
 import filterSvg from '../SVG/filter.svg.vue';
+import eyeSvg from '../SVG/eye.svg.vue';
+import exportSvg from '../SVG/export.svg.vue'
 import parametersSvg from '../SVG/parameters.svg.vue';
 
 const props = defineProps({
@@ -65,7 +67,19 @@ onBeforeUnmount(() => {
                 @click="emit('triggerFilter')"
             />
 
-            <parametersSvg v-if="(pandoreConf?.tables?.query?.easyBuilder ?? true) === false"/>
+            <div class="parameter-container">
+                <parametersSvg v-if="(pandoreConf?.tables?.query?.easyBuilder ?? true) === false"/>
+                <div class="parameter-options-container">
+                    <div>
+                        <eyeSvg/>
+                        <div>Show / Hide columns</div>
+                    </div>
+                    <div>
+                        <exportSvg/>
+                        <div>Export</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -88,5 +102,37 @@ svg:not(.disabled) {
 
 svg.disabled {
     opacity: 0.2;
+}
+
+.parameter-container {
+    position: relative;
+}
+
+.parameter-container:hover>div.parameter-options-container {
+    display: block;
+}
+
+.parameter-container>div.parameter-options-container {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--color-background-light);
+    display: none;
+    min-width: 14em;
+    font-size: small;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+}
+
+.parameter-container>div.parameter-options-container>div {
+    padding: 0.2em 0.4em;
+    cursor: pointer;
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
+.parameter-container>div.parameter-options-container>div:hover {
+    background-color: var(--color-background);
 }
 </style>

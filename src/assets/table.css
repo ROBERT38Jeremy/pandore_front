@@ -22,7 +22,7 @@ div.table-header {
     align-items: center;
     background-color: var(--color-background-light);
     border-radius: 5px;
-    z-index: 3;
+    z-index: 5;
 }
 
 .table-header-table-name {
