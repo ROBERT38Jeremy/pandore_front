@@ -47,10 +47,6 @@ onMounted(() => {
 </script>
 
 <template>
-    <h2>
-        <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
-        Structure
-    </h2>
     <CustomLoader :loading="loading">
         <SimpleTable
             :columns="{
@@ -77,9 +73,3 @@ onMounted(() => {
         </SimpleTable>
     </CustomLoader>
 </template>
-
-<style scoped>
-h2 {
-    padding-left: 2em;
-}
-</style>

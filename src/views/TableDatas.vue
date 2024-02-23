@@ -1,18 +1,21 @@
 <script setup>
 import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useAxios } from '../hooks/useAxios.js';
 import { useDBConnectStore } from '../stores/DBConnect';
 import { useTabStore } from '../stores/Tabs';
 import { useToastStore } from '../stores/Toast.store'
-import { isEnum } from '../utils/UseColumnType'
 import { usePandoreConfStore } from '../stores/PandoreConf'
+import { useDisplayMenu } from '../stores/DisplayMenu.store';
+import { isEnum } from '../utils/UseColumnType'
 import CustomLoader from '../components/global/CustomLoader.vue';
 import SimpleTable from '../components/simpleTable.vue';
+import tableHeader from '../components/tableDatas/tableHeader.vue';
+import tableHeaderQueryBuilder from '../components/tableDatas/tableHeaderQueryBuilder.vue';
 import TdDatas from '../components/tableDatas/tdDatas.vue';
 import DatabaseSearch from '../components/tableDatas/databaseSearch.vue';
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
 import "vue-code-highlight/themes/duotone-sea.css";
-import { storeToRefs } from 'pinia';
 
 const props = defineProps({
     databaseName: {
@@ -28,10 +31,12 @@ const props = defineProps({
         required: false
     }
 });
+const emit = defineEmits(['searchInList', 'clearSearchInList', 'triggerFilter', 'validQueryWhereString']);
 const { unsetTable } = useDBConnectStore();
 const { selectTab } = useTabStore();
 const { ToastLoadStart, ToastLoadEnd } = useToastStore();
 const { pandoreConf } = storeToRefs(usePandoreConfStore())
+const { menuIsDisplayed } = storeToRefs(useDisplayMenu());
 const loading = ref(false);
 const rows = ref([]);
 const displayedRows = ref([]);
@@ -212,12 +217,22 @@ onMounted(() => {
 </script>
 
 <template>
-    <h2>
-        <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
-        <RouterLink :to="'/database/'+database+'/'+table+'/structure'">{{ table }}</RouterLink> >
-        Datas
-    </h2>
-    <CustomLoader :loading="loading">
+    <div class="header">
+        <tableHeader
+            :table-name="tableName"
+            :nb-result="rows.length"
+            @triggerFilter="triggerFilter"
+            @search-in-list="searchInList"
+            @clear-search-in-list="clearSarchInList"
+        />
+        <tableHeaderQueryBuilder
+            v-if="tableName && structure && (pandoreConf?.tables?.query?.easyBuilder ?? true) === false"
+            :structure="structure"
+            :where-string="conditions?.whereString"
+            @valid-query-where-string="validQueryWhereString"
+        />
+    </div>
+    <CustomLoader :loading="loading" class="datas" :style="`max-width: calc(100vw ${menuIsDisplayed === true ? '- 300px' : ''} - 20px)`">
         <DatabaseSearch
             :table-structure="structure"
             @search-query="(conditions) => showTableDatas(conditions)"
@@ -233,20 +248,14 @@ onMounted(() => {
 
         <SimpleTable
             v-if="rows.length > 0"
-            :table-name="table"
             :columns="rows[0]"
             :foreigns="constraints.map(c => c.FOR_COL_NAME)"
             :primaries="primaryIndexes"
             :structure="structure"
-            :nb-result="rows.length"
             :sticky-th="true"
             :selection-column="true"
             :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
-            :whereString="conditions?.whereString"
-            @search-in-list="searchInList"
-            @clear-search-in-list="clearSarchInList"
-            @trigger-filter="triggerFilter"
-            @valid-query-where-string="validQueryWhereString"
+            :no-margin="true"
         >
             <template v-slot:tableContent>
                 <tr v-for="(row, index) in displayedRows" :id="index" :class="displayedRows.length > 1 && selectedRows === index ? 'selected-row' : ''">
@@ -282,7 +291,6 @@ onMounted(() => {
         </SimpleTable>
         <div v-else-if="message" class="simple-table-error">{{ message }}</div>
         <div v-else class="simple-table-error">No result</div>
-        <br>
     </CustomLoader>
 </template>
 
@@ -322,5 +330,27 @@ h2 {
 .table-options>span {
     color: var(--color-blue);
     cursor: pointer;
+}
+
+.datas {
+    max-height: calc(100% - 76px);
+    max-width: calc(100vw - 300px - 20px);
+    overflow: auto;
+}
+
+.datas::-webkit-scrollbar-track {
+    background-color: var(--color-background-light);
+    border: 1px solid var(--color-border);
+    -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.1);
+}
+
+.datas::-webkit-scrollbar-thumb {
+    background-color: var(--vt-c-blue);
+    border-radius: 1em;
+}
+
+.datas::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
 }
 </style>

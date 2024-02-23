@@ -35,18 +35,7 @@ onBeforeUnmount(() => {
 <template>
     <CustomLoader :loading="loading" :error="error" loading-text="Connecting...">
         <div v-if="processList">
-            <h2>Process List</h2>
             <SimpleTable :datas="processList"/>
         </div>
     </CustomLoader>
 </template>
-
-<style scoped>
-
-h2 {
-    padding-left: 2em;
-    width: fit-content;
-    position: sticky;
-    left: 0;
-}
-</style>

@@ -122,10 +122,6 @@ onMounted(() => {
 
 <template>
     <div class="sql-header">
-        <h2>
-            <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
-            SQL Request
-        </h2>
         <div>
             <button class="run" @click="runQuery">Run</button>
             <button class="save">Save</button>
@@ -182,10 +178,6 @@ onMounted(() => {
     display: flex;
     align-items: center;
     min-width: calc(100vw - 5px - 25em);
-}
-
-.sql-header h2 {
-    padding-left: 2em;
 }
 
 .sql-header div {

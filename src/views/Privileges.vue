@@ -34,16 +34,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <h2>
-        Users Privileges
-    </h2>
     <CustomLoader :loading="loading" :error="error">
         <Simpletable :datas="userPrivileges" :auto-id-column="true"/>
     </CustomLoader>
 </template>
-
-<style scoped>
-h2 {
-    padding-left: 2em;
-}
-</style>

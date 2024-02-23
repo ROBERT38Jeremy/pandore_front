@@ -1,9 +1,10 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAppLoaderStore } from './stores/AppLoader'
 import { usePandoreConfStore } from './stores/PandoreConf'
+import { useDisplayMenu } from './stores/DisplayMenu.store';
 import isConnectedView from './components/connection/isConnected.vue';
 import Toast from './components/global/Toast.vue';
 import AppLoader from './components/global/AppLoader.vue';
@@ -11,15 +12,12 @@ import HeaderView from './views/Generals/Header.vue';
 import MenuView from './views/Generals/Menu.vue';
 import MainTabSelectionView from './views/Generals/MainTabSelection.vue';
 
-const { isLoaded } = storeToRefs(useAppLoaderStore())
-const { setModuleStatus } = useAppLoaderStore()
-const { pandoreConf } = storeToRefs(usePandoreConfStore())
-const { setPandoreConf } = usePandoreConfStore()
-const displayMenu = ref(true);
-
-const triggerDIsplayMenu = () => {
-    displayMenu.value = !displayMenu.value
-}
+const { isLoaded }           = storeToRefs(useAppLoaderStore())
+const { setModuleStatus }    = useAppLoaderStore()
+const { pandoreConf }        = storeToRefs(usePandoreConfStore())
+const { setPandoreConf }     = usePandoreConfStore()
+const { setMenuDisplayMode } = useDisplayMenu()
+const { menuIsDisplayed }    = storeToRefs(useDisplayMenu())
 
 onMounted(async () => {
     await setPandoreConf()
@@ -29,7 +27,7 @@ onMounted(async () => {
 onMounted(() => {
     if ((pandoreConf.value?.appDisplay?.displayMenu ?? true) === false) {
         setModuleStatus('menu', true);
-        displayMenu.value = false;
+        setMenuDisplayMode(false)
     }
 })
 
@@ -41,11 +39,11 @@ onMounted(() => {
         <isConnectedView>
             <table class="main-table">
                 <tr>
-                    <td rowspan="3" class="main-menu" v-if="displayMenu">
+                    <td rowspan="3" class="main-menu" v-if="menuIsDisplayed">
                         <MenuView />
                     </td>
                     <td class="main-header">
-                        <HeaderView :isMenuDisplayed="displayMenu" @displayMenu="triggerDIsplayMenu"/>
+                        <HeaderView/>
                     </td>
                 </tr>
                 <tr>

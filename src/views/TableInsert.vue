@@ -147,11 +147,6 @@ onMounted(() => {
 </script>
 
 <template>
-    <h2>
-        <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
-        <RouterLink :to="'/database/'+database+'/'+table+'/datas'">{{ table }}</RouterLink> >
-        Insert
-    </h2>
     <CustomLoader :loading="loading">
         <div class="flex-container">
             <SimpleTable
@@ -204,14 +199,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-h2 {
-    padding-left: 2em;
-}
-
-hr {
-    border: 1px solid var(--color-border);
-}
-
 input {
     position: relative;
     background-color: transparent;

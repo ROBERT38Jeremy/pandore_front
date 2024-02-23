@@ -51,11 +51,6 @@ onMounted(() => {
 </script>
 
 <template>
-    <h2>
-        <RouterLink :to="'/database/'+database+'/structure'" @click="unsetTable">{{ database }}</RouterLink> >
-        <RouterLink :to="'/database/'+database+'/'+table+'/datas'">{{ table }}</RouterLink> >
-        Structure
-    </h2>
     <CustomLoader :loading="loading">
         <div class="table-structure-container">
             <div>
@@ -125,14 +120,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-h2 {
-    padding-left: 2em;
-}
-
-hr {
-    border: 1px solid var(--color-border);
-}
-
 .table-structure-container {
     display: flex;
     flex-wrap: wrap;

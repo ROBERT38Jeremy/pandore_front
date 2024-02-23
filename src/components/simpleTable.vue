@@ -1,18 +1,9 @@
 <script setup>
-import { ref, toRef, useSlots, watch } from 'vue';
-import { useDebouncedRef } from '../utils/UseDebouncedRef';
+import { ref, toRef, useSlots } from 'vue';
 import ThIndex from './tableDatas/thIndexes.vue';
 import TdDatas from './tableDatas/tdDatas.vue';
-import tableHeader from './tableDatas/tableHeader.vue';
-import tableHeaderQueryBuilder from './tableDatas/tableHeaderQueryBuilder.vue';
-import { usePandoreConfStore } from '../stores/PandoreConf';
-import { storeToRefs } from 'pinia';
 
 const props = defineProps({
-    tableName: {
-        type: String,
-        requiered: false,
-    },
     tableClass: {
         type: String,
         requiered: false,
@@ -54,10 +45,6 @@ const props = defineProps({
         required: false,
         default: 'Something went wrong'
     },
-    nbResult: {
-        type: Number,
-        required: false
-    },
     tableTitle: {
         type: String,
         required: false
@@ -77,19 +64,16 @@ const props = defineProps({
         required: false,
         default: false,
     },
-    whereString: {
-        type: String,
+    noMargin: {
+        type: Boolean,
         required: false,
-        default: "",
+        default: false,
     }
 });
 const datas = toRef(props, "datas");
 const errorText = toRef(props, "errorText");
-const nbResult = toRef(props, "nbResult");
 const slots = useSlots();
 const hasTableContentSlot = ref(!!slots?.tableContent);
-const emit = defineEmits(['searchInList', 'clearSearchInList', 'triggerFilter', 'validQueryWhereString']);
-const { pandoreConf } = storeToRefs(usePandoreConfStore())
 
 const isPrimary = (col) => {
     return props.primaries.includes(col);
@@ -101,29 +85,15 @@ const isForeign = (col) => {
 </script>
 
 <template>
-    <h2 v-if="tableTitle" class="simple-table-title">{{ tableTitle }}</h2>
-    <br>
-    <div v-if="showTable" class="table-container">
-        <tableHeader
-            v-if="tableName"
-            :table-name="tableName"
-            :nb-result="nbResult"
-            @triggerFilter="emit('triggerFilter')"
-            @search-in-list="(value) => emit('searchInList', value)"
-            @clear-search-in-list="emit('clearSearchInList')"
-        />
-        <tableHeaderQueryBuilder
-            v-if="tableName && structure && (pandoreConf?.tables?.query?.easyBuilder ?? true) === false"
-            :structure="structure"
-            :where-string="whereString"
-            @valid-query-where-string="(query) => emit('validQueryWhereString', query)"
-        />
+    <h2 v-if="tableTitle" class="simple-table-title">{{ tableTitle }}<br></h2>
+
+    <div v-if="showTable" :class="`table-container ${noMargin ? 'no-margin' : ''}`">
         <table :class="'simple-table ' + tableClass">
             <thead>
                 <tr v-if="props.columns" :class="stickyTh === true ? 'sticky-th' : ''">
                     <th v-if="selectionColumn"></th>
                     <th v-if="autoIdColumn"></th>
-                    <th v-for="(column, columnName) in props.columns">
+                    <th v-for="(_, columnName) in props.columns">
                         <ThIndex
                             :column-name="columnName"
                             :is-primary="isPrimary(columnName)"
@@ -135,7 +105,7 @@ const isForeign = (col) => {
                 <tr v-else-if="datas" :class="stickyTh === true ? 'sticky-th' : ''">
                     <th v-if="selectionColumn"></th>
                     <th v-if="autoIdColumn"></th>
-                    <th v-for="(data, column) in datas[0]">
+                    <th v-for="(_, column) in datas[0]">
                         <ThIndex
                             :column-name="column"
                             :is-primary="isPrimary(column)"
