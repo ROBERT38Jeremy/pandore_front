@@ -53,6 +53,10 @@ const emit = defineEmits(['hideColumn'])
     display: block;
 }
 
+div.parameter-options-container {
+    border-radius: 0.5em;
+}
+
 .parameter-container>div.parameter-options-container {
     position: absolute;
     top: 100%;
