@@ -24,12 +24,13 @@ const inputSqlQuery = ref(null)
 const indexSelectedProposition = ref(-1);
 const emit = defineEmits(['validQueryWhereString']);
 const inputPlaceholder = ref('Enter a SQL expression to filter results');
+const queryLastWord = ref('');
 
 
 const typeText = (e) => {
     e.preventDefault();
 
-    const queryLastWord = ref(query.value.match(/(\w+)(?:\s*)$/g));
+    queryLastWord.value = query.value.match(/(\w+)(?:\s*)$/g);
 
     if (e.key === 'ArrowUp') {
         inputSqlQuery.value.selectionStart = query.value.length
@@ -43,7 +44,7 @@ const typeText = (e) => {
         return;
     } else if (e.key === 'Enter') {
         // on veut exécuter la requête
-        if (indexSelectedProposition.value === -1) {
+        if (indexSelectedProposition.value === -1 || fieldsPossibilities.value.length <= 0) {
             emit('validQueryWhereString', query.value);
         } else {
             const selectedProposition = fieldsPossibilities.value[indexSelectedProposition.value];
@@ -108,7 +109,9 @@ onBeforeUnmount(() => {
         <div class="input-container">
             <input type="text" ref="inputSqlQuery" v-model="query" @keyup="typeText" :placeholder="inputPlaceholder">
             <div>
-                <div v-for="(field, idx) in fieldsPossibilities" :class="indexSelectedProposition === idx ? 'selected' : ''">{{ field.Field }}</div>
+                <div v-for="(field, idx) in fieldsPossibilities" :class="indexSelectedProposition === idx ? 'selected' : ''">
+                    <span class="word-correspondance">{{ queryLastWord[0] }}</span>{{ field.Field.replace(queryLastWord, '') }}
+                </div>
             </div>
         </div>
     </div>
@@ -158,7 +161,11 @@ onBeforeUnmount(() => {
 }
 
 .input-container>div>div.selected {
-    background-color: var(--color-blue-dark);
-    color: white;
+    background-color: var(--color-border);
+}
+
+.word-correspondance {
+    color: var(--color-blue);
+    font-weight: bold;
 }
 </style>
