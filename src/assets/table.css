@@ -70,7 +70,10 @@ table.simple-table {
 
 .simple-table tr.sticky-th th {
     position: sticky;
-    top: 0;
+    top: 1px;
+    -webkit-box-shadow: 0px -5px 0px 0px var(--color-background-light);
+    -moz-box-shadow: 0px -5px 0px 0px var(--color-background-light);
+    box-shadow: 0px -5px 0px 0px var(--color-background-light);
 }
 
 .simple-table th>div.th-index {
