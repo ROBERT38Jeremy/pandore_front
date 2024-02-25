@@ -13,6 +13,7 @@ import CustomLoader from '../components/global/CustomLoader.vue';
 import SimpleTable from '../components/simpleTable.vue';
 import tableHeader from '../components/tableDatas/tableHeader.vue';
 import tableHeaderQueryBuilder from '../components/tableDatas/tableHeaderQueryBuilder.vue';
+import tablePagination from '../components/tableDatas/tablePagination.vue';
 import TdDatas from '../components/tableDatas/tdDatas.vue';
 import DatabaseSearch from '../components/tableDatas/databaseSearch.vue';
 import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
@@ -54,7 +55,6 @@ const selectedRows = ref(-1);
 const showRowOptions = ref(false);
 const databaseQueryBuilderOpen = ref(false);
 const requestParams = ref({
-    limit: pandoreConf.value?.tables?.query?.defaultLimit ?? 50,
     where: [],
     select: [],
     whereString: ""
@@ -69,6 +69,8 @@ const colors = [
 const enumColor = ref({});
 const newEnumNumber = ref(0);
 const hiddenColumns = ref([]);
+const page = ref(0);
+const limit = ref(pandoreConf.value?.tables?.query?.defaultLimit ?? 50);
 
 const getEnumColor = (value) => {
     if (enumColor.value?.[value]) return enumColor.value[value];
@@ -106,7 +108,7 @@ const showTableDatas = (params = {}) => {
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
             rows.value = [...result.value.resp.data.success];
-            displayedRows.value = [...result.value.resp.data.success];
+            displayedRows.value = [...result.value.resp.data.success].slice(page.value * limit.value, limit.value + page.value * limit.value);
             conditions.value = result.value.resp.data.conf;
             sqlQuery.value = result.value.resp.data.request;
             structure.value = result.value.resp.data.structure;
@@ -183,9 +185,10 @@ const updateRow = (rowIndex, row) => {
 
 const searchInList = (search) => {
     hiddenColumns.value = [];
-    displayedRows.value = [...rows.value].filter((row) => {
-        Object.values(row).forEach((value) => {
-            if (value !== null && value.toString().toLowerCase().includes(search) === true) {
+    displayedRows.value = [...rows.value].slice(page.value * limit.value, limit.value + page.value * limit.value).filter((row) => {
+        return Object.values(row).some((item) => {
+            if (item !== null && item.toString().toLowerCase().includes(search) === true) {
+                return true;
             }
         })
     })
@@ -193,7 +196,7 @@ const searchInList = (search) => {
 
 const clearSarchInList = () => {
     hiddenColumns.value = [];
-    displayedRows.value = [...rows.value];
+    displayedRows.value = [...rows.value].slice(page.value * limit.value, limit.value + page.value * limit.value);
 }
 
 const triggerFilter = () => {
@@ -217,12 +220,17 @@ const hideColumn = (column = null) => {
         else hiddenColumns.value.push(column)
     }
 
-    displayedRows.value = rows.value.map(({...row}) => {
+    displayedRows.value = rows.value.slice(page.value * limit.value, limit.value + page.value * limit.value).map(({...row}) => {
         hiddenColumns.value.forEach(col => {
             delete row[col]
         });
         return row
     });
+}
+
+const changePage = (pageNb) => {
+    page.value = pageNb - 1;
+    displayedRows.value = rows.value.slice(page.value * limit.value, limit.value + page.value * limit.value);
 }
 
 watch([database, table, searchColumn, itemId], () => { showTableDatas() });
@@ -311,6 +319,13 @@ onMounted(() => {
         </SimpleTable>
         <div v-else-if="message" class="simple-table-error">{{ message }}</div>
         <div v-else class="simple-table-error">No result</div>
+
+        <tablePagination
+            :page="page"
+            :nb-result="rows.length"
+            :limit="limit"
+            @select-page="changePage"
+        />
     </CustomLoader>
 </template>
 

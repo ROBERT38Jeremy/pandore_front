@@ -33,7 +33,7 @@ const search = useDebouncedRef('');
 const searchRef = ref(null);
 const emit = defineEmits(['triggerFilter', 'searchInList', 'clearSearchInList', 'hideColumn']);
 const { pandoreConf } = storeToRefs(usePandoreConfStore())
-const inputPlaceholder = ref('Search');
+const inputPlaceholder = ref('Quick Search');
 
 const hotKey = async (e) => {
     if (e.key == 'S' && e.ctrlKey && e.shiftKey) {
@@ -93,7 +93,7 @@ input {
     border: none;
     border-bottom: 1px solid var(--color-border);
     outline: none;
-    width: calc(100% - 30px);
+    width: 220px;
     font-size: small;
     color: var(--color-text);
 }
