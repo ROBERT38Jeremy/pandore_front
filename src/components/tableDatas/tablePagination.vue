@@ -99,6 +99,10 @@ onMounted(getPagination)
     cursor: pointer;
 }
 
+.pagination>span:not(.dots):not(.current):hover {
+    background-color: var(--color-border);
+}
+
 .pagination>span.current {
     background-color: var(--color-blue);
     color: white;
