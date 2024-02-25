@@ -33,11 +33,12 @@ const typeText = (e) => {
 
     if (e.key === 'ArrowUp') {
         inputSqlQuery.value.selectionStart = query.value.length
-        if (indexSelectedProposition.value < 0) indexSelectedProposition.value = -1;
+        if (indexSelectedProposition.value <= 0) indexSelectedProposition.value = fieldsPossibilities.value.length - 1;
         else indexSelectedProposition.value -= 1;
         return;
     } else if (e.key === 'ArrowDown') {
-        indexSelectedProposition.value += 1;
+        if (indexSelectedProposition.value >= fieldsPossibilities.value.length - 1) indexSelectedProposition.value = 0;
+        else indexSelectedProposition.value += 1;
         inputSqlQuery.value.selectionStart = query.value.length
         return;
     } else if (e.key === 'Enter') {
@@ -103,7 +104,7 @@ onBeforeUnmount(() => {
 
 <template>
     <div class="query-builder-container">
-        <i>WHERE &ensp;</i>
+        <i>WHERE &ensp;</i>{{ indexSelectedProposition }}
         <div class="input-container">
             <input type="text" ref="inputSqlQuery" v-model="query" @keyup="typeText" :placeholder="inputPlaceholder">
             <div>
@@ -157,6 +158,7 @@ onBeforeUnmount(() => {
 }
 
 .input-container>div>div.selected {
-    background-color: var(--color-border);
+    background-color: var(--color-blue-dark);
+    color: white;
 }
 </style>
