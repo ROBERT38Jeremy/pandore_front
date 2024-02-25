@@ -2,12 +2,13 @@
 import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAxios } from '../hooks/useAxios.js';
-import { useDBConnectStore } from '../stores/DBConnect';
 import { useTabStore } from '../stores/Tabs';
 import { useToastStore } from '../stores/Toast.store'
 import { usePandoreConfStore } from '../stores/PandoreConf'
 import { useDisplayMenu } from '../stores/DisplayMenu.store';
 import { isEnum } from '../utils/UseColumnType'
+import deleteSvg from '../components/SVG/delete.svg.vue';
+import writeSvg from '../components/SVG/write.svg.vue';
 import CustomLoader from '../components/global/CustomLoader.vue';
 import SimpleTable from '../components/simpleTable.vue';
 import tableHeader from '../components/tableDatas/tableHeader.vue';
@@ -155,7 +156,7 @@ const deleteRow = (rowIndex, row) => {
         deleteConditions[primary] = row[primary];
     })
 
-    result.value = useAxios({ url: `/database/${database.value}/${table.value}`, method: 'DELETE', body: {...primaryIndexes} });
+    result.value = useAxios({ url: `/database/${database.value}/${table.value}`, method: 'DELETE', body: {...deleteConditions} });
     ToastLoadStart()
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
