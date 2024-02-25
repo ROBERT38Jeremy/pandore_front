@@ -104,7 +104,7 @@ onBeforeUnmount(() => {
 
 <template>
     <div class="query-builder-container">
-        <i>WHERE &ensp;</i>{{ indexSelectedProposition }}
+        <i>WHERE &ensp;</i>
         <div class="input-container">
             <input type="text" ref="inputSqlQuery" v-model="query" @keyup="typeText" :placeholder="inputPlaceholder">
             <div>
