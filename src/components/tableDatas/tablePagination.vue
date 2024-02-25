@@ -26,7 +26,7 @@ const getPagination = () => {
     pagination.value = [];
     maxPage.value = Math.ceil(nbResult.value / limit.value);
     const realPage = page.value + 1;
-    let nbPagePreviw = 10;
+    let nbPagePreviw = 9;
 
     // pagination pour les pages précédentes
     if (realPage != 1) {
@@ -57,22 +57,15 @@ onMounted(getPagination)
 <template>
     <div class="pagination table-header">
         <div>Page : </div>
-        <span
-            v-for="nbPage in pagination"
-            :class="nbPage === page + 1 ? 'current' : ''"
-            @click="emit('selectPage', nbPage)"
-        >
-            {{ nbPage }}
-        </span>
-
-        <span v-if="pagination.slice(-1)[0] < maxPage" class="dots">...</span>
-
-        <span
-            v-if="pagination.slice(-1)[0] < maxPage"
-            @click="emit('selectPage', maxPage)"
-        >
-            {{ maxPage }}
-        </span>
+        <template v-if="pagination[0] != 1">
+            <span @click="emit('selectPage', 1)">1</span>
+            <span class="dots">...</span>
+        </template>
+        <span v-for="nbPage in pagination" :class="nbPage === page + 1 ? 'current' : ''" @click="emit('selectPage', nbPage)">{{ nbPage }}</span>
+        <template v-if="pagination.slice(-1)[0] < maxPage">
+            <span class="dots">...</span>
+            <span @click="emit('selectPage', maxPage)">{{ maxPage }}</span>
+        </template>
     </div>
 </template>
 
@@ -92,11 +85,14 @@ onMounted(getPagination)
     padding: 0 0.4em;
     border: 1px solid var(--color-border);
     border-radius: 0.2em;
-    cursor: pointer;
 }
 
 .pagination>span:not(.dots) {
     cursor: pointer;
+}
+
+.pagination>span.dots {
+    cursor: default;
 }
 
 .pagination>span:not(.dots):not(.current):hover {
