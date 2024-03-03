@@ -5,8 +5,7 @@ import { useTabStore } from '../stores/Tabs';
 import { useAxios } from '../hooks/useAxios.js';
 import CustomLoader from '../components/global/CustomLoader.vue'
 import SimpleTable from '../components/simpleTable.vue';
-import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
-import "vue-code-highlight/themes/duotone-sea.css";
+import SQLHighlighter from '../components/SQLHighlighter.vue';
 
 const props = defineProps({
     databaseName: {
@@ -155,8 +154,8 @@ onMounted(() => {
     <CustomLoader :class="queryLoading ? 'sql-result' : ''" :loading="queryLoading">
         <br>
         <div v-if="message" class="error">{{ message }}</div>
-        <div v-if="((queryResult || []).length > 0 || message) && sqlRequest" class="code">
-            <pre><code-highlight language="javascript">{{ sqlRequest }}</code-highlight></pre>
+        <div v-if="((queryResult || []).length > 0 || message) && sqlRequest">
+            <SQLHighlighter :sql-query="sqlRequest" :database="database"/>
         </div>
         <br>
         <SimpleTable
@@ -164,7 +163,6 @@ onMounted(() => {
             :datas="queryResult"
             table-title="SQL Result"
             error-text="No result found"
-            :nb-result="queryResult.length"
         />
     </CustomLoader>
 </template>
@@ -250,7 +248,6 @@ button.save {
     tab-size: 2em;
 }
 
-.code,
 .error {
     min-width: 50em;
     width: fit-content;
@@ -260,13 +257,6 @@ button.save {
 
 .error {
     color: red;
-}
-
-.code pre {
-    margin: 0;
-    position: relative;
-    border-radius: 0.5em;
-    overflow: hidden;
 }
 
 .textarea-container {

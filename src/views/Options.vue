@@ -5,7 +5,6 @@ import { storeToRefs } from 'pinia';
 import { useTabStore } from '../stores/Tabs';
 import { usePandoreConfStore } from '../stores/PandoreConf'
 import { useToastStore } from '../stores/Toast.store'
-import "vue-code-highlight/themes/duotone-sea.css";
 import CustomSubmit from '../components/form/customSubmit.vue';
 import CustomCheckbox from '../components/form/customCheckbox.vue';
 

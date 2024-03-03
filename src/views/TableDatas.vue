@@ -16,8 +16,7 @@ import tableHeaderQueryBuilder from '../components/tableDatas/tableHeaderQueryBu
 import tablePagination from '../components/tableDatas/tablePagination.vue';
 import TdDatas from '../components/tableDatas/tdDatas.vue';
 import DatabaseSearch from '../components/tableDatas/databaseSearch.vue';
-import CodeHighlight from "vue-code-highlight/src/CodeHighlight.vue";
-import "vue-code-highlight/themes/duotone-sea.css";
+import SQLHighlighter from '../components/SQLHighlighter.vue';
 
 const props = defineProps({
     databaseName: {
@@ -265,12 +264,12 @@ onMounted(() => {
             :query-conditions="conditions"
             :open="databaseQueryBuilderOpen"
         />
-        <div v-if="sqlQuery && (pandoreConf?.appDisplay?.displaySQLRequestInDatasView ?? true) === true" class="code">
-            <pre><code-highlight language="js">{{ sqlQuery }}</code-highlight></pre>
-            <div>
-                <RouterLink :to="'/database/'+database+'/sql?query='+sqlQuery">Modify query</RouterLink>
-            </div>
-        </div>
+        <SQLHighlighter
+            v-if="sqlQuery && (pandoreConf?.appDisplay?.displaySQLRequestInDatasView ?? true) === true"
+            :sql-query="sqlQuery"
+            :database="database"
+            :modify-button="true"
+        />
     </div>
     <CustomLoader :loading="loading" class="datas" :style="`max-width: calc(100vw ${menuIsDisplayed === true ? '- 300px' : ''} - 20px)`">
         <SimpleTable
@@ -330,24 +329,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.code {
-    min-width: 50em;
-    width: fit-content;
-    position: sticky;
-    left: 1em;
-}
-
-.code pre {
-    margin: 0;
-    position: relative;
-    border-radius: 0.5em;
-    overflow: hidden;
-}
-
-.code>div {
-    text-align: right;
-}
-
 
 .table-options {
     padding-left: 2em;
