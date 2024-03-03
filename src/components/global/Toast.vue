@@ -7,7 +7,7 @@ const { toastDisplay, toastLoading, toastConf } = storeToRefs(useToastStore())
 
 <template>
     <div v-show="toastDisplay" :class="'Toaster ' + (toastConf?.type ?? 'info')">
-        <span v-if="!toastLoading">{{ toastConf?.message }}</span>
+        <span v-if="!toastLoading" v-html="toastConf?.message"></span>
         <span v-else class="loader-container">
             <span class="circle-container">
                 <svg fill="none" class="circle-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">

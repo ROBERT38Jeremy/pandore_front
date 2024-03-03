@@ -22,8 +22,11 @@ const saveNewConf = () => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
             ToastLoadEnd({
                 type: "success",
-                message: "Configuration enregistrée"
+                message: "Configuration enregistrée. <br> L'application va redémarer"
             });
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
         } else if (result.value.isLoading === false) {
             ToastLoadEnd({
                 type: "error",
