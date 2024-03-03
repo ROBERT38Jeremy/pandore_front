@@ -1,8 +1,10 @@
 <script setup>
+import tdDataValue from './tdDataValue.vue';
 import { isEnum, isBoolean, isDate } from '../../utils/UseColumnType';
 import { usePandoreConfStore } from '../../stores/PandoreConf'
 import { storeToRefs } from 'pinia';
 import { DateTime } from 'luxon'
+import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
     dataValue: {
@@ -23,21 +25,45 @@ const props = defineProps({
     }
 });
 const { pandoreConf } = storeToRefs(usePandoreConfStore())
+const isUrl = ref(false);
+const isLong = ref(false);
 
 const getFormatedDate = (SQLDate) => {
     const date = DateTime.fromSQL(SQLDate);
     return date.toFormat(pandoreConf.value?.appDisplay?.dateFormat+' HH:mm:ss' ?? 'yyyy-LL-dd HH:mm:ss');
 }
 
+const dataValueIsUrl = () => {
+    if (typeof props.dataValue === 'string') {
+        if (props.dataValue.match(/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)) {
+            isUrl.value = true;
+        }
+    }
+}
+
+const dataValueIsLong = () => {
+    try {
+        const stringLength = props.dataValue.toString().length;
+        if (stringLength > 200) isLong.value = true;
+    } catch (error) {
+        isLong.value = false;
+    }
+}
+onMounted(() => {
+    dataValueIsUrl()
+    dataValueIsLong()
+})
+
+
 </script>
 
 <template>
-    <a
-        v-if="typeof dataValue === 'string' && dataValue.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/)"
-        :href="dataValue"
-    >
+    <!-- LIEN URL -->
+    <a v-if="isUrl == true" :href="dataValue">
         {{ dataValue }}
     </a>
+
+    <!-- ENUM -->
     <span
         v-else-if="structure?.Type && isEnum(structure.Type) === true"
         class="enum-value"
@@ -45,12 +71,13 @@ const getFormatedDate = (SQLDate) => {
     >
         {{ dataValue }}
     </span>
+
+    <!-- BOOLEAN -->
     <span v-else-if="structure?.Type && isBoolean(structure.Type) === true">
         <span v-if="pandoreConf?.tables?.showBooleanAsCheck ?? false">
             <svg v-if="dataValue > 0"
                 width="14" height="14" viewBox="0 -4 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>check</title>
-                <desc>Created with Sketch.</desc>
                 <defs>
                     <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
                         <stop stop-color="#1DD47F" offset="0%"></stop>
@@ -68,9 +95,20 @@ const getFormatedDate = (SQLDate) => {
         </span>
         <span v-else>{{ dataValue }}</span>
     </span>
-    <span v-else-if="structure?.Type && isDate(structure.Type) === true">{{ getFormatedDate(dataValue) }}</span>
-    <span v-else-if="dataValue">{{ dataValue }}</span>
+
+    <!-- DATE -->
+    <span v-else-if="structure?.Type && isDate(structure.Type) === true">
+        {{ getFormatedDate(dataValue) }}
+    </span>
+
+    <!-- NULL -->
     <span v-else-if="dataValue === null" class="null-value">NULL</span>
+
+    <!-- EMPTY STRING -->
     <span v-else-if="checkEmptyString === true && dataValue === ''" class="empty-value" title="String is empty but not null">EMPTY</span>
-    <span v-else>{{ dataValue }}</span>
+
+    <!-- RAW DATA -->
+    <span v-else>
+        <tdDataValue :enable-extended="isLong">{{ dataValue }}</tdDataValue>
+    </span>
 </template>
