@@ -39,35 +39,33 @@ const getNumberSpan = (number) => {
 }
 
 const getHighlightedSQL = () => {
-    const sqlQueryWords         = sqlQuery.value.slice(0, -1).split(' ');
+    const sqlQueryWords         = (sqlQuery.value.slice(-1) === ';') ? sqlQuery.value.slice(0, -1).split(' ') : sqlQuery.value.split(' ');
     highlightedQueryWords.value = [];
 
     sqlQueryWords.forEach((word) => {
-        if (SQLWords.includes(word)) highlightedQueryWords.value.push(getSQLWordSpan(word));
-        else if (SQLOperators.includes(word)) highlightedQueryWords.value.push(getSQLOperatorSpan(word));
-        else if (word.match(/^[0-9]+$/)) highlightedQueryWords.value.push(getNumberSpan(word));
-        else if (word.match(/^(\"|\').+(\"|\')$/)) highlightedQueryWords.value.push(`${getSQLOperatorSpan('"')}${getNumberSpan(word.slice(1, -1))}${getSQLOperatorSpan('"')}`);
-        else highlightedQueryWords.value.push(word);
+        const realWords = word.split('\n');
+        realWords.forEach((realWord, idx) => {
+            if (realWords.length > 1 && idx % 2 !== 0) highlightedQueryWords.value.push('<br>');
+
+            if (SQLWords.includes(realWord))               highlightedQueryWords.value.push(getSQLWordSpan(realWord));
+            else if (SQLOperators.includes(realWord))      highlightedQueryWords.value.push(getSQLOperatorSpan(realWord));
+            else if (realWord.match(/^[0-9]+$/))           highlightedQueryWords.value.push(getNumberSpan(realWord));
+            else if (realWord.match(/^(\"|\').+(\"|\')$/)) highlightedQueryWords.value.push(`${getSQLOperatorSpan('"')}${getNumberSpan(realWord.slice(1, -1))}${getSQLOperatorSpan('"')}`);
+            else highlightedQueryWords.value.push(realWord);
+        })
     })
-
 }
-
-const modifyQuery = () => {
-    router.push(`/database/${database.value}/sql?query=${sqlQuery.value}`);
-}
-
 
 onMounted(getHighlightedSQL);
 watch(sqlQuery, getHighlightedSQL);
-
 </script>
 
 <template>
     <div v-if="sqlQuery" class="code">
         <span v-html="highlightedQueryWords.join(' ')+getSQLWordSpan(';')"></span>
-        <span v-if="modifyButton === true">
-            <writeSvg @click="modifyQuery" fill="white"/>
-        </span>
+        <a v-if="modifyButton === true" :href="`/database/${database}/sql?query=${sqlQuery}`">
+            <writeSvg fill="white"/>
+        </a>
     </div>
 </template>
 
@@ -84,7 +82,7 @@ watch(sqlQuery, getHighlightedSQL);
     gap: 1em;
 }
 
-.code span:nth-child(2) {
+.code a {
     margin-left: auto;
     display: flex;
     align-items: center;
