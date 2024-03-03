@@ -116,7 +116,12 @@ onMounted(() => {
         </tr>
 
         <tr>
-            <td class="title">Use EasyBuilder Tool for Building SQL request</td>
+            <td class="title">
+                Use EasyBuilder Tool for Building SQL request
+                <div class="sub-title">
+                    (Recommended for users who are <b>not</b><br> accustomed to using SQL language)
+                </div>
+            </td>
             <td><CustomCheckbox v-model="conf.tables.query.easyBuilder"/></td>
         </tr>
 
@@ -127,10 +132,10 @@ onMounted(() => {
 
         <tr>
             <td class="title">
-                Maximum Limit On The Number Of Data Displayed<br>
-                <span class="sub-title">
+                Maximum Limit On The Number Of Data Displayed
+                <div class="sub-title">
                     (This limit is used to preserve the<br>responsiveness of the application)
-                </span>
+                </div>
             </td>
             <td><input type="number" v-model="conf.tables.query.absolutLimit"></td>
         </tr>
@@ -158,7 +163,7 @@ table tr td.title {
     font-weight: bold;
 }
 
-table tr td span.sub-title {
+table tr td .sub-title {
     font-weight: normal;
     font-style: italic;
 }
