@@ -127,7 +127,7 @@ onMounted(() => {
 
         <tr>
             <td class="title">Limit On The Number Of Data Displayed</td>
-            <td><input type="number" v-model="conf.tables.query.defaultLimit"></td>
+            <td><input type="number" v-model="conf.tables.query.defaultLimit" max="500"></td>
         </tr>
 
         <tr>
@@ -137,7 +137,7 @@ onMounted(() => {
                     (This limit is used to preserve the<br>responsiveness of the application)
                 </div>
             </td>
-            <td><input type="number" v-model="conf.tables.query.absolutLimit"></td>
+            <td><input type="number" v-model="conf.tables.query.absolutLimit" readonly></td>
         </tr>
 
 
