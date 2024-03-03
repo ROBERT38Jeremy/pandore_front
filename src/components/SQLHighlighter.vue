@@ -24,16 +24,29 @@ const sqlQuery = toRef(props, "sqlQuery");
 const database = toRef(props, "database");
 const modifyButton = toRef(props, "modifyButton");
 const highlightedQueryWords = ref([]);
-const router = useRouter()
+const router = useRouter();
+
+const getSQLWordSpan = (SQLWord) => {
+    return `<span style="color: #c792ea;">${SQLWord}</span>`;
+}
+
+const getSQLOperatorSpan = (SQLOperator) => {
+    return `<span style="color: var(--color-blue);">${SQLOperator}</span>`;
+}
+
+const getNumberSpan = (number) => {
+    return `<span style="color: #e96542;">${number}</span>`
+}
 
 const getHighlightedSQL = () => {
     const sqlQueryWords         = sqlQuery.value.slice(0, -1).split(' ');
     highlightedQueryWords.value = [];
 
     sqlQueryWords.forEach((word) => {
-        if (SQLWords.includes(word)) highlightedQueryWords.value.push(`<span style="color: #c792ea;">${word}</span>`);
-        else if (SQLOperators.includes(word)) highlightedQueryWords.value.push(`<span style="color: var(--color-blue);">${word}</span>`);
-        else if (word.match(/^[0-9]+$/)) highlightedQueryWords.value.push(`<span style="color: #e96542;">${word}</span>`);
+        if (SQLWords.includes(word)) highlightedQueryWords.value.push(getSQLWordSpan(word));
+        else if (SQLOperators.includes(word)) highlightedQueryWords.value.push(getSQLOperatorSpan(word));
+        else if (word.match(/^[0-9]+$/)) highlightedQueryWords.value.push(getNumberSpan(word));
+        else if (word.match(/^(\"|\').+(\"|\')$/)) highlightedQueryWords.value.push(`${getSQLOperatorSpan('"')}${getNumberSpan(word.slice(1, -1))}${getSQLOperatorSpan('"')}`);
         else highlightedQueryWords.value.push(word);
     })
 
@@ -51,7 +64,7 @@ watch(sqlQuery, getHighlightedSQL);
 
 <template>
     <div v-if="sqlQuery" class="code">
-        <span v-html="highlightedQueryWords.join(' ')+';'"></span>
+        <span v-html="highlightedQueryWords.join(' ')+getSQLWordSpan(';')"></span>
         <span v-if="modifyButton === true">
             <writeSvg @click="modifyQuery" fill="white"/>
         </span>
