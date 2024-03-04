@@ -41,7 +41,7 @@ input {
     padding: 0.5em 1em;
     background-color: transparent;
     border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--color-border);
     outline: none;
     width: calc(100% - 30px);
     font-size: large;

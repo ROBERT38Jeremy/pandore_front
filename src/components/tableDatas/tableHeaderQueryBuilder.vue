@@ -108,7 +108,7 @@ onBeforeUnmount(() => {
         <i>WHERE &ensp;</i>
         <div class="input-container">
             <input type="text" ref="inputSqlQuery" v-model="query" @keyup="typeText" :placeholder="inputPlaceholder">
-            <div>
+            <div v-if="fieldsPossibilities.length > 0">
                 <div v-for="(field, idx) in fieldsPossibilities" :class="indexSelectedProposition === idx ? 'selected' : ''">
                     <span class="word-correspondance">{{ queryLastWord[0] }}</span>{{ field.Field.replace(queryLastWord, '') }}
                 </div>
@@ -151,9 +151,10 @@ onBeforeUnmount(() => {
     width: 100%;
     z-index: 5;
     background-color: var(--color-background-light);
-    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+    -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.1);
     border-radius: 0.5em;
+    border: 1px solid var(--color-border);
 }
 
 .input-container>div>div {
