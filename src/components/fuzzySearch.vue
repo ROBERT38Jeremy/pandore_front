@@ -246,7 +246,7 @@ onBeforeMount(() => {
 onMounted(() => {
     document.addEventListener('keyup', hotKey);
 
-    if (pandoreConf.value?.appDisplay?.displayKeyboardShortcut ?? true === true) inputPlaceholder.value += " (CTRL + MAJ + S)";
+    if (pandoreConf.value?.appDisplay?.displayKeyboardShortcut ?? true === true) inputPlaceholder.value += " (CTRL + K)";
 })
 
 onBeforeUnmount(() => {
