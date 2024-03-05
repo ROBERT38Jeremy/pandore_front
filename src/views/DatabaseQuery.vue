@@ -17,6 +17,7 @@ const props = defineProps({
 });
 const { unsetTable } = useDBConnectStore();
 const { selectTab } = useTabStore();
+import { SQLWords } from '../utils/SqlWords';
 const sqlRequestRef = ref(null);
 const database = toRef(props, "databaseName");
 const query = toRef(props, "query");
@@ -29,12 +30,6 @@ const autocompletionContainerPosition = ref({
     top: 0,
     left: 0
 })
-const autocompletionSQL = [
-    'ALL', 'ALTER', 'AVG()', 'AND', 'BETWEEN', 'BY', 'CASE', 'CREATE', 'COALESCE', 'COUNT()', 'DATABASE', 'DELETE',
-    'DROP', 'EXISTS', 'FROM', 'GROUP', 'HAVING', 'IF()', 'IN()', 'INDEX', 'INNER', 'INSERT', 'INTO', 'IS', 'JOIN',
-    'LEFT', 'LIKE', 'LIMIT', 'MAX()', 'MIN()', 'NOT', 'OR', 'ORDER', 'OUTER', 'RIGHT', 'SELECT', 'SET', 'SUM()',
-    'TABLE', 'THEN', 'UNION', 'UPDATE', 'WHERE'
-];
 const autocompletionPropositions = ref([]);
 const autocompletionIsActive = ref(false);
 const selectedProposition = ref(-1);
@@ -66,6 +61,7 @@ const prevent = (e) => {
         const lastWord = sqlRequest.value.toLowerCase().slice(0, selectionStart).match(/(\w+)$/g)?.[0] ?? "";
 
         sqlRequest.value = sqlRequest.value.slice(0, selectionStart - lastWord.length) + propValue + sqlRequest.value.slice(selectionStart + 1)+" ";
+        console.log(sqlRequest.value);
 
         selectedProposition.value -= 1;
         autocompletionPropositions.value = [];
@@ -74,21 +70,23 @@ const prevent = (e) => {
 }
 
 watch(sqlRequest, () => {
-    const lines = (sqlRequest.value || "").split("\n").length;
-    nbLines.value = lines + 2 > 10 ? lines + 2 : 10;
+    setTimeout(() => {
+        const lines = (sqlRequest.value || "").split("\n").length;
+        nbLines.value = lines + 2 > 10 ? lines + 2 : 10;
 
-    const selectionStart = sqlRequestRef.value.selectionStart;
-    const selectionLineNumber = sqlRequest.value.slice(0, selectionStart).split("\n").length - 1;
-    autocompletionContainerPosition.value.top = selectionLineNumber;
+        const selectionStart = sqlRequestRef.value.selectionStart;
+        const selectionLineNumber = sqlRequest.value.slice(0, selectionStart).split("\n").length - 1;
+        autocompletionContainerPosition.value.top = selectionLineNumber;
 
-    const charsCount = sqlRequest.value.split("\n", selectionLineNumber + 1).slice(-1)?.[0].length + sqlRequest.value.split("\n", selectionLineNumber + 1).slice(-1)?.[0].split("\t").length
-    autocompletionContainerPosition.value.left = charsCount;
+        const charsCount = sqlRequest.value.split("\n", selectionLineNumber + 1).slice(-1)?.[0].length + sqlRequest.value.split("\n", selectionLineNumber + 1).slice(-1)?.[0].split("\t").length
+        autocompletionContainerPosition.value.left = charsCount;
 
-    const lastWord = sqlRequest.value.toLowerCase().slice(0, selectionStart).match(/(\w+)$/g)?.[0];
-    autocompletionPropositions.value = autocompletionSQL.filter((word) => word.toLowerCase().includes(lastWord));
+        const lastWord = sqlRequest.value.toLowerCase().slice(0, selectionStart).match(/(\w+)$/g)?.[0];
+        autocompletionPropositions.value = SQLWords.filter((word) => word.toLowerCase().includes(lastWord));
 
-    if (autocompletionPropositions.value.length > 0) autocompletionIsActive.value = true;
-    else autocompletionIsActive.value = false;
+        if (autocompletionPropositions.value.length > 0) autocompletionIsActive.value = true;
+        else autocompletionIsActive.value = false;
+    }, 100)
 })
 
 const runQuery = () => {
