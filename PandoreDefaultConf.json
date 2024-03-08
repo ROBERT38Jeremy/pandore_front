@@ -19,6 +19,7 @@
     },
     "appDisplay": {
         "displayMenu": true,
+        "displayMenuSearchBar": false,
         "dateFormat": "yyyy-LL-dd",
         "displaySQLRequestInDatasView": true,
         "displayKeyboardShortcut": true

@@ -57,6 +57,16 @@ onMounted(() => {
         </tr>
 
         <tr>
+            <td class="title">
+                Show Menu Search Bar
+                <div class="sub-title">
+                    (Recommended for databases with many tables)
+                </div>
+            </td>
+            <td><CustomCheckbox v-model="conf.appDisplay.displayMenuSearchBar"/></td>
+        </tr>
+
+        <tr>
             <td class="title">Enable Fuzzy Search</td>
             <td><CustomCheckbox v-model="conf.fuzzySearch.enabled"/></td>
         </tr>

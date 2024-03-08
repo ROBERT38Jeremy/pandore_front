@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, onMounted, ref, watchEffect } from 'vue';
+import { onBeforeMount, onMounted, ref, watch, watchEffect } from 'vue';
 import { useAxios } from '../../hooks/useAxios';
 import { useDBConnectStore } from '../../stores/DBConnect'
 import { useAppLoaderStore } from '../../stores/AppLoader'
@@ -17,6 +17,9 @@ const databaseList = ref({});
 const loading = ref(false);
 const showDatabase = ref(null);
 const currentUser = ref(null);
+const search = ref('');
+const searchProposition = ref([]);
+const showSearchProposition = ref([]);
 
 const getDatabaseList = () => {
     const result = ref({});
@@ -26,6 +29,12 @@ const getDatabaseList = () => {
     watchEffect(() => {
         if (result.value.isLoading === false && result.value.resp.data.success) {
             databaseList.value = result.value.resp.data.success;
+            Object.keys({...databaseList.value}).forEach((database) => {
+                ({...databaseList.value}[database]).forEach((table) => {
+                    searchProposition.value.push({ database, table });
+                })
+            })
+            showSearchProposition.value = [...searchProposition.value];
             loading.value = false;
             setModuleStatus('menu', true);
         }
@@ -47,6 +56,13 @@ const triggerShowDatabase = (databaseName) => {
     showDatabase.value = databaseName;
 }
 
+const searchInTables = () => {
+    console.log(search.value);
+    if (search.value === '') return showSearchProposition.value = [...searchProposition.value];
+
+    showSearchProposition.value = [...searchProposition.value].filter((table) => table.table.includes(search.value));
+}
+
 onBeforeMount(getDatabaseList)
 onMounted(getCurrentUser)
 watchEffect(() => {
@@ -54,6 +70,8 @@ watchEffect(() => {
         triggerShowDatabase(selectedDatabase.value)
     }
 })
+
+watch(search, searchInTables)
 </script>
 
 <template>
@@ -65,8 +83,17 @@ watchEffect(() => {
         <span><i>Authenticated as : <b>{{ currentUser }}</b></i></span>
 
         <CustomLoader :loading="loading">
+            <div
+                v-if="(pandoreConf?.appDisplay?.displayMenuSearchBar ?? false) == true"
+                class="database-search-input-container">
+                <input type="search" placeholder="Search Table" v-model="search">
+            </div>
             <div class="database-list-global-container">
-                <div v-for="(tables, database) in databaseList" class="database-list-container">
+                <div
+                    v-if="(pandoreConf?.appDisplay?.displayMenuSearchBar ?? false) == false"
+                    v-for="(tables, database) in databaseList"
+                    class="database-list-container"
+                >
                     <div @click="triggerShowDatabase(database)">
                         <div>
                             <databaseSvg/>
@@ -84,6 +111,20 @@ watchEffect(() => {
                                 <div>
                                     <RouterLink :to="`/database/${database}/${table}/${pandoreConf?.tables?.defaultPage ?? 'structure'}`" >{{ table }}</RouterLink>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="database-search-container">
+                    <br>
+                    <div class="tables-list" v-if="showSearchProposition.length > 0">
+                        <div v-for="table in showSearchProposition">
+                            <div>
+                                <tableSvg/>
+                            </div>
+                            <div>
+                                <RouterLink :to="`/database/${table.database}/${table.table}/${pandoreConf?.tables?.defaultPage ?? 'structure'}`" >{{ table.table }}</RouterLink>
                             </div>
                         </div>
                     </div>
@@ -202,5 +243,19 @@ div.title~span {
 
 .database-list-container>a {
     width: fit-content;
+}
+
+
+.database-search-input-container {
+    display: flex;
+    justify-content: center;
+}
+
+input {
+    width: 80%;
+    outline: none;
+    border: 1px solid var(--color-border);
+    padding: 0.5em 1em;
+    border-radius: 0.5em;
 }
 </style>
