@@ -57,7 +57,6 @@ const triggerShowDatabase = (databaseName) => {
 }
 
 const searchInTables = () => {
-    console.log(search.value);
     if (search.value === '') return showSearchProposition.value = [...searchProposition.value];
 
     showSearchProposition.value = [...searchProposition.value].filter((table) => table.table.includes(search.value));
