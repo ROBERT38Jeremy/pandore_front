@@ -33,6 +33,7 @@ const autocompletionContainerPosition = ref({
 const autocompletionPropositions = ref([]);
 const autocompletionIsActive = ref(false);
 const selectedProposition = ref(-1);
+const lastWord = ref('');
 
 const prevent = (e) => {
     if (e.key === 'Tab') {
@@ -58,9 +59,9 @@ const prevent = (e) => {
         e.preventDefault();
         const propValue = autocompletionPropositions.value?.[selectedProposition.value];
         const selectionStart = sqlRequestRef.value.selectionStart;
-        const lastWord = sqlRequest.value.toLowerCase().slice(0, selectionStart).match(/(\w+)$/g)?.[0] ?? "";
+        lastWord.value = sqlRequest.value.toLowerCase().slice(0, selectionStart).match(/(\w+)$/g)?.[0] ?? "";
 
-        sqlRequest.value = sqlRequest.value.slice(0, selectionStart - lastWord.length) + propValue + sqlRequest.value.slice(selectionStart + 1)+" ";
+        sqlRequest.value = sqlRequest.value.slice(0, selectionStart - lastWord.value.length) + propValue + sqlRequest.value.slice(selectionStart + 1)+" ";
         console.log(sqlRequest.value);
 
         selectedProposition.value -= 1;
@@ -81,8 +82,8 @@ watch(sqlRequest, () => {
         const charsCount = sqlRequest.value.split("\n", selectionLineNumber + 1).slice(-1)?.[0].length + sqlRequest.value.split("\n", selectionLineNumber + 1).slice(-1)?.[0].split("\t").length
         autocompletionContainerPosition.value.left = charsCount;
 
-        const lastWord = sqlRequest.value.toLowerCase().slice(0, selectionStart).match(/(\w+)$/g)?.[0];
-        autocompletionPropositions.value = SQLWords.filter((word) => word.toLowerCase().includes(lastWord));
+        lastWord.value = sqlRequest.value.toLowerCase().slice(0, selectionStart).match(/(\w+)$/g)?.[0];
+        autocompletionPropositions.value = SQLWords.filter((word) => word.toLowerCase().startsWith(lastWord.value));
 
         if (autocompletionPropositions.value.length > 0) autocompletionIsActive.value = true;
         else autocompletionIsActive.value = false;
@@ -143,7 +144,7 @@ onMounted(() => {
                         v-for="(prop, index) in autocompletionPropositions"
                         :class="(selectedProposition === index ? 'selected-proposition' : '')"
                     >
-                        {{ prop }}
+                        <span class="last-word">{{ lastWord.toUpperCase() }}</span>{{ prop.slice(lastWord.length) }}
                     </div>
                 </div>
             </td>
@@ -166,6 +167,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.last-word {
+    color: var(--color-blue);
+}
+
 .sql-header {
     padding-left: 2em;
     width: fit-content;
