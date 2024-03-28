@@ -304,7 +304,7 @@ onMounted(() => {
                             v-else-if="isEnum((structure.filter(s => s.Field === cle) || [])[0]?.Type) === true"
                             :data-value="champs"
                             :structure="(structure.filter(s => s.Field === cle) || [])[0]"
-                            :style="'background-color: '+getEnumColor(champs)+';'"
+                            :background-color="getEnumColor(champs)"
                             :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
                         />
                         <TdDatas v-else
