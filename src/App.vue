@@ -87,7 +87,6 @@ onMounted(() => {
 .main-view {
     position: relative;
     padding: 0;
-    overflow: auto;
 }
 
 .main-view::-webkit-scrollbar-track {
