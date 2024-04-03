@@ -24,7 +24,7 @@ const getDatabaseTablesStructure = () => {
     const result = ref({});
 
     loading.value = true;
-    result.value = useAxios({ url: `/database/${database.value}/structure`, method: 'GET' });
+    result.value = useAxios({ url: `/sql/database/${database.value}/structure`, method: 'GET' });
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value.resp?.data?.success) {

@@ -97,7 +97,7 @@ const runQuery = () => {
         const result = ref({});
 
         queryLoading.value = true;
-        result.value = useAxios({ url: `/${database.value}/raw-query?request=${request}`, method: 'GET' });
+        result.value = useAxios({ url: `/sql/${database.value}/raw-query?request=${request}`, method: 'GET' });
 
         watchEffect(() => {
             if (result.value.isLoading === false && result.value.resp?.data?.success) {

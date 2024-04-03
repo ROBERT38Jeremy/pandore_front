@@ -35,7 +35,7 @@ function submit() {
     }
 
     loading.value = true;
-    connection.value = useAxios({ url: '/try/connect', method: 'POST', body: formData });
+    connection.value = useAxios({ url: '/sql/try/connect', method: 'POST', body: formData });
 
     watch(connection.value, () => {
         if (connection.value.isLoading === false) {

@@ -102,7 +102,7 @@ const showTableDatas = (params = {}) => {
     if (Object.entries(params).length > 0) {
         requestParams.value = {...params}
     }
-    result.value = useAxios({ url: `/database/${database.value}/${table.value}/datas`, method: 'POST', body: {...requestParams.value} });
+    result.value = useAxios({ url: `/sql/database/${database.value}/${table.value}/datas`, method: 'POST', body: {...requestParams.value} });
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
@@ -157,7 +157,7 @@ const deleteRow = (rowIndex, row) => {
         deleteConditions[primary] = row[primary];
     })
 
-    result.value = useAxios({ url: `/database/${database.value}/${table.value}`, method: 'DELETE', body: {...deleteConditions} });
+    result.value = useAxios({ url: `/sql/database/${database.value}/${table.value}`, method: 'DELETE', body: {...deleteConditions} });
     ToastLoadStart()
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {

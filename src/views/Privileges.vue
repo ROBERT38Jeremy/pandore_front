@@ -14,7 +14,7 @@ const getUserPrivileges = () => {
     const result = ref({});
 
     loading.value = true;
-    result.value = useAxios({ url: `/user/list`, method: 'GET' });
+    result.value = useAxios({ url: `/sql/user/list`, method: 'GET' });
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {

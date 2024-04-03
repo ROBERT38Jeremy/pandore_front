@@ -36,7 +36,7 @@ const showTableStructure = () => {
     const result = ref({});
 
     loading.value = true;
-    result.value = useAxios({ url: `/database/${database.value}/${table.value}/structure`, method: 'GET' });
+    result.value = useAxios({ url: `/sql/database/${database.value}/${table.value}/structure`, method: 'GET' });
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {
@@ -54,7 +54,7 @@ const showTableStructure = () => {
 const insert = () => {
     const result = ref({});
 
-    result.value = useAxios({ url: `/database/${database.value}/${table.value}/insert`, method: 'POST', body: {...insertValues.value} });
+    result.value = useAxios({ url: `/sql/database/${database.value}/${table.value}/insert`, method: 'POST', body: {...insertValues.value} });
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {

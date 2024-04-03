@@ -16,7 +16,7 @@ const conf = ref({...pandoreConf.value})
 const saveNewConf = () => {
     const result = ref({});
 
-    result.value = useAxios({ url: `/pandore-user/conf`, method: 'POST', body: {...conf.value} });
+    result.value = useAxios({ url: `/sql/pandore-user/conf`, method: 'POST', body: {...conf.value} });
     ToastLoadStart()
     watchEffect(() => {
         if (result.value.isLoading === false && result.value?.resp?.data?.success) {

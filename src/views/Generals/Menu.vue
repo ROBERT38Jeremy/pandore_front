@@ -25,7 +25,7 @@ const showSearchProposition = ref([]);
 
 const getDatabaseList = () => {
     const result = ref({});
-    result.value = useAxios({ url: `/database/menu-list`, method: 'GET' });
+    result.value = useAxios({ url: `/sql/database/menu-list`, method: 'GET' });
     loading.value = true;
 
     watchEffect(() => {
@@ -45,7 +45,7 @@ const getDatabaseList = () => {
 
 const getCurrentUser = () => {
     const result = ref({});
-    result.value = useAxios({ url: `/user/current`, method: 'GET' });
+    result.value = useAxios({ url: `/sql/user/current`, method: 'GET' });
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value.resp.data.success && currentUser.value === '') {

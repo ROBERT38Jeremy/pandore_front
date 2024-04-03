@@ -176,7 +176,7 @@ const fuzzyTable = (value) => {
 
 const getDatabaseList = () => {
     const result = ref({});
-    result.value = useAxios({ url: `/database/list`, method: 'GET' });
+    result.value = useAxios({ url: `/sql/database/list`, method: 'GET' });
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value.resp.data.success) {
@@ -190,7 +190,7 @@ const getTableList = async () => {
     const result = await new Promise((resolve, reject) => {
         const res = ref({});
 
-        res.value = useAxios({ url: `/database/${fuzzySearchParams.value.database}/data`, method: 'GET' });
+        res.value = useAxios({ url: `/sql/database/${fuzzySearchParams.value.database}/data`, method: 'GET' });
 
         watchEffect(() => {
             if (res.value.isLoading === false && res.value.resp.data.success) {

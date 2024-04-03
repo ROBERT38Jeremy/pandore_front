@@ -12,7 +12,7 @@ export const useDBConnectStore = defineStore('DBConnect', (currentRoutePath) => 
     if (isConnected.value === false) {
         const result = ref({});
 
-        result.value = useAxios({ url: `/is-connected`, method: 'GET' });
+        result.value = useAxios({ url: `/sql/is-connected`, method: 'GET' });
 
         watchEffect(() => {
             if (result.value.isLoading === false && result.value?.resp?.data?.success) {
