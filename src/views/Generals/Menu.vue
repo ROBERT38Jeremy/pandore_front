@@ -4,19 +4,21 @@ import { useAxios } from '../../hooks/useAxios';
 import { useDBConnectStore } from '../../stores/DBConnect'
 import { useAppLoaderStore } from '../../stores/AppLoader'
 import { usePandoreConfStore } from '../../stores/PandoreConf'
+import { useDBUser } from '../../stores/DBUser'
 import { storeToRefs } from 'pinia';
 import CustomLoader from '../../components/global/CustomLoader.vue'
 import databaseSvg from '../../components/SVG/database.svg.vue';
 import tableSvg from '../../components/SVG/table.svg.vue';
 
 const { database: selectedDatabase, table: selectedTable } = storeToRefs(useDBConnectStore())
-const { setDatabase, setTable, unsetTable } = useDBConnectStore()
+const { setDatabase, unsetTable } = useDBConnectStore()
 const { setModuleStatus } = useAppLoaderStore()
 const { pandoreConf } = storeToRefs(usePandoreConfStore())
+const { currentUser } = storeToRefs(useDBUser())
+const { setCurrentUser } = useDBUser()
 const databaseList = ref({});
 const loading = ref(false);
 const showDatabase = ref(null);
-const currentUser = ref(null);
 const search = ref('');
 const searchProposition = ref([]);
 const showSearchProposition = ref([]);
@@ -46,8 +48,9 @@ const getCurrentUser = () => {
     result.value = useAxios({ url: `/user/current`, method: 'GET' });
 
     watchEffect(() => {
-        if (result.value.isLoading === false && result.value.resp.data.success) {
-            currentUser.value = result.value.resp.data.success?.[0]?.['CURRENT_USER()'];
+        if (result.value.isLoading === false && result.value.resp.data.success && currentUser.value === '') {
+            setCurrentUser(result.value.resp.data.success?.[0]?.['CURRENT_USER()']);
+            setModuleStatus('DBUser', true);
         }
     })
 }

@@ -5,7 +5,8 @@ export const useAppLoaderStore = defineStore('AppLoader', () => {
     const isLoaded = ref(false);
     const appLoad = ref({
         menu: false,
-        pandoreConf: false
+        pandoreConf: false,
+        DBUser: false
     });
     const pctLoaded = ref(0);
 
