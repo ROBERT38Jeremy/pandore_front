@@ -7,8 +7,6 @@ import { useToastStore } from '../stores/Toast.store'
 import { usePandoreConfStore } from '../stores/PandoreConf'
 import { useDisplayMenu } from '../stores/DisplayMenu.store';
 import { isEnum } from '../utils/UseColumnType'
-import deleteSvg from '../components/SVG/delete.svg.vue';
-import writeSvg from '../components/SVG/write.svg.vue';
 import CustomLoader from '../components/global/CustomLoader.vue';
 import SimpleTable from '../components/simpleTable.vue';
 import tableHeader from '../components/tableDatas/tableHeader.vue';
@@ -51,7 +49,6 @@ const searchColumn = toRef(props, "searchColumn");
 const itemId = toRef(props, "itemId");
 const message = ref(null);
 const selectedRows = ref(-1);
-const showRowOptions = ref(false);
 const databaseQueryBuilderOpen = ref(false);
 const requestParams = ref({
     where: [],
@@ -142,10 +139,6 @@ const isPrimaryIndex = (col) => {
 
 const getContraintData = (col, COL_NAME) => {
     return constraints.value.filter(c => c.FOR_COL_NAME === col)[0][COL_NAME]
-}
-
-const triggerShowRowOptions = () => {
-    showRowOptions.value = !showRowOptions.value;
 }
 
 const deleteRow = (rowIndex, row) => {
@@ -280,15 +273,15 @@ onMounted(() => {
             :primaries="primaryIndexes"
             :structure="structure"
             :sticky-th="true"
-            :selection-column="true"
+            :selection-column="false"
             :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
             :no-margin="true"
         >
             <template v-slot:tableContent>
                 <tr v-for="(row, index) in displayedRows" :id="index" :class="displayedRows.length > 1 && selectedRows === index ? 'selected-row' : ''">
-                    <td>
+                    <!-- <td>
                         <input type="checkbox">
-                    </td>
+                    </td> -->
                     <td
                         v-for="(champs, cle) in row"
                         @click="selectRow(index)"
