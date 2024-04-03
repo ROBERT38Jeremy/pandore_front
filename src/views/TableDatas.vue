@@ -113,7 +113,6 @@ const showTableDatas = (params = {}) => {
                 return col.COLUMN_NAME
             });
             loading.value = false;
-            hiddenColumns.value = [];
         } else if (result.value.isLoading === false) {
             message.value = 'Une erreur est survenue...'
             loading.value = false;
@@ -176,7 +175,6 @@ const updateRow = (rowIndex, row) => {
 }
 
 const searchInList = (search) => {
-    hiddenColumns.value = [];
     displayedRows.value = [...rows.value].slice(page.value * limit.value, limit.value + page.value * limit.value).filter((row) => {
         return Object.values(row).some((item) => {
             if (item !== null && item.toString().toLowerCase().includes(search) === true) {
@@ -187,7 +185,6 @@ const searchInList = (search) => {
 }
 
 const clearSarchInList = () => {
-    hiddenColumns.value = [];
     displayedRows.value = [...rows.value].slice(page.value * limit.value, limit.value + page.value * limit.value);
 }
 
@@ -203,7 +200,6 @@ const triggerFilter = () => {
 const validQueryWhereString = (queryString) => {
     requestParams.value.whereString = queryString;
     showTableDatas();
-    hiddenColumns.value = [];
 }
 
 const hideColumn = (column = null) => {
@@ -211,13 +207,6 @@ const hideColumn = (column = null) => {
         if (hiddenColumns.value.includes(column)) hiddenColumns.value.splice(hiddenColumns.value.indexOf(column), 1);
         else hiddenColumns.value.push(column)
     }
-
-    displayedRows.value = rows.value.slice(page.value * limit.value, limit.value + page.value * limit.value).map(({...row}) => {
-        hiddenColumns.value.forEach(col => {
-            delete row[col]
-        });
-        return row
-    });
 }
 
 const changePage = (pageNb) => {
@@ -282,30 +271,32 @@ onMounted(() => {
                     <!-- <td>
                         <input type="checkbox">
                     </td> -->
-                    <td
-                        v-for="(champs, cle) in row"
-                        @click="selectRow(index)"
-                        :id="`${cle}-${champs}`"
-                        :class="isPrimaryIndex(cle) ? 'primary-col' : ''"
-                    >
-                        <span v-if="champs !== null && isContrained(cle)">
-                            <RouterLink :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs">
-                                {{ champs }}
-                            </RouterLink>
-                        </span>
-                        <TdDatas
-                            v-else-if="isEnum((structure.filter(s => s.Field === cle) || [])[0]?.Type) === true"
-                            :data-value="champs"
-                            :structure="(structure.filter(s => s.Field === cle) || [])[0]"
-                            :background-color="getEnumColor(champs)"
-                            :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
-                        />
-                        <TdDatas v-else
-                            :data-value="champs"
-                            :structure="(structure.filter(s => s.Field === cle) || [])[0]"
-                            :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
-                        />
-                    </td>
+                    <template v-for="(champs, cle) in row">
+                        <td
+                            v-if="!hiddenColumns.includes(cle)"
+                            @click="selectRow(index)"
+                            :id="`${cle}-${champs}`"
+                            :class="isPrimaryIndex(cle) ? 'primary-col' : ''"
+                        >
+                            <span v-if="champs !== null && isContrained(cle)">
+                                <RouterLink :to="'/database/'+database+'/'+getContraintData(cle, 'REFERENCED_TABLE_NAME')+'/datas/'+getContraintData(cle, 'REF_COL_NAME')+'/'+champs">
+                                    {{ champs }}
+                                </RouterLink>
+                            </span>
+                            <TdDatas
+                                v-else-if="isEnum((structure.filter(s => s.Field === cle) || [])[0]?.Type) === true"
+                                :data-value="champs"
+                                :structure="(structure.filter(s => s.Field === cle) || [])[0]"
+                                :background-color="getEnumColor(champs)"
+                                :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
+                            />
+                            <TdDatas v-else
+                                :data-value="champs"
+                                :structure="(structure.filter(s => s.Field === cle) || [])[0]"
+                                :check-empty-string="pandoreConf?.tables?.searchForEmpty ?? false"
+                            />
+                        </td>
+                    </template>
                 </tr>
             </template>
         </SimpleTable>
