@@ -4,13 +4,12 @@ import { useDBConnectStore } from '../../stores/DBConnect'
 import { storeToRefs } from 'pinia';
 
 const { isConnected } = storeToRefs(useDBConnectStore())
-const { isLoaded, pctLoaded, appLoad } = storeToRefs(useAppLoaderStore())
+const { isLoaded, pctLoaded } = storeToRefs(useAppLoaderStore())
 </script>
 
 <template>
     <slot />
     <div v-if="!isLoaded && isConnected" class="app-loader">
-        <pre>{{ appLoad }}</pre>
         <div class="logo-container">
             <div class="logo-contour1"></div>
             <div class="logo-contour2"></div>
