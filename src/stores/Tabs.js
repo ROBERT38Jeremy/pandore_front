@@ -16,6 +16,16 @@ export const useTabStore = defineStore('Tab', () => {
         const tabList = [
             // PRIVILEGES
             {
+                title: 'Search in Databases',
+                fuzzyText: '>',
+                conditions: {
+                    display: false,
+                    click: false,
+                    fuzzy: true,
+                }
+            },
+            // PRIVILEGES
+            {
                 title: 'Privileges',
                 name: 'Manage privileges',
                 path: `/privileges`,

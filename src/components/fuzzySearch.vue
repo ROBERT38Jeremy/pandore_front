@@ -230,11 +230,16 @@ const selectItem = async (itemName) => {
 }
 
 const selectAction = (action) => {
-    active.value = false;
-    search.value = '';
-    propositions.value = [];
-    input.value.blur();
-    router.push(action.path);
+    if (action?.path) {
+        active.value = false;
+        search.value = '';
+        propositions.value = [];
+        input.value.blur();
+        router.push(action.path);
+    } else if (action?.fuzzyText) {
+        search.value = action.fuzzyText;
+        definePropositions(search.value);
+    }
 }
 
 
@@ -277,7 +282,7 @@ watch([database, table], () => {
                     @click="selectAction(prop)"
                     :class="(selectedProposition === index ? 'selected-proposition' : '')"
                 >
-                    <b>{{ prop.title }}</b> - {{ prop.name }}
+                    <b>{{ prop.title }}</b> <span v-if="prop.name"> - {{ prop.name }}</span>
                 </div>
             </div>
         </div>
