@@ -77,6 +77,10 @@ onMounted(getPagination)
     margin-left: auto;
 }
 
+.pagination * {
+    user-select: none;
+}
+
 .pagination>div {
     margin-right: 0.5em;
 }
