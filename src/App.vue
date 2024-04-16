@@ -112,7 +112,15 @@ onMounted(() => {
     vertical-align: top;
     background-color: var(--color-background-light);
     border-radius: 5px;
+}
+
+.main-view {
     border: 1px solid transparent;
+}
+
+.main-menu,
+.main-header {
+    border: 1px solid var(--color-background);
 }
 
 .main-view-container {
