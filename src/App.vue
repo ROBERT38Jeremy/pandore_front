@@ -99,7 +99,6 @@ onMounted(() => {
 .main-view::-webkit-scrollbar-thumb {
     background-color: var(--vt-c-blue);
     border-radius: 1em;
-    
 }
 
 .main-view::-webkit-scrollbar {
@@ -113,7 +112,7 @@ onMounted(() => {
     vertical-align: top;
     background-color: var(--color-background-light);
     border-radius: 5px;
-    border: 1px solid var(--color-background);
+    border: 1px solid transparent;
 }
 
 .main-view-container {

@@ -26,6 +26,9 @@ onBeforeMount(getTabs);
 .tab-container {
     display: flex;
     gap: 0.5em;
+    position: relative;
+    padding-left: 10px;
+    bottom: -3px;
 }
 
 .tab-container * {
@@ -35,6 +38,8 @@ onBeforeMount(getTabs);
 .tab-container>div,
 .tab-container>span {
     background-color: var(--color-background-light);
+    min-width: 50px;
+    text-align: center;
 }
 
 .tab-container>div.pointer,
@@ -48,14 +53,14 @@ onBeforeMount(getTabs);
 
 .tab-container>div {
     padding: 0.2em 0.7em;
-    border-radius: 0.5em 0;
+    border-radius: 0.5em 0.5em 0 0;
     opacity: 0.5;
 }
 
 .tab-container>div.selected {
     opacity: 1;
-    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
 }
 
 .tab-container>span {
