@@ -31,7 +31,7 @@ const { isLoaded, pctLoaded } = storeToRefs(useAppLoaderStore())
     z-index: 50000000000;
     width: 100vw;
     height: 100vh;
-    background-color: var(--color-background);
+    backdrop-filter: blur(5px);
 }
 
 .logo-container {
