@@ -54,6 +54,12 @@ const error = toRef(props, "error");
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    padding: 0.5em;
+    -webkit-box-shadow: 0px 0px 15px -6px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 15px -6px rgba(0, 0, 0, 0.5);
+    border-radius: 1em;
 }
 
 .loader-flex {
