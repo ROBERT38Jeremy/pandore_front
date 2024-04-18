@@ -118,7 +118,6 @@ function submit() {
 
 .left-panel {
     padding: 5em 6em;
-    background-color: var(--color-background-light);
     transition: all 0.2s ease-in-out;
 }
 

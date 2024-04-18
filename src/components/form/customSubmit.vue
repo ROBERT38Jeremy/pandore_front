@@ -14,7 +14,13 @@ const props = defineProps({
 </script>
 
 <template>
-    <button :type="type">{{ label }}</button>
+    <button
+        :type="type"
+        @mousedown="(e) => e.target.classList.add('mouse-down')"
+        @mouseup="(e) => e.target.classList.remove('mouse-down')"
+    >
+        {{ label }}
+    </button>
 </template>
 
 <style scoped>
@@ -30,5 +36,14 @@ button {
     color: var(--color-background-light);
     background-color: var(--color-button);
     cursor: pointer;
+    transition: all .1s ease-in;
+}
+
+button:hover {
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.10);
+}
+
+button.mouse-down {
+    transform: scale(0.9);
 }
 </style>
