@@ -121,7 +121,7 @@ const getConstraintsPossibleValues = (tableName, refColumn, Field) => {
     const result = ref({});
 
     result.value = useAxios({
-        url: `/database/${database.value}/${tableName}/datas`,
+        url: `/sql/database/${database.value}/${tableName}/datas`,
         method: 'POST',
         body: { limit: 50_000_000}
     });
