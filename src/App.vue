@@ -115,7 +115,7 @@ onMounted(() => {
 }
 
 .main-view {
-    border: 1px solid transparent;
+    border: 1px solid var(--color-background);
 }
 
 .main-menu,
