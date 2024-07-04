@@ -101,6 +101,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
     document.removeEventListener('keyup', hotKey);
 })
+
+const GetPossibilityHTML = (field) => {
+    return field.Field.replace(queryLastWord.value, `<span class="word-correspondance">${queryLastWord.value[0]}</span>`);
+}
 </script>
 
 <template>
@@ -109,15 +113,13 @@ onBeforeUnmount(() => {
         <div class="input-container">
             <input type="text" ref="inputSqlQuery" v-model="query" @keyup="typeText" :placeholder="inputPlaceholder">
             <div v-if="fieldsPossibilities.length > 0">
-                <div v-for="(field, idx) in fieldsPossibilities" :class="indexSelectedProposition === idx ? 'selected' : ''">
-                    <span class="word-correspondance">{{ queryLastWord[0] }}</span>{{ field.Field.replace(queryLastWord, '') }}
-                </div>
+                <div v-for="(field, idx) in fieldsPossibilities" :class="indexSelectedProposition === idx ? 'selected' : ''" v-html="GetPossibilityHTML(field)"></div>
             </div>
         </div>
     </div>
 </template>
 
-<style scoped>
+<style>
 .query-builder-container {
     max-width: calc(100vw - 12em - 200px + 10px);
     padding: 0.4em 1em;
@@ -129,11 +131,11 @@ onBeforeUnmount(() => {
     z-index: 3;
 }
 
-.input-container {
+.query-builder-container .input-container {
     position: relative;
 }
 
-.input-container>input {
+.query-builder-container .input-container>input {
     position: relative;
     background-color: transparent;
     border: none;
@@ -145,7 +147,7 @@ onBeforeUnmount(() => {
     width: 600px;
 }
 
-.input-container>div {
+.query-builder-container .input-container>div {
     position: absolute;
     top: 100%;
     width: 100%;
@@ -157,15 +159,15 @@ onBeforeUnmount(() => {
     border: 1px solid var(--color-border);
 }
 
-.input-container>div>div {
+.query-builder-container .input-container>div>div {
     padding: 0.2em 0.5em;
 }
 
-.input-container>div>div.selected {
+.query-builder-container .input-container>div>div.selected {
     background-color: var(--color-border);
 }
 
-.word-correspondance {
+.query-builder-container .word-correspondance {
     color: var(--color-blue);
     font-weight: bold;
 }
