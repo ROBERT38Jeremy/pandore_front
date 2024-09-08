@@ -30,7 +30,7 @@ const queryLastWord = ref('');
 const typeText = (e) => {
     e.preventDefault();
 
-    queryLastWord.value = query.value.match(/(\w+)(?:\s*)$/g);
+    queryLastWord.value = query.value.match(/(.+)(?:\s*)$/g);
 
     if (e.key === 'ArrowUp') {
         inputSqlQuery.value.selectionStart = query.value.length
@@ -78,11 +78,27 @@ const getFieldsPossibilities = (word) => {
     if (word === "") {
         fieldsPossibilities.value = structure.value;
         return;
-    } else {
+    } else if (word?.[0]) {
+        const regex = getRegex(word[0]);
+        // fieldsPossibilities.value = structure.value.filter((s) => {
+        //     return s.Field.includes(word)
+        // })
         fieldsPossibilities.value = structure.value.filter((s) => {
-            return s.Field.includes(word)
+            return (s.Field.match(regex) ?? []).length > 0
         })
+
+        setTimeout(() => {
+            console.log(fieldsPossibilities.value.map((f) => f.Field));
+        }, 1500)
     }
+}
+
+const getRegex = (search) => {
+    const letters = search.split('');
+    const regexBuilt = '.*';
+    const regex = new RegExp(`${letters.join(regexBuilt)}${regexBuilt}`);
+
+    return regex;
 }
 
 const hotKey = async (e) => {
@@ -103,7 +119,22 @@ onBeforeUnmount(() => {
 })
 
 const GetPossibilityHTML = (field) => {
-    return field.Field.replace(queryLastWord.value, `<span class="word-correspondance">${queryLastWord.value[0]}</span>`);
+    let text = '';
+    if (queryLastWord.value?.[0]) {
+        const searchLetters = queryLastWord.value[0].split('');
+
+        field.Field.split('').forEach(letter => {
+            if (searchLetters.includes(letter)) {
+                text += `<span class="word-correspondance">${letter}</span>`
+            } else {
+                text += letter;
+            }
+        });
+
+        return text
+    } else {
+        return field.Field.replace(queryLastWord.value, `<span class="word-correspondance">${queryLastWord.value?.[0]}</span>`);
+    }
 }
 </script>
 
