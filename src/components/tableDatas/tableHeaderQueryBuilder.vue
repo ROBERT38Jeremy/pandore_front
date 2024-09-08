@@ -31,8 +31,6 @@ const typeText = (e) => {
     e.preventDefault();
 
     queryLastWord.value = query.value.match(/(\w+)(?:\s*)$/g);
-    console.log(queryLastWord.value);
-
 
     if (e.key === 'ArrowUp') {
         inputSqlQuery.value.selectionStart = query.value.length
