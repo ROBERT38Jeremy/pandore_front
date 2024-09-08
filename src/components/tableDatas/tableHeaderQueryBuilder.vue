@@ -80,16 +80,9 @@ const getFieldsPossibilities = (word) => {
         return;
     } else if (word?.[0]) {
         const regex = getRegex(word[0]);
-        // fieldsPossibilities.value = structure.value.filter((s) => {
-        //     return s.Field.includes(word)
-        // })
         fieldsPossibilities.value = structure.value.filter((s) => {
             return (s.Field.match(regex) ?? []).length > 0
         })
-
-        setTimeout(() => {
-            console.log(fieldsPossibilities.value.map((f) => f.Field));
-        }, 1500)
     }
 }
 
