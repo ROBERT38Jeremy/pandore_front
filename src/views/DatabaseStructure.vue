@@ -3,14 +3,17 @@ import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
 import { formatBytes } from '../hooks/formatBytes.js';
 import { useDBConnectStore } from '../stores/DBConnect';
+import { usePandoreConfStore } from '../stores/PandoreConf'
 import { useTabStore } from '../stores/Tabs';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import CustomLoader from '../components/global/CustomLoader.vue';
 import SimpleTable from '../components/simpleTable.vue';
 
 const router = useRouter();
 const { setTable, unsetTable } = useDBConnectStore();
 const { selectTab } = useTabStore();
+const { pandoreConf } = storeToRefs(usePandoreConfStore())
 const props = defineProps({
     databaseName: {
         type: String,
@@ -32,11 +35,6 @@ const chooseDatabase = () => {
             loading.value = false; // commenter pour tester le chargement
         }
     })
-}
-
-const selectTable = (tableName) => {
-    setTable(tableName)
-    router.push('/database/'+database.value+'/'+tableName+'/structure')
 }
 
 watch(database, chooseDatabase);
@@ -61,7 +59,9 @@ onMounted(() => {
         >
             <template v-slot:tableContent>
                 <tr v-for="(datas, index) in databaseTables">
-                    <td @click="selectTable(datas.TABLE_NAME)"><a>{{ datas.TABLE_NAME }}</a></td>
+                    <td>
+                        <RouterLink :to="`/database/${database}/${datas.TABLE_NAME}/${pandoreConf?.tables?.defaultPage ?? 'structure'}`" >{{ datas.TABLE_NAME }}</RouterLink>
+                    </td>
                     <td>{{ datas.ENGINE }}</td>
                     <td>{{ datas.TABLE_COLLATION }}</td>
                     <td>{{ datas.TABLE_ROWS }}</td>
