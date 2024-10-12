@@ -20,8 +20,7 @@ const databaseList = ref({});
 const loading = ref(false);
 const showDatabase = ref(null);
 const search = ref('');
-const searchProposition = ref([]);
-const showSearchProposition = ref([]);
+const showSearchProposition = ref({});
 
 const getDatabaseList = () => {
     const result = ref({});
@@ -31,12 +30,8 @@ const getDatabaseList = () => {
     watchEffect(() => {
         if (result.value.isLoading === false && result.value.resp.data.success) {
             databaseList.value = result.value.resp.data.success;
-            Object.keys({...databaseList.value}).forEach((database) => {
-                ({...databaseList.value}[database]).forEach((table) => {
-                    searchProposition.value.push({ database, table });
-                })
-            })
-            showSearchProposition.value = [...searchProposition.value];
+            showSearchProposition.value = {...databaseList.value};
+
             loading.value = false;
             setModuleStatus('menu', true);
         }
@@ -60,9 +55,21 @@ const triggerShowDatabase = (databaseName) => {
 }
 
 const searchInTables = () => {
-    if (search.value === '') return showSearchProposition.value = [...searchProposition.value];
+    if (search.value === '') return showSearchProposition.value = {...databaseList.value};
 
-    showSearchProposition.value = [...searchProposition.value].filter((table) => table.table.includes(search.value));
+    showSearchProposition.value = [];
+
+    (Object.entries({...databaseList.value}) || []).forEach(database => {
+        const databaseName = database[0];
+        const tables = database[1].filter((table) => { return table.includes(search.value) });
+
+        if ((tables || []).length <= 0) {
+            if (showSearchProposition.value?.[databaseName]) delete showSearchProposition.value.databaseName;
+            return;
+        }
+
+        showSearchProposition.value[databaseName] = [...tables];
+    });
 }
 
 onBeforeMount(getDatabaseList)
@@ -77,6 +84,7 @@ watch(search, searchInTables)
 </script>
 
 <template>
+    <!-- <pre>{{ showSearchProposition }}</pre> -->
     <div class="menu-container">
         <div class="logo">
             <img src="@/assets/logo.png">
@@ -117,18 +125,34 @@ watch(search, searchInTables)
                         </div>
                     </div>
                 </div>
-
-                <div v-else class="database-search-container">
+                <div v-else>
                     <br>
-                    <div class="tables-list" v-if="showSearchProposition.length > 0">
-                        <div v-for="table in showSearchProposition">
-                            <div>
-                                <tableSvg/>
+                    <div v-if="(Object.entries(showSearchProposition) || []).length > 0">
+                        <template v-for="[database, tables] of Object.entries(showSearchProposition)">
+                            <div class="database-list-container" v-if="(showSearchProposition?.[database] || []).length > 0">
+                                <div>
+                                    <div>
+                                        <databaseSvg/>
+                                    </div>
+                                    <div>
+                                        <RouterLink :to="'/database/'+database+'/structure'" @click="setDatabase(database), unsetTable()">{{ database }}</RouterLink>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="tables-list" v-if="tables.length > 0">
+                                        <div v-for="table in tables" :class="(table === selectedTable ? 'selected' : '')">
+                                            <div>
+                                                <tableSvg/>
+                                            </div>
+                                            <div>
+                                                <RouterLink :to="`/database/${database}/${table}/${pandoreConf?.tables?.defaultPage ?? 'structure'}`" >{{ table }}</RouterLink>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <RouterLink :to="`/database/${table.database}/${table.table}/${pandoreConf?.tables?.defaultPage ?? 'structure'}`" >{{ table.table }}</RouterLink>
-                            </div>
-                        </div>
+
+                        </template>
                     </div>
                 </div>
             </div>
@@ -217,6 +241,7 @@ div.title~span {
 
 .database-list-global-container {
     max-height: 70vh;
+    min-height: 20vh;
     overflow-y: auto;
     overflow-x: hidden;
 }
