@@ -1,12 +1,12 @@
 <script setup>
 import { onMounted, ref, toRef, watch } from 'vue';
+import { SQLWords } from '../../utils/SqlWords';
+import { SQLFunctions } from '../../utils/SqlFunctions';
+import CodeSvg from '../SVG/code.svg.vue';
+import FunctionSvg from '../SVG/function.svg.vue';
 
 const props = defineProps({
     currentWord: {
-        required: true
-    },
-    values: {
-        type: Array,
         required: true
     },
     position: {
@@ -20,11 +20,12 @@ const props = defineProps({
 });
 
 const currentWord = toRef(props, "currentWord");
-const values      = toRef(props, "values");
 const position    = toRef(props, "position");
 const autocompletionIsActive = ref(false);
 const autocompletionPropositions = ref([]);
 const selectedProposition = ref(-1);
+
+const propositions = SQLWords.concat(SQLFunctions);
 
 const prevent = (e) => {
     if (e.key === 'Tab') {
@@ -68,26 +69,26 @@ const getRegex = (search) => {
 
 const getAutocompletionPropositions = (word) => {
     if (word === "" || word === " ") {
-        autocompletionPropositions.value = [...values.value];
+        autocompletionPropositions.value = [...propositions];
         return;
     } else {
         const regex = getRegex(word);
-        autocompletionPropositions.value = [...values.value]
+        autocompletionPropositions.value = [...propositions]
             .filter((prop) => {
-                return (prop.match(regex) ?? []).length > 0
+                return (prop.value.match(regex) ?? []).length > 0
             })
             .sort((a, b) => {
                 // Vérifier si les mots commencent par le terme de recherche
-                const aStartsWith = a.toLowerCase().startsWith(word.toLowerCase());
-                const bStartsWith = b.toLowerCase().startsWith(word.toLowerCase());
+                const aStartsWith = a.value.toLowerCase().startsWith(word.toLowerCase());
+                const bStartsWith = b.value.toLowerCase().startsWith(word.toLowerCase());
 
                 // Si les deux mots commencent par le terme de recherche ou aucun ne le fait
                 if (aStartsWith && !bStartsWith) return -1;
                 if (!aStartsWith && bStartsWith) return 1;
 
                 // Vérifier si les mots contiennent le terme de recherche
-                const aIncludes = a.toLowerCase().includes(word.toLowerCase());
-                const bIncludes = b.toLowerCase().includes(word.toLowerCase());
+                const aIncludes = a.value.toLowerCase().includes(word.toLowerCase());
+                const bIncludes = b.value.toLowerCase().includes(word.toLowerCase());
 
                 // Si les deux mots contiennent le terme de recherche ou aucun ne le fait
                 if (aIncludes && !bIncludes) return -1;
@@ -104,7 +105,7 @@ const GetPossibilityHTML = (prop) => {
     if (currentWord.value) {
         const searchLetters = currentWord.value.toLowerCase().split('');
 
-        prop.split('').forEach(letter => {
+        prop.value.split('').forEach(letter => {
             if (searchLetters.includes(letter.toLowerCase())) {
                 text += `<span class="word-correspondance">${letter}</span>`
             } else {
@@ -113,13 +114,9 @@ const GetPossibilityHTML = (prop) => {
         });
         return text
     } else {
-        return prop.replace(currentWord.value, `<span class="word-correspondance">${currentWord.value}</span>`);
+        return prop.value.replace(currentWord.value, `<span class="word-correspondance">${currentWord.value}</span>`);
     }
 }
-
-watch(values, () => {
-    autocompletionPropositions.value = values.value;
-})
 
 watch(currentWord, () => {
     if (currentWord.value) {
@@ -129,7 +126,7 @@ watch(currentWord, () => {
 })
 
 onMounted(() => {
-    autocompletionPropositions.value = values.value;
+    autocompletionPropositions.value = [...propositions];
 })
 
 const emit = defineEmits(["select"]);
@@ -143,11 +140,16 @@ defineExpose({ prevent });
         class="autocompletion-container"
         :style="`top: calc(${position.top}em * 1.6 + 2.6em); left: calc(${position.left}em * 0.55 + 0.5em);`"
     >
-        <div
-            v-for="(prop, index) in autocompletionPropositions"
-            :class="(selectedProposition === index ? 'selected-proposition' : '')"
-            v-html="GetPossibilityHTML(prop)"
-        ></div>
+        <div v-for="(prop, index) in autocompletionPropositions" :class="`proposition ${(selectedProposition === index ? 'selected-proposition' : '')}`">
+            <span v-if="prop.type === 'word'">
+                <CodeSvg/>
+            </span>
+            <span v-else-if="prop.type === 'function'">
+                <FunctionSvg/>
+            </span>
+
+            <span v-html="GetPossibilityHTML(prop)"></span>
+        </div>
     </div>
 </template>
 
@@ -159,6 +161,16 @@ defineExpose({ prevent });
 .word-correspondance {
     color: var(--color-blue);
     font-weight: bold;
+}
+
+.proposition {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
+.proposition>* {
+    height: 25px;
 }
 
 div.autocompletion-container {
