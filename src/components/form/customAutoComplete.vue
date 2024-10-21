@@ -56,13 +56,74 @@ const prevent = (e) => {
     }
 }
 
+const getRegex = (search) => {
+    const letters = search.split('').map((letter) => {
+        return `(${letter.toLowerCase()}|${letter.toUpperCase()})`
+    });
+    const regexBuilt = '.*';
+    const regex = new RegExp(`${letters.join(regexBuilt)}${regexBuilt}`);
+
+    return regex;
+}
+
+const getAutocompletionPropositions = (word) => {
+    if (word === "" || word === " ") {
+        autocompletionPropositions.value = [...values.value];
+        return;
+    } else {
+        const regex = getRegex(word);
+        autocompletionPropositions.value = [...values.value]
+            .filter((prop) => {
+                return (prop.match(regex) ?? []).length > 0
+            })
+            .sort((a, b) => {
+                // Vérifier si les mots commencent par le terme de recherche
+                const aStartsWith = a.toLowerCase().startsWith(word.toLowerCase());
+                const bStartsWith = b.toLowerCase().startsWith(word.toLowerCase());
+
+                // Si les deux mots commencent par le terme de recherche ou aucun ne le fait
+                if (aStartsWith && !bStartsWith) return -1;
+                if (!aStartsWith && bStartsWith) return 1;
+
+                // Vérifier si les mots contiennent le terme de recherche
+                const aIncludes = a.toLowerCase().includes(word.toLowerCase());
+                const bIncludes = b.toLowerCase().includes(word.toLowerCase());
+
+                // Si les deux mots contiennent le terme de recherche ou aucun ne le fait
+                if (aIncludes && !bIncludes) return -1;
+                if (!aIncludes && bIncludes) return 1;
+
+                // Si aucune des conditions précédentes ne s'applique, conserver l'ordre d'origine
+                return 0;
+            })
+    }
+}
+
+const GetPossibilityHTML = (prop) => {
+    let text = '';
+    if (currentWord.value) {
+        const searchLetters = currentWord.value.toLowerCase().split('');
+
+        prop.split('').forEach(letter => {
+            if (searchLetters.includes(letter.toLowerCase())) {
+                text += `<span class="word-correspondance">${letter}</span>`
+            } else {
+                text += letter;
+            }
+        });
+        return text
+    } else {
+        return prop.replace(currentWord.value, `<span class="word-correspondance">${currentWord.value}</span>`);
+    }
+}
+
 watch(values, () => {
     autocompletionPropositions.value = values.value;
 })
 
 watch(currentWord, () => {
-    if (currentWord !== ' ') {
-        autocompletionPropositions.value = [...values.value].filter((word) => word.toLowerCase().startsWith(currentWord.value));
+    if (currentWord.value) {
+        getAutocompletionPropositions(currentWord.value);
         if ((autocompletionPropositions.value || []).length > 0) autocompletionIsActive.value = true;
     }
 })
@@ -80,23 +141,24 @@ defineExpose({ prevent });
     <div
         v-if="autocompletionIsActive && autocompletionPropositions.length > 0"
         class="autocompletion-container"
-        :style="`
-            top: calc(${position.top}em * 1.6 + 2.6em);
-            left: calc(${position.left}em * 0.55 + 0.5em);
-        `"
+        :style="`top: calc(${position.top}em * 1.6 + 2.6em); left: calc(${position.left}em * 0.55 + 0.5em);`"
     >
         <div
             v-for="(prop, index) in autocompletionPropositions"
             :class="(selectedProposition === index ? 'selected-proposition' : '')"
-        >
-            <span class="last-word">{{ currentWord.toUpperCase() }}</span>{{ prop.slice(currentWord.length) }}
-        </div>
+            v-html="GetPossibilityHTML(prop)"
+        ></div>
     </div>
 </template>
 
-<style scoped>
+<style>
 .last-word {
     color: var(--color-blue);
+}
+
+.word-correspondance {
+    color: var(--color-blue);
+    font-weight: bold;
 }
 
 div.autocompletion-container {
