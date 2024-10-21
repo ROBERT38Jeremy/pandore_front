@@ -50,7 +50,7 @@ const prevent = (e) => {
     } else if (e.key === 'Enter' && selectedProposition.value > -1) {
         e.preventDefault();
         const propValue = autocompletionPropositions.value?.[selectedProposition.value];
-        emit('select', propValue);
+        emit('select', propValue.value);
 
         selectedProposition.value -= 1;
         autocompletionPropositions.value = [];
@@ -181,6 +181,8 @@ div.autocompletion-container {
     background-color: var(--color-background-light);
     padding: 0.7em;
     box-shadow: 0px 0px 7px -5px #000000;
+    max-height: 40vh;
+    overflow-y: auto;
 }
 
 div.autocompletion-container>div {
