@@ -27,6 +27,13 @@ const selectedProposition = ref(-1);
 
 const propositions = SQLWords.concat(SQLFunctions);
 
+const selectProposition = (value) => {
+    emit('select', value);
+
+    selectedProposition.value -= 1;
+    autocompletionPropositions.value = [];
+}
+
 const prevent = (e) => {
     if (e.key === 'Tab') {
         e.preventDefault();
@@ -50,10 +57,7 @@ const prevent = (e) => {
     } else if (e.key === 'Enter' && selectedProposition.value > -1) {
         e.preventDefault();
         const propValue = autocompletionPropositions.value?.[selectedProposition.value];
-        emit('select', propValue.value);
-
-        selectedProposition.value -= 1;
-        autocompletionPropositions.value = [];
+        selectProposition(propValue.value);
     }
 }
 
@@ -140,7 +144,7 @@ defineExpose({ prevent });
         class="autocompletion-container"
         :style="`top: calc(${position.top}em * 1.6 + 2.6em); left: calc(${position.left}em * 0.55 + 0.5em);`"
     >
-        <div v-for="(prop, index) in autocompletionPropositions" :class="`proposition ${(selectedProposition === index ? 'selected-proposition' : '')}`">
+        <div v-for="(prop, index) in autocompletionPropositions" :class="`proposition ${(selectedProposition === index ? 'selected-proposition' : '')}`" @click="selectProposition(prop.value)">
             <span v-if="prop.type === 'word'">
                 <CodeSvg/>
             </span>
@@ -190,7 +194,9 @@ div.autocompletion-container>div {
     border-radius: 0.4em;
 }
 
+div.autocompletion-container>div:hover,
 div.autocompletion-container>div.selected-proposition {
     background-color: var(--color-background);
+    cursor: pointer;
 }
 </style>
