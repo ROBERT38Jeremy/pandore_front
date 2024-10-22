@@ -94,6 +94,9 @@ const getAutocompletionPropositions = (word) => {
                 return (prop.value.match(regex) ?? []).length > 0
             })
             .sort((a, b) => {
+                if (a.value.toLowerCase() === word.toLowerCase()) return -1;
+                if (b.value.toLowerCase() === word.toLowerCase()) return 1;
+
                 // Vérifier si les mots commencent par le terme de recherche
                 const aStartsWith = a.value.toLowerCase().startsWith(word.toLowerCase());
                 const bStartsWith = b.value.toLowerCase().startsWith(word.toLowerCase());
