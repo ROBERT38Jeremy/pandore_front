@@ -27,11 +27,14 @@ const selectedProposition = ref(-1);
 
 const propositions = SQLWords.concat(SQLFunctions);
 
-const selectProposition = (value) => {
-    emit('select', value);
+const selectProposition = (value = '') => {
+    if (typeof value === 'string' && value) {
+        emit('select', value);
+    }
 
-    selectedProposition.value -= 1;
+    selectedProposition.value       -= 1;
     autocompletionPropositions.value = [];
+    autocompletionIsActive.value     = false;
 }
 
 const prevent = (e) => {
@@ -51,9 +54,7 @@ const prevent = (e) => {
         selectedProposition.value = autocompletionPropositions.value.length -1;
     } else if (e.key === 'Escape' && autocompletionIsActive.value === true) {
         e.preventDefault();
-        selectedProposition.value -= 1;
-        autocompletionPropositions.value = [];
-        autocompletionIsActive.value = false;
+        selectProposition();
     } else if (e.key === 'Enter' && selectedProposition.value > -1) {
         e.preventDefault();
         const propValue = autocompletionPropositions.value?.[selectedProposition.value];
@@ -111,14 +112,14 @@ const GetPossibilityHTML = (prop) => {
 
         prop.value.split('').forEach(letter => {
             if (searchLetters.includes(letter.toLowerCase())) {
-                text += `<span class="word-correspondance">${letter}</span>`
+                text += `<span style="color: var(--color-blue); font-weight: bold;">${letter}</span>`
             } else {
                 text += letter;
             }
         });
         return text
     } else {
-        return prop.value.replace(currentWord.value, `<span class="word-correspondance">${currentWord.value}</span>`);
+        return prop.value.replace(currentWord.value, `<span style="color: var(--color-blue); font-weight: bold;">${currentWord.value}</span>`);
     }
 }
 
@@ -144,39 +145,19 @@ defineExpose({ prevent });
         class="autocompletion-container"
         :style="`top: calc(${position.top}em * 1.6 + 2.6em); left: calc(${position.left}em * 0.55 + 0.5em);`"
     >
-        <div v-for="(prop, index) in autocompletionPropositions" :class="`proposition ${(selectedProposition === index ? 'selected-proposition' : '')}`" @click="selectProposition(prop.value)">
-            <span v-if="prop.type === 'word'">
-                <CodeSvg/>
-            </span>
-            <span v-else-if="prop.type === 'function'">
-                <FunctionSvg/>
-            </span>
-
-            <span v-html="GetPossibilityHTML(prop)"></span>
-        </div>
+        <table>
+            <tr v-for="(prop, index) in autocompletionPropositions" :class="`proposition ${(selectedProposition === index ? 'selected-proposition' : '')}`" @click="selectProposition(prop.value)">
+                <td>
+                    <CodeSvg v-if="prop.type === 'word'" />
+                    <FunctionSvg v-else-if="prop.type === 'function'" />
+                </td>
+                <td v-html="GetPossibilityHTML(prop)"></td>
+            </tr>
+        </table>
     </div>
 </template>
 
-<style>
-.last-word {
-    color: var(--color-blue);
-}
-
-.word-correspondance {
-    color: var(--color-blue);
-    font-weight: bold;
-}
-
-.proposition {
-    display: flex;
-    gap: 1em;
-    align-items: center;
-}
-
-.proposition>* {
-    height: 25px;
-}
-
+<style scoped>
 div.autocompletion-container {
     position: absolute;
     z-index: 30;
@@ -189,13 +170,31 @@ div.autocompletion-container {
     overflow-y: auto;
 }
 
-div.autocompletion-container>div {
+div.autocompletion-container>table {
+    border-spacing: 0;
+}
+
+div.autocompletion-container>table tr {
     padding: 0.2em 0.5em;
     border-radius: 0.4em;
 }
 
-div.autocompletion-container>div:hover,
-div.autocompletion-container>div.selected-proposition {
+div.autocompletion-container>table td:first-child {
+    border-radius: 0.4em 0 0 0.4em;
+}
+
+div.autocompletion-container>table td:first-child>svg {
+    position: relative;
+    top: 5px;
+}
+
+div.autocompletion-container>table td:last-child {
+    border-radius: 0 0.4em 0.4em 0;
+}
+
+
+div.autocompletion-container>table tr:hover td,
+div.autocompletion-container>table tr.selected-proposition td {
     background-color: var(--color-background);
     cursor: pointer;
 }
