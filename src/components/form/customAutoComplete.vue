@@ -4,6 +4,7 @@ import { SQLWords } from '../../utils/SqlWords';
 import { SQLFunctions } from '../../utils/SqlFunctions';
 import CodeSvg from '../SVG/code.svg.vue';
 import FunctionSvg from '../SVG/function.svg.vue';
+import TextSvg from '../SVG/text.vue';
 
 const props = defineProps({
     currentWord: {
@@ -16,16 +17,21 @@ const props = defineProps({
             top: 0,
             left: 0
         }
-    }
+    },
+    extraPropositions: {
+        required: false,
+        type: Array,
+        default: []
+    },
 });
 
-const currentWord = toRef(props, "currentWord");
-const position    = toRef(props, "position");
-const autocompletionIsActive = ref(false);
+const currentWord                = toRef(props, "currentWord");
+const position                   = toRef(props, "position");
+const extraPropositions          = toRef(props, "extraPropositions");
+const autocompletionIsActive     = ref(false);
 const autocompletionPropositions = ref([]);
-const selectedProposition = ref(-1);
-
-const propositions = SQLWords.concat(SQLFunctions);
+const selectedProposition        = ref(-1);
+const propositions               = ref(SQLWords.concat(SQLFunctions));
 
 const selectProposition = (value = '') => {
     if (typeof value === 'string' && value) {
@@ -40,8 +46,9 @@ const selectProposition = (value = '') => {
 const prevent = (e) => {
     if (e.key === 'Tab') {
         e.preventDefault();
-        emit('select', "\t");
+        selectProposition("\t");
     } else if (e.key === 'ArrowDown' && selectedProposition.value < autocompletionPropositions.value.length - 1) {
+        e.preventDefault();
         selectedProposition.value += 1;
     } else if (e.key === 'ArrowDown' && autocompletionIsActive.value === true) {
         e.preventDefault();
@@ -55,10 +62,14 @@ const prevent = (e) => {
     } else if (e.key === 'Escape' && autocompletionIsActive.value === true) {
         e.preventDefault();
         selectProposition();
-    } else if (e.key === 'Enter' && selectedProposition.value > -1) {
+    } else if (e.key === 'Enter') {
         e.preventDefault();
-        const propValue = autocompletionPropositions.value?.[selectedProposition.value];
-        selectProposition(propValue.value);
+        if (selectedProposition.value === -1 || (autocompletionPropositions.value || []).length <= 0) {
+            emit('exec');
+        } else {
+            const propValue = autocompletionPropositions.value?.[selectedProposition.value];
+            selectProposition(propValue.value);
+        }
     }
 }
 
@@ -74,11 +85,11 @@ const getRegex = (search) => {
 
 const getAutocompletionPropositions = (word) => {
     if (word === "" || word === " ") {
-        autocompletionPropositions.value = [...propositions];
+        autocompletionPropositions.value = [...propositions.value];
         return;
     } else {
         const regex = getRegex(word);
-        autocompletionPropositions.value = [...propositions]
+        autocompletionPropositions.value = [...propositions.value]
             .filter((prop) => {
                 return (prop.value.match(regex) ?? []).length > 0
             })
@@ -130,11 +141,13 @@ watch(currentWord, () => {
     }
 })
 
-onMounted(() => {
-    autocompletionPropositions.value = [...propositions];
+watch(extraPropositions, () => {
+    propositions.value = propositions.value.concat(extraPropositions.value);
+
+    autocompletionPropositions.value = [...propositions.value];
 })
 
-const emit = defineEmits(["select"]);
+const emit = defineEmits(["select", "exec"]);
 defineExpose({ prevent });
 
 </script>
@@ -150,6 +163,7 @@ defineExpose({ prevent });
                 <td>
                     <CodeSvg v-if="prop.type === 'word'" />
                     <FunctionSvg v-else-if="prop.type === 'function'" />
+                    <TextSvg v-else />
                 </td>
                 <td v-html="GetPossibilityHTML(prop)"></td>
             </tr>

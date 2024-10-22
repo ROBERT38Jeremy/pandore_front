@@ -96,7 +96,7 @@ onMounted(() => {
                 <div v-for="index in nbLines">{{ index }}</div>
             </td>
             <td class="textarea-container">
-                <textarea :rows="nbLines" placeholder="SELECT ..." v-model="sqlRequest" ref="sqlRequestRef" @keyup="getPropositions" @keydown="customAutoComplete.prevent"></textarea>
+                <textarea :rows="nbLines" placeholder="SELECT ..." v-model="sqlRequest" ref="sqlRequestRef" @keydown="customAutoComplete.prevent"></textarea>
 
                 <CustomAutoComplete ref="customAutoComplete" :current-word="lastWord" :values="SQLWords" @select="replaceWord" :position="autocompletionContainerPosition"/>
             </td>

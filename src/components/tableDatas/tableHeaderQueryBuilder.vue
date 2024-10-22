@@ -1,8 +1,9 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref, toRef } from 'vue';
+import { onBeforeUnmount, onMounted, ref, toRef, watch } from 'vue';
 import { isString } from '../../utils/UseColumnType';
 import { usePandoreConfStore } from '../../stores/PandoreConf';
 import { storeToRefs } from 'pinia';
+import CustomAutoComplete from '../../components/form/customAutoComplete.vue';
 
 const props = defineProps({
     structure: {
@@ -18,80 +19,26 @@ const props = defineProps({
 });
 const structure = toRef(props, "structure");
 const { pandoreConf } = storeToRefs(usePandoreConfStore())
-const fieldsPossibilities = ref([]);
 const query = ref("");
 const inputSqlQuery = ref(null)
-const indexSelectedProposition = ref(-1);
 const emit = defineEmits(['validQueryWhereString']);
 const inputPlaceholder = ref('Enter a SQL expression to filter results');
 const queryLastWord = ref('');
+const customAutoComplete = ref(null);
+const extraPropositions = ref([]);
 
-
-const typeText = (e) => {
-    e.preventDefault();
-
+watch(query, () => {
     queryLastWord.value = query.value.match(/(\w+)(?:\s*)$/g);
+})
 
-    if (e.key === 'ArrowUp') {
-        inputSqlQuery.value.selectionStart = query.value.length
-        if (indexSelectedProposition.value <= 0) indexSelectedProposition.value = fieldsPossibilities.value.length - 1;
-        else indexSelectedProposition.value -= 1;
-        return;
-    } else if (e.key === 'ArrowDown') {
-        if (indexSelectedProposition.value >= fieldsPossibilities.value.length - 1) indexSelectedProposition.value = 0;
-        else indexSelectedProposition.value += 1;
-        inputSqlQuery.value.selectionStart = query.value.length
-        return;
-    } else if (e.key === 'Enter') {
-        // on veut exécuter la requête
-        if (indexSelectedProposition.value === -1 || fieldsPossibilities.value.length <= 0) {
-            emit('validQueryWhereString', query.value);
-        } else {
-            const selectedProposition = fieldsPossibilities.value[indexSelectedProposition.value];
-
-            // on replace la recherche par la selection
-            const re = new RegExp(`${queryLastWord.value}$`);
-            query.value = query.value.replace(re, selectedProposition.Field)+" "
-
-            if (isString(selectedProposition.Type)) {
-                query.value = query.value+"= \"\""
-                // on met le curseur entre les ""
-                setTimeout(() => {
-                    inputSqlQuery.value.setSelectionRange(query.value.length - 1, query.value.length - 1)
-                }, 100)
-            }
-
-            indexSelectedProposition.value = -1;
-            fieldsPossibilities.value = [];
-        }
-        return;
-    } else if (e.key === 'Escape') {
-        fieldsPossibilities.value = [];
-        indexSelectedProposition.value = -1;
-        return;
-    } else {
-        getFieldsPossibilities(queryLastWord.value);
-    }
+const replaceWord = (word) => {
+    // on replace la recherche par la selection
+    const re = new RegExp(`${queryLastWord.value}$`);
+    query.value = query.value.replace(re, word)+" "
 }
 
-const getFieldsPossibilities = (word) => {
-    if (word === "") {
-        fieldsPossibilities.value = structure.value;
-        return;
-    } else if (word?.[0]) {
-        const regex = getRegex(word[0]);
-        fieldsPossibilities.value = structure.value.filter((s) => {
-            return (s.Field.match(regex) ?? []).length > 0
-        })
-    }
-}
-
-const getRegex = (search) => {
-    const letters = search.split('');
-    const regexBuilt = '.*';
-    const regex = new RegExp(`${letters.join(regexBuilt)}${regexBuilt}`);
-
-    return regex;
+const execQuery = () => {
+    emit('validQueryWhereString', query.value);
 }
 
 const hotKey = async (e) => {
@@ -105,45 +52,28 @@ onMounted(() => {
     if (props.whereString !== "") query.value = props.whereString
 
     if (pandoreConf.value?.appDisplay?.displayKeyboardShortcut ?? true === true) inputPlaceholder.value += " (CTRL + B)";
+
+    extraPropositions.value = [...structure.value].map((field) => {
+        return { type: 'props', value: field.Field };
+    })
 })
 
 onBeforeUnmount(() => {
     document.removeEventListener('keyup', hotKey);
 })
-
-const GetPossibilityHTML = (field) => {
-    let text = '';
-    if (queryLastWord.value?.[0]) {
-        const searchLetters = queryLastWord.value[0].split('');
-
-        field.Field.split('').forEach(letter => {
-            if (searchLetters.includes(letter)) {
-                text += `<span class="word-correspondance">${letter}</span>`
-            } else {
-                text += letter;
-            }
-        });
-
-        return text
-    } else {
-        return field.Field.replace(queryLastWord.value, `<span class="word-correspondance">${queryLastWord.value?.[0]}</span>`);
-    }
-}
 </script>
 
 <template>
     <div class="query-builder-container">
         <i>WHERE &ensp;</i>
         <div class="input-container">
-            <input type="text" ref="inputSqlQuery" v-model="query" @keyup="typeText" :placeholder="inputPlaceholder">
-            <div v-if="fieldsPossibilities.length > 0">
-                <div v-for="(field, idx) in fieldsPossibilities" :class="indexSelectedProposition === idx ? 'selected' : ''" v-html="GetPossibilityHTML(field)"></div>
-            </div>
+            <input type="text" ref="inputSqlQuery" v-model="query" @keydown="customAutoComplete.prevent" :placeholder="inputPlaceholder">
+            <CustomAutoComplete ref="customAutoComplete" :current-word="queryLastWord?.[0] ?? ''" :position="{ top: -0.5, left: -1 }" :extra-propositions="extraPropositions" @select="replaceWord" @exec="execQuery"/>
         </div>
     </div>
 </template>
 
-<style>
+<style scoped>
 .query-builder-container {
     max-width: calc(100vw - 12em - 200px + 10px);
     padding: 0.4em 1em;
@@ -169,30 +99,5 @@ const GetPossibilityHTML = (field) => {
     color: var(--color-text);
     padding: 0.4em 0.3em;
     width: 600px;
-}
-
-.query-builder-container .input-container>div {
-    position: absolute;
-    top: 100%;
-    width: 100%;
-    z-index: 5;
-    background-color: var(--color-background-light);
-    -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.1);
-    box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.1);
-    border-radius: 0.5em;
-    border: 1px solid var(--color-border);
-}
-
-.query-builder-container .input-container>div>div {
-    padding: 0.2em 0.5em;
-}
-
-.query-builder-container .input-container>div>div.selected {
-    background-color: var(--color-border);
-}
-
-.query-builder-container .word-correspondance {
-    color: var(--color-blue);
-    font-weight: bold;
 }
 </style>
