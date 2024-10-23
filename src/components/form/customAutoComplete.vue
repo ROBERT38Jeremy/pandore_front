@@ -63,10 +63,10 @@ const prevent = (e) => {
         e.preventDefault();
         selectProposition();
     } else if (e.key === 'Enter') {
-        e.preventDefault();
         if (selectedProposition.value === -1 || (autocompletionPropositions.value || []).length <= 0) {
             emit('exec');
         } else {
+            e.preventDefault();
             const propValue = autocompletionPropositions.value?.[selectedProposition.value];
             selectProposition(propValue.value);
         }

@@ -43,7 +43,6 @@ export const SQLFunctions = [
     { type: 'function', value: 'EXP' },
     { type: 'function', value: 'FLOOR' },
     { type: 'function', value: 'LOG' },
-    { type: 'function', value: 'LOG10' },
     { type: 'function', value: 'MAX' },
     { type: 'function', value: 'MIN' },
     { type: 'function', value: 'PI' },
