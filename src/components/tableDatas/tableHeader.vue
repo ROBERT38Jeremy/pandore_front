@@ -19,9 +19,13 @@ const props = defineProps({
         type: Array,
         required: true
     },
+    databaseName: {
+        type: String,
+        requiered: true,
+    },
     tableName: {
         type: String,
-        requiered: false,
+        requiered: true,
     },
     nbResult: {
         type: Number,
@@ -78,6 +82,8 @@ onBeforeUnmount(() => {
 
             <tableHeaderParameters
                 v-if="(pandoreConf?.tables?.query?.easyBuilder ?? true) === false"
+                :database="databaseName"
+                :table="tableName"
                 :structure="structure"
                 :hidden-columns="hiddenColumns"
                 @hide-column="(column) => emit('hideColumn', column)"

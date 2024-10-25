@@ -4,7 +4,19 @@ import eyeSlashSvg from '../SVG/eyeSlash.svg.vue'
 import exportSvg from '../SVG/export.svg.vue'
 import parametersSvg from '../SVG/parameters.svg.vue';
 
+import { ref, watchEffect } from 'vue';
+import { useAxios } from '../../hooks/useAxios.js';
+import { useToastStore } from '../../stores/Toast.store';
+
 const props = defineProps({
+    database: {
+        type: String,
+        requiered: true,
+    },
+    table: {
+        type: String,
+        requiered: true,
+    },
     structure: {
         type: Object,
         requiered: true,
@@ -14,7 +26,29 @@ const props = defineProps({
         required: true
     },
 });
-const emit = defineEmits(['hideColumn'])
+const emit = defineEmits(['hideColumn']);
+const { ToastLoadStart, ToastLoadEnd } = useToastStore();
+
+const exportCSV = () => {
+    const result = ref(null);
+
+    ToastLoadStart()
+    result.value = useAxios({ url: `/sql/database/${props.database}/${props.table}/export`, method: 'GET' });
+
+    watchEffect(() => {
+        if (result.value.isLoading === false && result.value?.resp?.data?.success) {
+            ToastLoadEnd({
+                type: "success",
+                message: "Export terminé"
+            });
+        } else if (result.value.isLoading === false) {
+            ToastLoadEnd({
+                type: "error",
+                message: "Une erreur est survenue... Impossible de procéder à l'export"
+            });
+        }
+    })
+}
 
 </script>
 
@@ -38,7 +72,7 @@ const emit = defineEmits(['hideColumn'])
             </div>
             <div class="parameter-option">
                 <exportSvg/>
-                <div>Export</div>
+                <div @click="exportCSV">Export</div>
             </div>
         </div>
     </div>

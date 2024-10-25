@@ -226,6 +226,7 @@ onMounted(() => {
         <tableHeader
             :structure="structure"
             :hidden-columns="hiddenColumns"
+            :database-name="database"
             :table-name="tableName"
             :nb-result="rows.length"
             @triggerFilter="triggerFilter"
