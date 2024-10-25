@@ -8,10 +8,8 @@ export const useToastStore = defineStore('ToastStore', () => {
 
     const ToastLoadStart = () => {
         setTimeout(() => {
-            if (toastDisplay.value === false && toastLoading.value === true) {
-                toastDisplay.value = true;
-                toastLoading.value = true;
-            }
+            toastDisplay.value = true;
+            toastLoading.value = true;
         }, 200)
     }
 
