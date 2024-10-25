@@ -29,7 +29,10 @@ const props = defineProps({
 const emit = defineEmits(['hideColumn']);
 const { ToastLoadStart, ToastLoadEnd } = useToastStore();
 
+const actionRunning = ref(false);
+
 const exportCSV = () => {
+    actionRunning.value = true;
     const result = ref(null);
 
     ToastLoadStart()
@@ -42,11 +45,13 @@ const exportCSV = () => {
                 message: "Export terminé"
             });
             window.location.href = "/public/export.csv"
+            actionRunning.value = false;
         } else if (result.value.isLoading === false) {
             ToastLoadEnd({
                 type: "error",
                 message: "Une erreur est survenue... Impossible de procéder à l'export"
             });
+            actionRunning.value = false;
         }
     })
 }
@@ -54,7 +59,7 @@ const exportCSV = () => {
 </script>
 
 <template>
-    <div class="parameter-container">
+    <div :class="`parameter-container ${actionRunning ? 'action-running' : ''}`">
         <parametersSvg/>
         <div class="parameter-options-container">
             <div class="parameter-option">
@@ -71,9 +76,9 @@ const exportCSV = () => {
                     </div>
                 </div>
             </div>
-            <div class="parameter-option">
+            <div class="parameter-option" @click="exportCSV">
                 <exportSvg/>
-                <div @click="exportCSV">Export</div>
+                <div>Export</div>
             </div>
         </div>
     </div>
@@ -84,7 +89,11 @@ const exportCSV = () => {
     position: relative;
 }
 
-.parameter-container:hover>div.parameter-options-container {
+.parameter-container.action-running {
+    opacity: 0.4;
+}
+
+.parameter-container:not(.action-running):hover>div.parameter-options-container {
     display: block;
 }
 

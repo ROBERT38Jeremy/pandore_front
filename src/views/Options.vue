@@ -151,6 +151,23 @@ onMounted(() => {
         </tr>
 
 
+        <tr class="section">
+            <td colspan="2">
+                <h2>Export</h2>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="title">CSV Value Seperator</td>
+            <td>
+                <select v-model="conf.CSV.defaultFormat.valueSeparator">
+                    <option value=";">; <i>(semicolon)</i></option>
+                    <option value=",">, <i>(comma)</i></option>
+                </select>
+            </td>
+        </tr>
+
+
         <tr>
             <td></td>
             <td>
