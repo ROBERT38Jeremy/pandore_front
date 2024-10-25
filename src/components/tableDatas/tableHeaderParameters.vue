@@ -41,6 +41,7 @@ const exportCSV = () => {
                 type: "success",
                 message: "Export terminé"
             });
+            window.location.href = "/public/export.csv"
         } else if (result.value.isLoading === false) {
             ToastLoadEnd({
                 type: "error",
