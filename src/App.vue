@@ -30,7 +30,6 @@ onMounted(() => {
         setMenuDisplayMode(false)
     }
 })
-
 </script>
 
 <template>
