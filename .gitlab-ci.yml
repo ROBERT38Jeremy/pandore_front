@@ -1,0 +1,12 @@
+stages:
+  - validate
+
+validate_push:
+  stage: validate
+  script:
+    - |
+      if [ "$(date +%u)" -eq 2 ]; then
+        echo "Les pushs ne sont pas autorisés le mardi."
+        exit 1
+      fi
+    - echo "Push autorisé aujourd'hui."
