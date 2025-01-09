@@ -343,15 +343,15 @@ div.container.active::after {
     z-index: 40;
 }
 
-div.propositions {
-    border: 1px solid var(--color-border-dark-only);
-}
-
 div.propositions.active {
+    border: 1px solid var(--color-border-dark-only);
+    -webkit-box-shadow: 0px 0px 15px -6px #000000;
+    box-shadow: 0px 0px 15px -6px #000000;
     background-color: var(--color-background-light);
-    margin: 0 1em 0 1em;
+    margin: 1em 1em 0 0;
+    border-radius: 1em;
     padding: 0.5em 1em 0.5em 1em;
-    width: 44em;
+    width: 46em;
 }
 
 div.propositions>div {
