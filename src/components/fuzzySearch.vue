@@ -343,6 +343,10 @@ div.container.active::after {
     z-index: 40;
 }
 
+div.propositions {
+    border: 1px solid var(--color-border-dark-only);
+}
+
 div.propositions.active {
     background-color: var(--color-background-light);
     margin: 0 1em 0 1em;
