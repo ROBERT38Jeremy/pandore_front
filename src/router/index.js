@@ -16,6 +16,7 @@ import Options from '../views/Options.vue'
 import Privileges from '../views/Privileges.vue'
 import ProcessList from '../views/ProcessList.vue'
 import CreateDatabase from '../views/CreateDatabase.vue'
+import CreateTable from '../views/CreateTable.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -123,6 +124,13 @@ const router = createRouter({
             path: '/database/create',
             name: 'CreateDatabase',
             component: CreateDatabase,
+            beforeEnter: [checkDBConnection],
+            props: true
+        },
+        {
+            path: '/table/create',
+            name: 'CreateTable',
+            component: CreateTable,
             beforeEnter: [checkDBConnection],
             props: true
         },

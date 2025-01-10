@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, toRef, watch, watchEffect } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { useAxios } from '../hooks/useAxios.js';
 import { useToastStore } from '../stores/Toast.store'
 import { useTabStore } from '../stores/Tabs';
@@ -37,6 +37,7 @@ const createDatabase = () => {
 
     watchEffect(() => {
         if (result.value.isLoading === false && result.value.resp?.data?.success) {
+            window.location.reload();
             Toast({
                 type: "success",
                 message: result.value.resp.data.success
