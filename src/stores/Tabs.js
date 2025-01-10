@@ -79,17 +79,6 @@ export const useTabStore = defineStore('Tab', () => {
                     fuzzy: database.value !== null && table.value === null,
                 }
             },
-            // CREATE TABLE
-            {
-                title: 'Create Table',
-                name: 'Create new table',
-                path: `/table/create`,
-                conditions: {
-                    display: database.value !== null,
-                    click: database.value !== null,
-                    fuzzy: database.value !== null,
-                }
-            },
             // TABLE structure
             {
                 title: 'Structure',
@@ -132,6 +121,17 @@ export const useTabStore = defineStore('Tab', () => {
                     display: database.value !== null,
                     click: database.value !== null,
                     fuzzy: database.value !== null,
+                }
+            },
+            // CREATE TABLE
+            {
+                title: 'Create Table',
+                name: 'Create new table',
+                path: `/table/create`,
+                conditions: {
+                    display: database.value !== null && table.value === null,
+                    click: database.value !== null && table.value === null,
+                    fuzzy: database.value !== null && table.value === null,
                 }
             },
             // TABLE export
