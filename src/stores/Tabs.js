@@ -127,7 +127,7 @@ export const useTabStore = defineStore('Tab', () => {
             {
                 title: 'Create Table',
                 name: 'Create new table',
-                path: `/table/create`,
+                path: `/database/${database.value}/table/create`,
                 conditions: {
                     display: database.value !== null && table.value === null,
                     click: database.value !== null && table.value === null,

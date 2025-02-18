@@ -128,7 +128,7 @@ const router = createRouter({
             props: true
         },
         {
-            path: '/table/create',
+            path: '/database/:databaseName/table/create',
             name: 'CreateTable',
             component: CreateTable,
             beforeEnter: [checkDBConnection],
