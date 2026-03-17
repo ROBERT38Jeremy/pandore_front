@@ -86,7 +86,6 @@ watch(search, searchInTables)
 </script>
 
 <template>
-    <!-- <pre>{{ Object.entries(showSearchProposition) }}</pre> -->
     <div class="menu-container">
         <div class="logo">
             <img src="@/assets/logo.png">
@@ -248,10 +247,12 @@ div.title~span {
     min-height: 20vh;
     overflow-y: auto;
     overflow-x: hidden;
+    direction: rtl;       /* scrollbar à gauche */
 }
 
 .database-list-container {
     margin-bottom: 0.5em;
+    direction: ltr;
 }
 
 .database-list-container>div:first-child {
