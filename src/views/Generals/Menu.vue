@@ -61,9 +61,11 @@ const searchInTables = () => {
 
     (Object.entries({...databaseList.value}) || []).forEach(database => {
         const databaseName = database[0];
-        const tables = database[1].filter((table) => { return table.includes(search.value) });
+        const databaseNameMatch = databaseName.includes(search.value);
+        const tables = database[1].filter((table) => { return table.includes(search.value) || databaseNameMatch === true });
 
-        if ((tables || []).length <= 0) {
+
+        if (databaseNameMatch === false && (tables || []).length <= 0) {
             if (showSearchProposition.value?.[databaseName]) delete showSearchProposition.value.databaseName;
             return;
         }
@@ -84,7 +86,7 @@ watch(search, searchInTables)
 </script>
 
 <template>
-    <!-- <pre>{{ showSearchProposition }}</pre> -->
+    <!-- <pre>{{ Object.entries(showSearchProposition) }}</pre> -->
     <div class="menu-container">
         <div class="logo">
             <img src="@/assets/logo.png">
@@ -129,7 +131,7 @@ watch(search, searchInTables)
                     <br>
                     <div v-if="(Object.entries(showSearchProposition) || []).length > 0">
                         <template v-for="[database, tables] of Object.entries(showSearchProposition)">
-                            <div class="database-list-container" v-if="(showSearchProposition?.[database] || []).length > 0">
+                            <div class="database-list-container">
                                 <div>
                                     <div>
                                         <databaseSvg/>
@@ -138,18 +140,20 @@ watch(search, searchInTables)
                                         <RouterLink :to="'/database/'+database+'/structure'" @click="setDatabase(database), unsetTable()">{{ database }}</RouterLink>
                                     </div>
                                 </div>
-                                <div>
-                                    <div class="tables-list" v-if="tables.length > 0">
-                                        <div v-for="table in tables" :class="(table === selectedTable ? 'selected' : '')">
-                                            <div>
-                                                <tableSvg/>
-                                            </div>
-                                            <div>
-                                                <RouterLink :to="`/database/${database}/${table}/${pandoreConf?.tables?.defaultPage ?? 'structure'}`" >{{ table }}</RouterLink>
+                                <template v-if="(tables || []).length > 0">
+                                    <div>
+                                        <div class="tables-list" v-if="tables.length > 0">
+                                            <div v-for="table in tables" :class="(table === selectedTable ? 'selected' : '')">
+                                                <div>
+                                                    <tableSvg/>
+                                                </div>
+                                                <div>
+                                                    <RouterLink :to="`/database/${database}/${table}/${pandoreConf?.tables?.defaultPage ?? 'structure'}`" >{{ table }}</RouterLink>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </template>
                             </div>
 
                         </template>
