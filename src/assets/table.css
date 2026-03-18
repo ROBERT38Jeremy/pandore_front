@@ -83,7 +83,7 @@ table.simple-table {
 }
 
 .simple-table td, .simple-table th {
-    padding: 0.4em 1em;
+    padding: 0.7em 1em;
     border-bottom: 1px solid rgba(216, 218, 221, 0.4);
 }
 
