@@ -28,7 +28,7 @@ const fuzzySearchParams = ref({
 })
 
 const hotKey = async (e) => {
-    if (e.key == 'k' && e.ctrlKey && active.value === false) {
+    if (e.key == 'K' && e.ctrlKey && e.shiftKey && active.value === false) {
         active.value = true;
         input.value.focus();
 
@@ -251,7 +251,7 @@ onBeforeMount(() => {
 onMounted(() => {
     document.addEventListener('keyup', hotKey);
 
-    if (pandoreConf.value?.appDisplay?.displayKeyboardShortcut ?? true === true) inputPlaceholder.value += " (CTRL + K)";
+    if (pandoreConf.value?.appDisplay?.displayKeyboardShortcut ?? true === true) inputPlaceholder.value += " (CTRL + MAJ + K)";
 })
 
 onBeforeUnmount(() => {
